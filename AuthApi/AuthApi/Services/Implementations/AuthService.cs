@@ -109,8 +109,6 @@ public class AuthService:IAuthService
         return authResponse;
     }
     
-    [HttpPost, Authorize]
-    [Route("Revoke")]
     public async Task Revoke()
     {
         var username = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
@@ -121,6 +119,25 @@ public class AuthService:IAuthService
         }
         user.RefreshToken = null;
         _context.SaveChangesAsync();
+    }
+
+    [ValidationModel]
+    public async Task UpdatePassword (ChangePasswordRequest request)
+    {
+        var username = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
+
+        var user = await _userManager.FindByNameAsync(username);
+        
+        if (user == null || !await _userManager.CheckPasswordAsync(user, request.CurrentPassword))
+        {
+            throw new BadHttpRequestException("Invalid email and (or) password");
+        }
+
+        var result = _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
+        if (!result.Result.Succeeded)
+        {
+            throw new BadHttpRequestException(string.Join("\n", result.Exception));
+        }
     }
     
 }

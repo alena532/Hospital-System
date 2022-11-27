@@ -40,14 +40,21 @@ public class AuthController:ControllerBase
         await _authService.RegisterAsync(request);
         return StatusCode(201);
     }
-
-    [AllowAnonymous]
+    
     [HttpPost]
     [Route("Refresh")]
     public async Task<ActionResult<AuthenticatedResponse>> Refresh([FromBody] TokensRequest tokens)
     {
         var authResponse = await _authService.Refresh(tokens);
         return Ok(authResponse);
+    }
+    
+    [Authorize]
+    [HttpPut]
+    public async Task<ActionResult<AuthenticatedResponse>> ChangePassword([FromBody] ChangePasswordRequest request)
+    {
+        await _authService.UpdatePassword(request);
+        return StatusCode(201);
     }
 
     [HttpPost,Authorize]
