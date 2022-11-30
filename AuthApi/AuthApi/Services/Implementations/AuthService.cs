@@ -27,7 +27,7 @@ public class AuthService:IAuthService
         _httpContextAccessor = httpContextAccessor;
     }
     
-    [ValidationModel]
+    
     public async Task<AuthenticatedResponse>  LoginAsync(LoginRequest request)
     {
         var user = await _userManager.FindByNameAsync(request.Email);
@@ -53,8 +53,7 @@ public class AuthService:IAuthService
         
         return authResponse;
     }
-
-    [ValidationModel]
+    
     public async Task RegisterAsync(RegisterRequest request)
     {
         var role = await _context.Roles.FindAsync(request.RoleId);
@@ -79,7 +78,6 @@ public class AuthService:IAuthService
         
     }
     
-    [ValidationModel]
     public async Task<AuthenticatedResponse> Refresh(TokensRequest tokens)
     {
         string accessToken = tokens.AccessToken;
@@ -121,7 +119,7 @@ public class AuthService:IAuthService
         _context.SaveChangesAsync();
     }
 
-    [ValidationModel]
+    
     public async Task UpdatePassword (ChangePasswordRequest request)
     {
         var username = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);

@@ -1,3 +1,4 @@
+using AuthApi.Common.Attributes;
 using AuthApi.ConfigurationOptions;
 using AuthApi.Contracts.Requests;
 using AuthApi.Contracts.Responses;
@@ -28,6 +29,7 @@ public class AuthController:ControllerBase
     }
 
     [HttpPost("Login")]
+    [ValidationModel]
     public async Task<ActionResult<AuthenticatedResponse>> LoginAsync([FromBody] LoginRequest request)
     {
         var authResponse = await _authService.LoginAsync(request);
@@ -35,6 +37,7 @@ public class AuthController:ControllerBase
     }
     
     [HttpPost("Register")]
+    [ValidationModel]
     public async Task<ActionResult> RegisterAsync([FromBody] RegisterRequest request)
     {
         await _authService.RegisterAsync(request);
@@ -43,21 +46,24 @@ public class AuthController:ControllerBase
     
     [HttpPost]
     [Route("Refresh")]
+    [ValidationModel]
     public async Task<ActionResult<AuthenticatedResponse>> Refresh([FromBody] TokensRequest tokens)
     {
         var authResponse = await _authService.Refresh(tokens);
         return Ok(authResponse);
     }
     
-    [Authorize]
     [HttpPut]
+    [Authorize]
+    [ValidationModel]
     public async Task<ActionResult<AuthenticatedResponse>> ChangePassword([FromBody] ChangePasswordRequest request)
     {
         await _authService.UpdatePassword(request);
         return StatusCode(201);
     }
 
-    [HttpPost,Authorize]
+    [HttpPost]
+    [Authorize]
     [Route("Revoke")]
     public async Task<ActionResult> Revoke()
     {
