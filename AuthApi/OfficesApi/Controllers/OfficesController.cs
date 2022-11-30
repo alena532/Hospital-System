@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using OfficesApi.Common.Attributes;
 using OfficesApi.Contracts.Requests.Offices;
 using OfficesApi.Contracts.Responses.Offices;
+using OfficesApi.DataAccess.Models;
 using OfficesApi.Services.Interfaces;
 
 namespace OfficesApi.Controllers;
@@ -10,14 +11,16 @@ namespace OfficesApi.Controllers;
 [ApiController]
 [AllowAnonymous]
 [Route("api/[controller]")]
-public class EventsController:ControllerBase
+public class OfficesController:ControllerBase
 {
     private readonly IOfficesService _officesService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
     
-    public EventsController(IOfficesService officesService)
+    public OfficesController(IOfficesService officesService,IHttpContextAccessor httpContextAccessor)
     {
         _officesService = officesService;
-        
+        _httpContextAccessor = httpContextAccessor;
+
     } 
     
     [HttpGet("")]
@@ -26,11 +29,16 @@ public class EventsController:ControllerBase
        return Ok(await _officesService.GetAllAsync());
     }
 
-    [HttpGet("{id:int}",Name = "GetById")]
+    [HttpGet("{id:int}", Name = "GetById")]
     [ServiceFilter(typeof(ValidationOfficeExistsAttribute))]
-    
+
     public async Task<ActionResult<GetOfficeResponse>> GetByIdAsync(int id)
-        =>Ok(await _officesService.GetByIdAsync(id));
+    {
+        var office = _httpContextAccessor.HttpContext.Items["office"] as Office;
+
+        return Ok(await _officesService.GetByIdAsync(office));
+    }
+        
     
     
     [HttpDelete("{id:int}")]
@@ -38,7 +46,9 @@ public class EventsController:ControllerBase
     
     public async Task<IActionResult> DeleteAsync(int id)
     {
-        await _officesService.DeleteAsync(id);
+        var office = _httpContextAccessor.HttpContext.Items["office"] as Office;
+        
+        await _officesService.DeleteAsync(office);
         return NoContent();
     }
 
@@ -58,7 +68,9 @@ public class EventsController:ControllerBase
     
     public async Task<ActionResult<GetOfficeResponse>> UpdateAsync(int id, [FromBody]EditOfficeRequest request)
     {
-        var eventReturn = await _officesService.UpdateAsync(id, request);
+        var office = _httpContextAccessor.HttpContext.Items["office"] as Office;
+        
+        var eventReturn = await _officesService.UpdateAsync(office, request);
         return Ok(eventReturn);
     }
     

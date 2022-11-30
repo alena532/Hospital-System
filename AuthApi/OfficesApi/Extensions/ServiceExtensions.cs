@@ -70,9 +70,19 @@ public static class ServiceExtensions
         services.AddTransient<IOfficesService,OfficesService>();
     }
 
+    public static void ConfigureOfficeReceptionistsService(this IServiceCollection services)
+    {
+        services.AddTransient<IOfficeReceptionistsService,OfficeReceptionistsService>();
+    }
+
     public static void ConfigureOfficeRepository(this IServiceCollection services)
     {
         services.AddScoped<IOfficeRepository,OfficeRepository>();
+    }
+    
+    public static void ConfigureOfficeReceptionistRepository(this IServiceCollection services)
+    {
+        services.AddScoped<IOfficeReceptionistRepository,OfficeReceptionistRepository>();
     }
 
     public static void ConfigureAutoMapper(this IServiceCollection services)

@@ -11,15 +11,14 @@ public class OfficeRepository : RepositoryBase<Office>, IOfficeRepository
     {
     }
     
-    public async Task CreateOffice(Office office)
+    public async Task CreateOfficeAsync(Office office)
     {
-        Create(office);
-        await SaveChangesAsync();
+        await CreateAsync(office);
     }
 
-    public void DeleteOffice(Office office)
+    public async Task DeleteOfficeAsync(Office office)
     {
-        Delete(office);
+        await DeleteAsync(office);
     }
     
     public async Task<List<Office>> GetAllOfficesAsync(bool trackChanges)
@@ -27,14 +26,9 @@ public class OfficeRepository : RepositoryBase<Office>, IOfficeRepository
         return await FindAll(trackChanges).ToListAsync();
     }
 
-    public async Task<Office> GetOfficeAsync(Guid id, bool trackChanges)
+    public async Task<Office> GetOfficeAsync(int id, bool trackChanges)
     {
         return await FindByCondition(p => p.Id.Equals(id), trackChanges).SingleOrDefaultAsync();
     }
     
-    public async Task SaveChangesAsync()
-    {
-        await SaveChangesAsync();
-    }
-
 }

@@ -11,5 +11,15 @@ public class OfficesMapper:Profile
     {
         CreateMap<Office, GetOfficeResponse>();
         CreateMap<CreateOfficeRequest, Office>();
+        CreateMap<EditOfficeRequest, Office>();
     }
+    
+    string InStringFormat(OfficeStatus status)
+        => status switch
+        {
+            OfficeStatus.Active => "Active",
+            OfficeStatus.Closed => "Closed",
+            OfficeStatus.OnRepair => "Repair",
+        };
+    
 }

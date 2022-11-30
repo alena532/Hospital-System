@@ -1,6 +1,6 @@
 namespace OfficesApi.DataAccess.Models;
 
-public enum OfficeStatus : byte
+public enum OfficeStatus : int
 {
     Active,
     OnRepair,

@@ -21,6 +21,8 @@ services.ConfigureAutoMapper();
 services.ConfigureSwagger();
 services.ConfigureOfficesService();
 services.ConfigureOfficeRepository();
+services.ConfigureOfficeReceptionistsService();
+services.ConfigureOfficeReceptionistRepository();
 services.ConfigureSqlContext(builder.Configuration);
 
 
