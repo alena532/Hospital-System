@@ -20,12 +20,3 @@ public class OfficeReceptionist
     public virtual Office Office { get; set; }
 }
 
-public class OfficeReceptionistValidator : AbstractValidator<OfficeReceptionist> 
-{
-    public OfficeReceptionistValidator()
-    {
-        RuleFor(x => x.FirstName).Length(5, 15);
-        RuleFor(x => x.LastName).Length(5, 15);
-        RuleFor(x => x.PhotoUrl).Matches("^https");
-    }
-}

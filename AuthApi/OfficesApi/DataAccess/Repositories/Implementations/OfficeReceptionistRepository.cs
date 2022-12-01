@@ -11,8 +11,9 @@ public class OfficeReceptionistRepository : RepositoryBase<OfficeReceptionist>, 
     {
     }
     
-    public async Task CreateOfficeReceptionistAsync(OfficeReceptionist receptionist)
+    public async Task CreateOfficeReceptionistAsync(int officeId,OfficeReceptionist receptionist)
     {
+        receptionist.OfficeId = officeId;
         await CreateAsync(receptionist);
     }
 

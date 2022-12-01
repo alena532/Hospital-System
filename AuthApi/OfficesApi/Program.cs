@@ -3,6 +3,8 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using OfficesApi.DataAccess.Models;
 using OfficesApi.Extensions;
+using Serilog;
+using Serilog.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -14,6 +16,12 @@ services.AddFluentValidation(options =>
     options.RegisterValidatorsFromAssembly(typeof(Program).Assembly);
     
 });
+var logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Filter.ByIncludingOnly(Matching.FromSource("OfficesApi"))
+    .CreateLogger();
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
 //services.AddValidatorsFromAssemblyContaining<Office>();
 services.ConfigureAutoMapper();
 //services.ConfigureValidators();

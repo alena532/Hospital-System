@@ -39,8 +39,8 @@ public class OfficeReceptionistsService:IOfficeReceptionistsService
     public async Task<GetOfficeReceptionistResponse> CreateForOfficeAsync(int officeId,CreateOfficeReceptionistRequest request)
     {
         var receptionist = _mapper.Map<OfficeReceptionist>(request);
-        receptionist.OfficeId = officeId;
-        await _repository.CreateOfficeReceptionistAsync(receptionist);
+        
+        await _repository.CreateOfficeReceptionistAsync(officeId,receptionist);
 
         return _mapper.Map<GetOfficeReceptionistResponse>(receptionist);
     }

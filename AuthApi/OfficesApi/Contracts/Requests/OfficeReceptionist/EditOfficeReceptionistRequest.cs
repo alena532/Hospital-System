@@ -2,7 +2,6 @@ namespace OfficesApi.Contracts.Requests.OfficeReceptionist;
 
 public class EditOfficeReceptionistRequest
 {
-    public int OfficeId { get; set; }
     public int ReceptionistId { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }

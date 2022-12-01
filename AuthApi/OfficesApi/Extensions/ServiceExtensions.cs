@@ -63,6 +63,7 @@ public static class ServiceExtensions
     {
         services.AddScoped<ValidationModelAttribute>();
         services.AddScoped<ValidationOfficeExistsAttribute>();
+        services.AddScoped<ValidationOfficeReceptionistExistsAttribute>();
     }
     
     public static void ConfigureOfficesService(this IServiceCollection services)

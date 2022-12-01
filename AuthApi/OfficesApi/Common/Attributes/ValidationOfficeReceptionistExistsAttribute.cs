@@ -8,11 +8,13 @@ public class ValidationOfficeReceptionistExistsAttribute : IAsyncActionFilter
 {
     private readonly IOfficeReceptionistRepository _receptionistRepository;
     private readonly IOfficeRepository _officeRepository;
+    private readonly ILogger<ValidationOfficeReceptionistExistsAttribute> _logger;
 
-    public ValidationOfficeReceptionistExistsAttribute(IOfficeReceptionistRepository receptionistRepository,IOfficeRepository officeRepository)
+    public ValidationOfficeReceptionistExistsAttribute(IOfficeReceptionistRepository receptionistRepository,IOfficeRepository officeRepository,ILogger<ValidationOfficeReceptionistExistsAttribute> logger)
     {
         _receptionistRepository = receptionistRepository;
         _officeRepository = officeRepository;
+        _logger = logger;
     }
     
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
@@ -24,6 +26,7 @@ public class ValidationOfficeReceptionistExistsAttribute : IAsyncActionFilter
 
         if (office == null)
         {
+            _logger.LogWarning($"Office with id: {officeId} doesn't exist in the database.");
             context.Result = new NotFoundResult();
         }
         
@@ -33,6 +36,7 @@ public class ValidationOfficeReceptionistExistsAttribute : IAsyncActionFilter
 
         if (receptionist == null)
         {
+            _logger.LogWarning($"Receptionist with id: {receptionistId} doesn't exist in the database.");
             context.Result = new NotFoundResult();
         }
         

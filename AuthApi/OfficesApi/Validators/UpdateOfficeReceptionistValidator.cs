@@ -7,7 +7,7 @@ public class UpdateOfficeReceptionistValidator : AbstractValidator<EditOfficeRec
 {
     public UpdateOfficeReceptionistValidator()
     {
-        RuleFor(x => x.PhotoUrl).Matches("^\\https");
+        RuleFor(x => x.PhotoUrl).Matches("^https");
         
     }
 }

@@ -16,11 +16,13 @@ public class OfficeReceptionistsController:ControllerBase
 {
     private readonly IOfficeReceptionistsService _receptionistsService;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ILogger<OfficesController> _logger;
     
-    public OfficeReceptionistsController(IOfficeReceptionistsService receptionistsService,IHttpContextAccessor httpContextAccessor)
+    public OfficeReceptionistsController(IOfficeReceptionistsService receptionistsService,IHttpContextAccessor httpContextAccessor,ILogger<OfficesController> logger)
     {
         _receptionistsService = receptionistsService;
         _httpContextAccessor = httpContextAccessor;
+        _logger = logger;
 
     } 
     
@@ -36,6 +38,7 @@ public class OfficeReceptionistsController:ControllerBase
 
     public async Task<ActionResult<GetOfficeResponse>> GetByIdForOfficeAsync(int officeId,int id)
     {
+        _logger.LogInformation($"Getting receptionist {id} for office office {officeId}");
         var receptionist = _httpContextAccessor.HttpContext.Items["receptionist"] as OfficeReceptionist;
 
         return Ok(await _receptionistsService.GetByIdForOfficeAsync(receptionist));
@@ -46,6 +49,7 @@ public class OfficeReceptionistsController:ControllerBase
     
     public async Task<IActionResult> DeleteFromOfficeAsync(int officeId,int id)
     {
+        _logger.LogInformation($"Deleting receptionist {id} from office {officeId}");
         var receptionist = _httpContextAccessor.HttpContext.Items["receptionist"] as OfficeReceptionist;
         
         await _receptionistsService.DeleteFromOfficeAsync(receptionist);
@@ -58,8 +62,8 @@ public class OfficeReceptionistsController:ControllerBase
     
     public async Task<ActionResult<GetOfficeResponse>> CreateForOfficeAsync(int officeId,[FromBody] CreateOfficeReceptionistRequest request)
     {
-        var officeReturn = await _receptionistsService.CreateForOfficeAsync(officeId,request);
-        return CreatedAtRoute("GetOfficeReceptionistById", new {id = officeReturn.Id}, officeReturn);
+        var receptionistReturn = await _receptionistsService.CreateForOfficeAsync(officeId,request);
+        return CreatedAtRoute("GetOfficeReceptionistById", new {officeId = officeId,id = receptionistReturn.Id}, receptionistReturn);
     }
     
 
@@ -67,13 +71,13 @@ public class OfficeReceptionistsController:ControllerBase
     [ServiceFilter(typeof(ValidationModelAttribute))]
     [ServiceFilter(typeof(ValidationOfficeReceptionistExistsAttribute))]
     
-    public async Task<ActionResult<GetOfficeResponse>> UpdateForOfficeAsync(int id, [FromBody]EditOfficeReceptionistRequest request)
+    public async Task<ActionResult<GetOfficeResponse>> UpdateForOfficeAsync(int officeId,int id, [FromBody]EditOfficeReceptionistRequest request)
     {
         var receptionist = HttpContext.Items["receptionist"] as OfficeReceptionist;
 
         _receptionistsService.UpdateForOfficeAsync(receptionist, request);
 
-        return NoContent();
+        return CreatedAtRoute("GetOfficeReceptionistById", new {officeId = officeId,id = receptionist.Id}, receptionist);
     }
     
 }

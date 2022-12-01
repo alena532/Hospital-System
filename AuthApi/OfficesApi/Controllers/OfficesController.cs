@@ -15,11 +15,13 @@ public class OfficesController:ControllerBase
 {
     private readonly IOfficesService _officesService;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ILogger<OfficesController> _logger;
     
-    public OfficesController(IOfficesService officesService,IHttpContextAccessor httpContextAccessor)
+    public OfficesController(IOfficesService officesService,IHttpContextAccessor httpContextAccessor,ILogger<OfficesController> logger)
     {
         _officesService = officesService;
         _httpContextAccessor = httpContextAccessor;
+        _logger = logger;
 
     } 
     
@@ -34,11 +36,11 @@ public class OfficesController:ControllerBase
 
     public async Task<ActionResult<GetOfficeResponse>> GetByIdAsync(int id)
     {
+        _logger.LogInformation($"Getting office {id}");
         var office = _httpContextAccessor.HttpContext.Items["office"] as Office;
 
         return Ok(await _officesService.GetByIdAsync(office));
     }
-        
     
     
     [HttpDelete("{id:int}")]
@@ -46,6 +48,7 @@ public class OfficesController:ControllerBase
     
     public async Task<IActionResult> DeleteAsync(int id)
     {
+        _logger.LogInformation($"Deleting office {id}");
         var office = _httpContextAccessor.HttpContext.Items["office"] as Office;
         
         await _officesService.DeleteAsync(office);
@@ -57,6 +60,7 @@ public class OfficesController:ControllerBase
     
     public async Task<ActionResult<GetOfficeResponse>> CreateAsync([FromBody] CreateOfficeRequest request)
     {
+        _logger.LogInformation($"Creating office");
         var officeReturn = await _officesService.CreateAsync(request);
         return CreatedAtRoute("GetById", new {id = officeReturn.Id}, officeReturn);
     }
@@ -68,6 +72,7 @@ public class OfficesController:ControllerBase
     
     public async Task<ActionResult<GetOfficeResponse>> UpdateAsync(int id, [FromBody]EditOfficeRequest request)
     {
+        _logger.LogInformation($"Updating office");
         var office = _httpContextAccessor.HttpContext.Items["office"] as Office;
         
         var eventReturn = await _officesService.UpdateAsync(office, request);

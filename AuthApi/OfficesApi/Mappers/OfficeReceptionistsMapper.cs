@@ -11,7 +11,7 @@ public class OfficeReceptionistsMapper:Profile
     public OfficeReceptionistsMapper()
     {
         CreateMap<OfficeReceptionist, GetOfficeReceptionistResponse>();
-        CreateMap<CreateOfficeReceptionistRequest, Office>();
+        CreateMap<CreateOfficeReceptionistRequest, OfficeReceptionist>();
         CreateMap<EditOfficeReceptionistRequest, OfficeReceptionist>();
     }
 }

@@ -6,6 +6,12 @@ namespace OfficesApi.Common.Attributes;
 
 public class ValidationModelAttribute:IAsyncActionFilter
 {
+    private readonly ILogger<ValidationOfficeExistsAttribute> _logger;
+
+    public ValidationModelAttribute(ILogger<ValidationOfficeExistsAttribute> logger)
+    {
+        _logger = logger;
+    }
     
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
@@ -29,9 +35,10 @@ public class ValidationModelAttribute:IAsyncActionFilter
                     
                     errorResponse.Errors.Add(errorModel);
                 }
-
+                _logger.LogWarning("Validation failed");
                 context.Result = new BadRequestObjectResult(errorResponse);
             }
+            _logger.LogWarning("Validation failed");
             context.Result = new BadRequestObjectResult(context.ModelState);
         }
 
