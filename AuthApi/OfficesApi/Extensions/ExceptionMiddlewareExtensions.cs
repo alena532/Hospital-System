@@ -22,7 +22,6 @@ public static class ExceptionMiddlewareExtensions
                 
                 if (ex != null)
                 {
-                    context.Response.ContentType = "application/json";
                     var title = "An error occured: " + ex.Message;
                     var details = ex.ToString();
                     

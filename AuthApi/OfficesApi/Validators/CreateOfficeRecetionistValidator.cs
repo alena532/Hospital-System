@@ -7,7 +7,7 @@ public class CreateOfficeReceptionistValidator : AbstractValidator<CreateOfficeR
 {
     public CreateOfficeReceptionistValidator()
     {
-        RuleFor(x => x.PhotoUrl).Matches("^https");
+        RuleFor(x => x.PhotoUrl).Matches("^http");
         
     }
 }

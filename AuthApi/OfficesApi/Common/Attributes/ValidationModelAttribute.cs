@@ -35,8 +35,7 @@ public class ValidationModelAttribute:IAsyncActionFilter
                     
                     errorResponse.Errors.Add(errorModel);
                 }
-                _logger.LogWarning("Validation failed");
-                context.Result = new BadRequestObjectResult(errorResponse);
+                
             }
             _logger.LogWarning("Validation failed");
             context.Result = new BadRequestObjectResult(context.ModelState);
