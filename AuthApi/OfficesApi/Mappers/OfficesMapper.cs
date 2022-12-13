@@ -18,8 +18,8 @@ public class OfficesMapper:Profile
         => status switch
         {
             OfficeStatus.Active => "Active",
-            OfficeStatus.Closed => "Closed",
-            OfficeStatus.OnRepair => "Repair",
+            OfficeStatus.InActive => "InActive",
+            //OfficeStatus.OnRepair => "Repair",
         };
     
 }

@@ -26,7 +26,7 @@ public class OfficeRepository : RepositoryBase<Office>, IOfficeRepository
         return await FindAll(trackChanges).ToListAsync();
     }
 
-    public async Task<Office> GetOfficeAsync(int id, bool trackChanges)
+    public async Task<Office> GetOfficeAsync(Guid id, bool trackChanges)
     {
         return await FindByCondition(p => p.Id.Equals(id), trackChanges).SingleOrDefaultAsync();
     }

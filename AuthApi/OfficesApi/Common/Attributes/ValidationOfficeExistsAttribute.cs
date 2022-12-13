@@ -25,14 +25,14 @@ public class ValidationOfficeExistsAttribute : IAsyncActionFilter
         
         var trackChanges = context.HttpContext.Request.Method.Equals("PUT");
 
-        int id;
+        Guid id;
         if (inReceptionistController)
         {
-            id = (int)context.ActionArguments["officeId"];
+            id = (Guid)context.ActionArguments["officeId"];
         }
         else
         {
-            id = (int)context.ActionArguments["id"];
+            id = (Guid)context.ActionArguments["id"];
         }
         
         var office = await _repository.GetOfficeAsync(id, trackChanges);

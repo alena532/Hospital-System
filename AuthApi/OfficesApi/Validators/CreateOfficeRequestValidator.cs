@@ -9,7 +9,7 @@ public class CreateOfficeRequestValidator : AbstractValidator<CreateOfficeReques
     public CreateOfficeRequestValidator()
     {
         RuleFor(x => x.RegistryPhoneNumber).Matches("^\\+");
-        RuleFor(x => x.Status).Must(x => (int) x >= 0 && (int) x <= 2);
+        RuleFor(x => x.Status).Must(x => (int) x >= 0 && (int) x <= 1);
 
 
     }

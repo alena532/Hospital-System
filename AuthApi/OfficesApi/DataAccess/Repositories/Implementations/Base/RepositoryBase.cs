@@ -48,11 +48,11 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
             _repositoryContext.Set<T>().Where(expression);
     }
     
-    public Task SaveChangesAsync()
+    public async Task SaveChangesAsync()
     {
         try
         {
-            return  _repositoryContext.SaveChangesAsync();
+            await _repositoryContext.SaveChangesAsync();
         }
         catch (ValidationException e)
         {

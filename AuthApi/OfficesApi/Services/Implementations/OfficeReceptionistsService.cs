@@ -21,7 +21,7 @@ public class OfficeReceptionistsService:IOfficeReceptionistsService
         _repository = repository;
     }
 
-    public async Task<ICollection<GetOfficeReceptionistResponse>> GetAllForOfficeAsync(int officeId)
+    public async Task<ICollection<GetOfficeReceptionistResponse>> GetAllForOfficeAsync(Guid officeId)
     {
         var receptionists = await _repository.GetOfficeReceptionistsAsync(officeId,trackChanges: false);
 
@@ -30,13 +30,12 @@ public class OfficeReceptionistsService:IOfficeReceptionistsService
     
     public async Task<GetOfficeReceptionistResponse> GetByIdForOfficeAsync(OfficeReceptionist receptionist)
         => _mapper.Map<GetOfficeReceptionistResponse>(receptionist);
-        
-    
+
     public async Task DeleteFromOfficeAsync(OfficeReceptionist receptionist)
         => await _repository.DeleteReceptionistFromOfficeAsync(receptionist);
 
 
-    public async Task<GetOfficeReceptionistResponse> CreateForOfficeAsync(int officeId,CreateOfficeReceptionistRequest request)
+    public async Task<GetOfficeReceptionistResponse> CreateForOfficeAsync(Guid officeId,CreateOfficeReceptionistRequest request)
     {
         var receptionist = _mapper.Map<OfficeReceptionist>(request);
         
@@ -48,6 +47,7 @@ public class OfficeReceptionistsService:IOfficeReceptionistsService
     public async Task<GetOfficeReceptionistResponse> UpdateForOfficeAsync(OfficeReceptionist receptionist,EditOfficeReceptionistRequest request)
     {
         _mapper.Map(request, receptionist);
+        _repository.SaveChangesAsync();
         return _mapper.Map<GetOfficeReceptionistResponse>(receptionist);
     }
 

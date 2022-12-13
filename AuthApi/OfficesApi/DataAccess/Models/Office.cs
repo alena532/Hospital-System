@@ -6,8 +6,8 @@ namespace OfficesApi.DataAccess.Models;
 public class Office
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
-    
+    public Guid Id { get; set; }
+
     public string Address { get; set; }
     public string RegistryPhoneNumber { get; set; }
     public OfficeStatus Status { get; set; }

@@ -1,12 +1,13 @@
 using OfficesApi.DataAccess.Models;
+using OfficesApi.DataAccess.Repositories.Base;
 
 namespace OfficesApi.DataAccess.Repositories.Interfaces;
 
-public interface IOfficeReceptionistRepository
+public interface IOfficeReceptionistRepository:IRepositoryBase<OfficeReceptionist>
 {
-    Task<List<OfficeReceptionist>> GetOfficeReceptionistsAsync (int officeId, bool trackChanges);
-    Task<OfficeReceptionist> GetOfficeReceptionistAsync(int officeId,int id, bool trackChanges);
-    Task CreateOfficeReceptionistAsync(int officeId,OfficeReceptionist receptionist);
+    Task<List<OfficeReceptionist>> GetOfficeReceptionistsAsync (Guid officeId, bool trackChanges);
+    Task<OfficeReceptionist> GetOfficeReceptionistAsync(Guid officeId,Guid id, bool trackChanges);
+    Task CreateOfficeReceptionistAsync(Guid officeId,OfficeReceptionist receptionist);
     Task DeleteReceptionistFromOfficeAsync(OfficeReceptionist receptionist);
 
 }

@@ -12,8 +12,7 @@ public class OfficesService:IOfficesService
 {
     private readonly IMapper _mapper;
     private readonly IOfficeRepository _repository;
-
-
+    
     public OfficesService(IMapper mapper,IOfficeRepository repository)
     {
         _mapper = mapper;
@@ -47,6 +46,14 @@ public class OfficesService:IOfficesService
     public async Task<GetOfficeResponse> UpdateAsync(Office office,EditOfficeRequest request)
     {
         _mapper.Map(request, office);
+        await _repository.SaveChangesAsync();
+        return _mapper.Map<GetOfficeResponse>(office);
+    }
+    
+    public async Task<GetOfficeResponse> UpdateStatusAsync(Office office,EditOfficeStatusRequest request)
+    {
+        office.Status = request.Status;
+        await _repository.UpdateAsync(office);
         return _mapper.Map<GetOfficeResponse>(office);
     }
     

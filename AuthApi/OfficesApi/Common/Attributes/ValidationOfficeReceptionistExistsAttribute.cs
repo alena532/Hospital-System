@@ -20,7 +20,7 @@ public class ValidationOfficeReceptionistExistsAttribute : IAsyncActionFilter
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
         var trackChanges = context.HttpContext.Request.Method.Equals("PUT");
-        var officeId = (int)context.ActionArguments["officeId"];
+        var officeId = (Guid)context.ActionArguments["officeId"];
         
         var office = await _officeRepository.GetOfficeAsync(officeId, trackChanges: false);
 
@@ -30,7 +30,7 @@ public class ValidationOfficeReceptionistExistsAttribute : IAsyncActionFilter
             context.Result = new NotFoundResult();
         }
         
-        var receptionistId = (int)context.ActionArguments["id"];
+        var receptionistId = (Guid)context.ActionArguments["id"];
 
         var receptionist = await _receptionistRepository.GetOfficeReceptionistAsync(officeId,receptionistId, trackChanges: false);
 

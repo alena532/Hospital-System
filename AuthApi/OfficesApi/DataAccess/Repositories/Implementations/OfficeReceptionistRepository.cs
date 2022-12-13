@@ -11,7 +11,7 @@ public class OfficeReceptionistRepository : RepositoryBase<OfficeReceptionist>, 
     {
     }
     
-    public async Task CreateOfficeReceptionistAsync(int officeId,OfficeReceptionist receptionist)
+    public async Task CreateOfficeReceptionistAsync(Guid officeId,OfficeReceptionist receptionist)
     {
         receptionist.OfficeId = officeId;
         await CreateAsync(receptionist);
@@ -22,12 +22,12 @@ public class OfficeReceptionistRepository : RepositoryBase<OfficeReceptionist>, 
         await DeleteAsync(receptionist);
     }
     
-    public async Task<List<OfficeReceptionist>> GetOfficeReceptionistsAsync(int officeId,bool trackChanges)
+    public async Task<List<OfficeReceptionist>> GetOfficeReceptionistsAsync(Guid officeId,bool trackChanges)
     {
         return await FindByCondition(x => x.OfficeId.Equals(officeId),trackChanges:false).ToListAsync();
     }
 
-    public async Task<OfficeReceptionist> GetOfficeReceptionistAsync(int officeId,int id, bool trackChanges)
+    public async Task<OfficeReceptionist> GetOfficeReceptionistAsync(Guid officeId,Guid id, bool trackChanges)
     {
         return await FindByCondition(p => p.Id.Equals(id) && p.OfficeId.Equals(officeId), trackChanges).SingleOrDefaultAsync();
     }

@@ -1,6 +1,7 @@
 using System.Reflection;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using MassTransit;
 using OfficesApi.DataAccess.Models;
 using OfficesApi.Extensions;
 using Serilog;
@@ -8,6 +9,12 @@ using Serilog.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
+
+services.AddMassTransit(x =>
+{
+    x.UsingRabbitMq();
+});
+
 services.AddHttpContextAccessor();
 services.AddControllers();
 services.AddFluentValidation(options =>
