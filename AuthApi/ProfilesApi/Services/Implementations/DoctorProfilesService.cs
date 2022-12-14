@@ -70,7 +70,7 @@ public class DoctorProfilesService:IDoctorProfilesService
 
     public async Task<ICollection<GetDoctorProfilesResponse>> GetAllAsync(bool trackChanges)
     {
-        var doctorsProfiles = await _doctorProfileRepository.GetAllDoctorProfilesAsync(trackChanges);
+        var doctorsProfiles = await _doctorProfileRepository.GetDoctorProfilesAsync(trackChanges);
         return _mapper.Map<ICollection<GetDoctorProfilesResponse>>(doctorsProfiles);
     }
     

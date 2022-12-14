@@ -29,6 +29,13 @@ public class MailService : IMailService
         await SendAsync(emailMessage);
         
     }
+
+    public async Task VerifiedEmail(Guid accountId)
+    {
+        var account = _accountRepository.GetAccountById(accountId, trackChanges: true);
+        account.IsEmailVerified = true;
+    }
+    
     
     private MimeMessage CreateEmailMessage(MailRequest message)
     {

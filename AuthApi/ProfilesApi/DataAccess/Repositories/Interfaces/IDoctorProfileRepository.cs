@@ -4,9 +4,9 @@ using ProfilesApi.DataAccess.Models;
 namespace ProfilesApi.DataAccess.Repositories.Interfaces.Base;
 
 public interface IDoctorProfileRepository:IRepositoryBase<Doctor>
-{
-    Task CreateDoctorProfileAsync(Doctor doctor);
-   Task<List<Doctor>> GetAllDoctorProfilesAsync (bool trackChanges);
+{  
+   Task CreateDoctorProfileAsync(Doctor doctor);
+   Task<List<Doctor>> GetDoctorProfilesAsync (bool trackChanges);
 
    Task<List<Doctor>> GetAllDoctorProfilesByOfficeAsync(Guid officeId, bool trackChanges);
    /*Task<Office> GetDoctorProfileAsync(int id, bool trackChanges);

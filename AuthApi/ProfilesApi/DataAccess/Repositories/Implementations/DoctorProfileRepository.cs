@@ -17,7 +17,7 @@ public class DoctorProfileRepository:RepositoryBase<Doctor>,IDoctorProfileReposi
         await CreateAsync(doctor);
     }
 
-    public async Task<List<Doctor>> GetAllDoctorProfilesAsync(bool trackChanges)
+    public async Task<List<Doctor>> GetDoctorProfilesAsync(bool trackChanges)
     {
         return await FindAll(trackChanges).ToListAsync();
     }

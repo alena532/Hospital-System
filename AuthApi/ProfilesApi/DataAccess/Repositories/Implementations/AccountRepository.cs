@@ -20,5 +20,7 @@ public class AccountRepository : RepositoryBase<Account>,IAccountRepository
     {
         return FindByCondition(x => x.Id == Id, trackChanges).SingleOrDefault();
     }
+
+    
     
 }

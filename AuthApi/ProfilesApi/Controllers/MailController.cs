@@ -11,22 +11,25 @@ namespace ProfilesApi.Controllers;
 public class MailController : Controller
 {
     private readonly IMailService mailService;
+    
     public MailController(IMailService mailService)
     {
         this.mailService = mailService;
     }
+    
     [HttpPost("send")]
-    public async Task<IActionResult> SendMailAsync([FromForm]MailRequest request)
+    public async Task<IActionResult> SendMailAsync([FromBody]MailRequest request)
     {
-        try
-        {
-            await mailService.SendEmailAsync(request);
-            return Ok();
-        }
-        catch (Exception ex)
-        {
-            throw;
-        }
-            
+        await mailService.SendEmailAsync(request);
+        return Ok();
     }
+    
+    [HttpPost("verified")]
+    public IActionResult VerifiedEmailAsync([FromBody]Guid accountId)
+    {
+        mailService.VerifiedEmail(accountId);
+        return Ok();
+    }
+    
+    
 }

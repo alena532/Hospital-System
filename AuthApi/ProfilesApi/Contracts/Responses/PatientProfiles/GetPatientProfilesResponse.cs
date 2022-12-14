@@ -1,17 +1,18 @@
-namespace ProfilesApi.DataAccess.Models;
+using System.Text.Json.Serialization;
+using ProfilesApi.Common;
 
-public class Patient
+namespace ProfilesApi.Contracts.Responses.PatientProfiles;
+
+public class GetPatientProfilesResponse
 {
     public Guid Id { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string MiddleName { get; set; }
+    [JsonConverter(typeof(DateOnlyJsonConverter))]
     public DateOnly DateOfBirth { get; set; }
-    
+    public string PhoneNumber { get; set; }
     public Guid AccountId { get; set; }
     
-    public Guid PhotoId { get; set; }
     public string Url { get; set; }
-    public bool IsLinkedToAccount { get; set; }
-    public virtual Account Account { get; set; }
 }

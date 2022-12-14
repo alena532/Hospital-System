@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProfilesApi.Common.Attributes;
 using ProfilesApi.Contracts.Requests.DoctorProfiles;
 using ProfilesApi.Contracts.Requests.Mail;
+using ProfilesApi.Contracts.Requests.PatientProfiles;
 using ProfilesApi.Contracts.Responses.DoctorProfiles;
 using ProfilesApi.Services.Interfaces;
 
@@ -13,16 +14,30 @@ namespace ProfilesApi.Controllers;
 [Route("api/[controller]")]
 public class PatientProfilesController:ControllerBase
 {
-    private readonly IDoctorProfilesService _service;
+    private readonly IPatientProfilesService _service;
     
     
-    public PatientProfilesController(IDoctorProfilesService service)
+    public PatientProfilesController(IPatientProfilesService service)
     {
         _service = service;
     } 
     
-    //for receptionist
+    [HttpGet("matches/{id:Guid}")]
+    [ServiceFilter(typeof(ValidationModelAttribute))]
+    public async Task<ActionResult<ICollection<GetDoctorProfilesResponse>>> GetMatchesAsync(Guid id)
+    {
+        return Ok(await _service.GetMatchesAsync(id));
+    }
     
+    
+    //for patient
+    [HttpPost("")]
+    [ServiceFilter(typeof(ValidationModelAttribute))]
+    public async Task<ActionResult> CreateAsync(CreatePatientProfileRequest request)
+    { 
+        _service.CreateAsync(request);
+        return Ok(StatusCode(201));
+    }
     
     
     
