@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using ProfilesApi.DataAccess.Models;
-using ProfilesApi.DataAccess.Repositories.Implementations.Base;
 using ProfilesApi.DataAccess.Repositories.Interfaces.Base;
 using ProfilesApi.Services.Interfaces;
+using RepositoryBase.Implementations;
 
 namespace ProfilesApi.DataAccess.Repositories.Implementations;
 
-public class PatientProfileRepository:RepositoryBase<Patient>,IPatientProfileRepository
+public class PatientProfileRepository: RepositoryBase<Patient>,IPatientProfileRepository
 {
     public PatientProfileRepository(AppDbContext repositoryContext): base(repositoryContext)
     {

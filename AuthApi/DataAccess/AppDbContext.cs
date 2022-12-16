@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AuthApi.DataAccess;
 
-public class AppDbContext : IdentityDbContext<User,Role,string>
+public class AppDbContext : IdentityDbContext<User,Role,Guid>
 {
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }

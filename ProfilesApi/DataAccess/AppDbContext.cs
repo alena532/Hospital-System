@@ -14,13 +14,6 @@ public class AppDbContext:DbContext
         
     }
     
-    protected override void ConfigureConventions(ModelConfigurationBuilder builder)
-    {
-        builder.Properties<DateOnly>()
-            .HaveConversion<DateOnlyConverter>()
-            .HaveColumnType("date");
-    }
-    
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -33,15 +26,6 @@ public class AppDbContext:DbContext
         base.OnModelCreating(modelBuilder);
     }
     
-    public class DateOnlyConverter : ValueConverter<DateOnly, DateTime>
-    {
-        /// <summary>
-        /// Creates a new instance of this converter.
-        /// </summary>
-        public DateOnlyConverter() : base(
-            d => d.ToDateTime(TimeOnly.MinValue),
-            d => DateOnly.FromDateTime(d))
-        { }
-    }
+   
     
 }

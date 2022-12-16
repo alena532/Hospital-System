@@ -1,8 +1,8 @@
 namespace ProfilesApi.DataAccess.Models;
 
-public enum DoctorStatusEnum : int
+public enum DoctorStatusEnum 
 {
-    AtWork,
+    AtWork = 0,
     OnVacation,
     SickDay,
     SickLeave,

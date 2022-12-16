@@ -24,7 +24,7 @@ public class PatientProfilesService : IPatientProfilesService
     {
         var patient = _mapper.Map<Patient>(request);
         patient.AccountId = request.AccountId;
-        var account = _accountRepository.GetAccountById(request.AccountId, trackChanges: true);
+        var account = _accountRepository.GetById(request.AccountId, trackChanges: true);
 
         account.CreatedAt = DateTime.Now;
         account.UpdateAt = DateTime.Now;

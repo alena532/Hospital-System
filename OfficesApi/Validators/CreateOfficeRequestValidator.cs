@@ -1,5 +1,6 @@
 using FluentValidation;
 using OfficesApi.Contracts.Requests.Offices;
+using OfficesApi.DataAccess.Models;
 
 
 namespace OfficesApi.Validators;
@@ -9,7 +10,7 @@ public class CreateOfficeRequestValidator : AbstractValidator<CreateOfficeReques
     public CreateOfficeRequestValidator()
     {
         RuleFor(x => x.RegistryPhoneNumber).Matches("^\\+");
-        RuleFor(x => x.Status).Must(x => (int) x >= 0 && (int) x <= 1);
+        RuleFor(x => x.Status).Must(status => status == OfficeStatus.Active || status == OfficeStatus.InActive);
 
 
     }

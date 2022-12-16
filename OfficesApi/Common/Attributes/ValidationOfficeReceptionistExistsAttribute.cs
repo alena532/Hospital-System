@@ -22,7 +22,7 @@ public class ValidationOfficeReceptionistExistsAttribute : IAsyncActionFilter
         var trackChanges = context.HttpContext.Request.Method.Equals("PUT");
         var officeId = (Guid)context.ActionArguments["officeId"];
         
-        var office = await _officeRepository.GetOfficeAsync(officeId, trackChanges: false);
+        var office = await _officeRepository.GetByIdAsync(officeId, trackChanges: false);
 
         if (office == null)
         {

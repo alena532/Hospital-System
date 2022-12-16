@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace AuthApi.Contracts.Requests;
+namespace ProfilesApi.Contracts.Requests;
 
 public class RegisterRequest
 {

@@ -13,10 +13,10 @@ public class CreateDoctorProfileRequest
     [JsonConverter(typeof(DateOnlyJsonConverter))]
     public DateOnly DateOfBirth { get; set; }
     public string Email { get; set; }
-    
+
     public Guid OfficeId { get; set; }
     public string Address { get; set; }
-    
+
     public int CareerStartYear { get; set; }
     public string PhoneNumber { get; set; }
     public DoctorStatusEnum Status { get; set; }
@@ -26,4 +26,5 @@ public class CreateDoctorProfileRequest
     
     public Guid PhotoId { get; set; }
     public string Url { get; set; }
+    public Guid RoleId { get; set; }
 }

@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Identity;
 
 namespace AuthApi.DataAccess;
 
-public class Role:IdentityRole<string>
+public class Role:IdentityRole<Guid>
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public string Id { get; set; }
+    public Guid Id { get; set; }
 
     public Role()
     {

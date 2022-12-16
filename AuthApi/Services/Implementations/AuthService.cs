@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Web;
 using AuthApi.Common.Attributes;
 using AuthApi.Contracts.Requests;
 using AuthApi.Contracts.Responses;
@@ -54,7 +55,7 @@ public class AuthService:IAuthService
         return authResponse;
     }
     
-    public async Task RegisterAsync(RegisterRequest request)
+    public async Task<User> RegisterAsync(RegisterRequest request)
     {
         var role = await _context.Roles.FindAsync(request.RoleId);
         
@@ -75,7 +76,8 @@ public class AuthService:IAuthService
         {
             throw new ApplicationException(string.Join("\n", result.Errors));
         }
-        
+
+        return newUser;
     }
     
     public async Task<AuthenticatedResponse> Refresh(TokensRequest tokens)

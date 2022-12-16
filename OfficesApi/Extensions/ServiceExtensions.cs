@@ -58,7 +58,6 @@ public static class ServiceExtensions
     public static void ConfigureFilters(this IServiceCollection services)
     {
         services.AddScoped<ValidationModelAttribute>();
-        services.AddScoped<ValidationOfficeExistsAttribute>();
         services.AddScoped<ValidationOfficeReceptionistExistsAttribute>();
     }
     

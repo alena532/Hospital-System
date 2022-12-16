@@ -5,6 +5,8 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>  
     </PropertyGroup>
 
     <ItemGroup>
@@ -38,6 +40,13 @@
       <PackageReference Include="Serilog.Expressions" Version="3.4.1" />
       <PackageReference Include="Serilog.Settings.Configuration" Version="3.4.0" />
       <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="SharedModels\bin\Debug\net6.0\SharedModels.deps.json" />
+      <_ContentIncludedByDefault Remove="SharedModels\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="SharedModels\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="SharedModels\obj\SharedModels.csproj.nuget.dgspec.json" />
     </ItemGroup>
 
 </Project>

@@ -23,16 +23,16 @@ public class DoctorProfilesController:ControllerBase
     //for receptionist
     [HttpPost("")]
     [ServiceFilter(typeof(ValidationModelAttribute))]
-    public async Task<ActionResult> CreateAsync(CreateDoctorProfileRequest request)
+    public async Task<ActionResult> Create(CreateDoctorProfileRequest request)
     { 
         _service.CreateAsync(request);
        return Ok(StatusCode(201));
     }
     
     [HttpGet("")]
-    public async Task<ActionResult<ICollection<GetDoctorProfilesResponse>>> GetAllAsync()
+    public async Task<ActionResult<ICollection<GetDoctorProfilesResponse>>> GetAll()
     {
-        return Ok(await _service.GetAllAsync(trackChanges:false));
+        return Ok(await _service.GetAllAsync());
     }
     
     

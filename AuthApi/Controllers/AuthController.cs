@@ -30,7 +30,7 @@ public class AuthController:ControllerBase
 
     [HttpPost("Login")]
     [ValidationModel]
-    public async Task<ActionResult<AuthenticatedResponse>> LoginAsync([FromBody] LoginRequest request)
+    public async Task<ActionResult<AuthenticatedResponse>> Login([FromBody] LoginRequest request)
     {
         var authResponse = await _authService.LoginAsync(request);
         return Ok(authResponse);
@@ -38,10 +38,10 @@ public class AuthController:ControllerBase
     
     [HttpPost("Register")]
     [ValidationModel]
-    public async Task<ActionResult> RegisterAsync([FromBody] RegisterRequest request)
+    public async Task<ActionResult> Register([FromBody] RegisterRequest request)
     {
-        await _authService.RegisterAsync(request);
-        return StatusCode(201);
+        var user = await _authService.RegisterAsync(request);
+        return Ok(StatusCode(201));
     }
     
     [HttpPost]

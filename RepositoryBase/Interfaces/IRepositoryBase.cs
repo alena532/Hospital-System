@@ -1,7 +1,6 @@
 using System.Linq.Expressions;
 
-namespace ProfilesApi.DataAccess.Repositories.Interfaces.Base;
-
+namespace RepositoryBase.Interfaces;
 
 public interface IRepositoryBase<T>
 {

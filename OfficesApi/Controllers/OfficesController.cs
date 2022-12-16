@@ -15,70 +15,51 @@ namespace OfficesApi.Controllers;
 [Route("api/[controller]")]
 public class OfficesController:ControllerBase
 {
-    private readonly IOfficesService _officesService;
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IOfficesService _service;
     private readonly ILogger<OfficesController> _logger;
     private readonly IPublishEndpoint _publishEndpoint;
     
-    public OfficesController(IOfficesService officesService,IHttpContextAccessor httpContextAccessor,ILogger<OfficesController> logger,IPublishEndpoint publishEndpoint)
+    public OfficesController(IOfficesService officesService,ILogger<OfficesController> logger,IPublishEndpoint publishEndpoint)
     {
-        _officesService = officesService;
-        _httpContextAccessor = httpContextAccessor;
+        _service = officesService;
         _logger = logger;
         _publishEndpoint = publishEndpoint;
     } 
     
     [HttpGet("")]
-    public async Task<ActionResult<ICollection<GetOfficeResponse>>> GetAllAsync()
-    {
-       return Ok(await _officesService.GetAllAsync());
-    }
+    public async Task<ActionResult<ICollection<GetOfficeResponse>>> GetAll()
+        => Ok(await _service.GetAllAsync());
+    
 
     [HttpGet("{id:Guid}", Name = "GetById")]
-    [ServiceFilter(typeof(ValidationOfficeExistsAttribute))]
-
-    public async Task<ActionResult<GetOfficeResponse>> GetByIdAsync(Guid id)
-    {
-        _logger.LogInformation($"Getting office {id}");
-        var office = _httpContextAccessor.HttpContext.Items["office"] as Office;
-
-        return Ok(await _officesService.GetByIdAsync(office));
-    }
+    public async Task<ActionResult<GetOfficeResponse>> GetById(Guid id)
+        => Ok(await _service.GetByIdAsync(id));
+    
     
     
     [HttpDelete("{id:Guid}")]
-    [ServiceFilter(typeof(ValidationOfficeExistsAttribute))]
-    
-    public async Task<IActionResult> DeleteAsync(Guid id)
+    public async Task<IActionResult> Delete(Guid id)
     {
-        _logger.LogInformation($"Deleting office {id}");
-        var office = _httpContextAccessor.HttpContext.Items["office"] as Office;
-        
-        await _officesService.DeleteAsync(office);
+        await _service.DeleteAsync(id);
         return NoContent();
     }
 
     [HttpPost("")]
     [ServiceFilter(typeof(ValidationModelAttribute))]
     
-    public async Task<ActionResult<GetOfficeResponse>> CreateAsync([FromBody] CreateOfficeRequest request)
+    public async Task<ActionResult<GetOfficeResponse>> Create([FromBody] CreateOfficeRequest request)
     {
-        _logger.LogInformation($"Creating office");
-        var officeReturn = await _officesService.CreateAsync(request);
+        var officeReturn = await _service.CreateAsync(request);
         return CreatedAtRoute("GetById", new {id = officeReturn.Id}, officeReturn);
     }
     
 
-    [HttpPut("{id:Guid}")]
+    [HttpPut("")]
     [ServiceFilter(typeof(ValidationModelAttribute))]
-    [ServiceFilter(typeof(ValidationOfficeExistsAttribute))]
-    
-    public async Task<ActionResult<GetOfficeResponse>> UpdateAsync(Guid id, [FromBody]EditOfficeRequest request)
+
+    public async Task<ActionResult<GetOfficeResponse>> Update([FromBody]EditOfficeRequest request)
     {
-        _logger.LogInformation($"Updating office");
-        var office = _httpContextAccessor.HttpContext.Items["office"] as Office;
-        
-        var eventReturn = await _officesService.UpdateAsync(office, request);
+        var eventReturn = await _service.UpdateAsync(request);
         _publishEndpoint.Publish<IOfficeUpdated>(new
         {
             Id = eventReturn.Id,
@@ -87,20 +68,14 @@ public class OfficesController:ControllerBase
         });
         return Ok(eventReturn);
     }
-    
-    [HttpPut("UpdateStatus/{id:Guid}")]
+
+    [HttpPut("UpdateStatus")]
     [ServiceFilter(typeof(ValidationModelAttribute))]
-    [ServiceFilter(typeof(ValidationOfficeExistsAttribute))]
+
+    public async Task<ActionResult<GetOfficeResponse>> UpdateStatusById([FromBody] EditOfficeStatusRequest request)
+        => Ok(await _service.UpdateStatusAsync(request));
     
-    public async Task<ActionResult<GetOfficeResponse>> UpdateStatusByIdAsync(Guid id, [FromBody]EditOfficeStatusRequest request)
-    {
-        _logger.LogInformation($"Updating office status");
-        var office = _httpContextAccessor.HttpContext.Items["office"] as Office;
-        
-        var eventReturn = await _officesService.UpdateStatusAsync(office, request);
-        return Ok(eventReturn);
-    }
-    
-    
-    
+
+
+
 }

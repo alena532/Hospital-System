@@ -7,21 +7,24 @@ using Microsoft.Extensions.DependencyInjection;
 using ProfilesApi.Common.Settings;
 using ProfilesApi.Consumers;
 using ProfilesApi.Extensions;
+using ProfilesApi.Services.Implementations;
 using Serilog;
 using Serilog.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
-
-services.AddHttpContextAccessor();
+services.AddHttpClient<DoctorProfilesService>(a =>
+{
+    a.BaseAddress = new Uri("https://localhost:5002/");
+});
+//services.AddHttpContextAccessor();
 services.AddControllers()
     .AddFluentValidation(options =>
     {
-        // Validate child properties and root collection elements
+        
         options.ImplicitlyValidateChildProperties = true;
         options.ImplicitlyValidateRootCollectionElements = true;
-
-        // Automatic registration of validators in assembly
+        
         options.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
     });
 
@@ -33,18 +36,13 @@ builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 services.ConfigureAutoMapper();
 
-
 services.ConfigureSwagger();
 
-
-
-services.ConfigureRepositories();
 services.ConfigureServices();
 services.ConfigureFilters();
 
 services.ConfigureSqlContext(builder.Configuration);
 services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
-
 
 services.AddMassTransit(x =>
     {
@@ -56,15 +54,7 @@ services.AddMassTransit(x =>
 
 );
 
-
 var app = builder.Build();
-
-/*using (var scope = app.Services.CreateScope())
-{
-    var getServices = scope.ServiceProvider;
-    SeedData.Initialize(getServices);
-}
-*/
 
 if (app.Environment.IsDevelopment())
 {

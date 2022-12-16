@@ -10,26 +10,25 @@ namespace ProfilesApi.Consumers;
 
 public class OfficeUpdatedConsumer : IConsumer<IOfficeUpdated>
 {
-    private readonly IDoctorProfilesService _service;
     private readonly IDoctorProfileRepository _repository;
     private readonly ILogger<OfficeUpdatedConsumer> _logger;
 
-    public OfficeUpdatedConsumer(IDoctorProfilesService service,IDoctorProfileRepository repository,ILogger<OfficeUpdatedConsumer> logger)
+    public OfficeUpdatedConsumer(IDoctorProfileRepository repository,ILogger<OfficeUpdatedConsumer> logger)
   {
-      _service = service;
       _repository = repository;
       _logger = logger;
   }
 
   public async Task Consume(ConsumeContext<IOfficeUpdated> context)
   {
-      var offices = await _service.GetAllByOfficeIdAsync(context.Message.Id,trackChanges:true);
-      
+      var offices = await _repository.GetAllByOfficeIdAsync(context.Message.Id, trackChanges: true);
+
       foreach (var office in offices)
       {
           office.Address = context.Message.Address;
       }
 
+      _repository.SaveChangesAsync();
       await _repository.SaveChangesAsync();
 
 

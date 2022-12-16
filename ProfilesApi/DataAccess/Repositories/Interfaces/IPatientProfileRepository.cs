@@ -1,4 +1,5 @@
 using ProfilesApi.DataAccess.Models;
+using RepositoryBase.Interfaces;
 
 namespace ProfilesApi.DataAccess.Repositories.Interfaces.Base;
 

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using OfficesApi.DataAccess.Models;
 using OfficesApi.DataAccess.Repositories.Interfaces;
+using RepositoryBase.Implementations;
 
 namespace OfficesApi.DataAccess.Repositories.Implementations;
 

@@ -27,8 +27,7 @@ public class OfficeReceptionistsController:ControllerBase
     } 
     
     [HttpGet("")]
-    [ServiceFilter(typeof(ValidationOfficeExistsAttribute))]
-    public async Task<ActionResult<ICollection<GetOfficeResponse>>> GetAllForOfficeAsync(Guid officeId)
+    public async Task<ActionResult<ICollection<GetOfficeResponse>>> GetAllForOffice(Guid officeId)
     {
        return Ok(await _receptionistsService.GetAllForOfficeAsync(officeId));
     }
@@ -36,7 +35,7 @@ public class OfficeReceptionistsController:ControllerBase
     [HttpGet("{id:Guid}", Name = "GetOfficeReceptionistById")]
     [ServiceFilter(typeof(ValidationOfficeReceptionistExistsAttribute))]
 
-    public async Task<ActionResult<GetOfficeResponse>> GetByIdForOfficeAsync(Guid officeId,Guid id)
+    public async Task<ActionResult<GetOfficeResponse>> GetByIdForOffice(Guid officeId,Guid id)
     {
         _logger.LogInformation($"Getting receptionist {id} for office office {officeId}");
         var receptionist = _httpContextAccessor.HttpContext.Items["receptionist"] as OfficeReceptionist;
@@ -47,7 +46,7 @@ public class OfficeReceptionistsController:ControllerBase
     [HttpDelete("{id:Guid}")]
     [ServiceFilter(typeof(ValidationOfficeReceptionistExistsAttribute))]
     
-    public async Task<IActionResult> DeleteFromOfficeAsync(Guid officeId,Guid id)
+    public async Task<IActionResult> DeleteFromOffice(Guid officeId,Guid id)
     {
         _logger.LogInformation($"Deleting receptionist {id} from office {officeId}");
         var receptionist = _httpContextAccessor.HttpContext.Items["receptionist"] as OfficeReceptionist;
@@ -58,9 +57,7 @@ public class OfficeReceptionistsController:ControllerBase
 
     [HttpPost("")]
     [ServiceFilter(typeof(ValidationModelAttribute))]
-    [ServiceFilter(typeof(ValidationOfficeExistsAttribute))]
-    
-    public async Task<ActionResult<GetOfficeResponse>> CreateForOfficeAsync(Guid officeId,[FromBody] CreateOfficeReceptionistRequest request)
+    public async Task<ActionResult<GetOfficeResponse>> CreateForOffice(Guid officeId,[FromBody] CreateOfficeReceptionistRequest request)
     {
         var receptionistReturn = await _receptionistsService.CreateForOfficeAsync(officeId,request);
         return CreatedAtRoute("GetOfficeReceptionistById", new {officeId = officeId,id = receptionistReturn.Id}, receptionistReturn);
@@ -71,7 +68,7 @@ public class OfficeReceptionistsController:ControllerBase
     [ServiceFilter(typeof(ValidationModelAttribute))]
     [ServiceFilter(typeof(ValidationOfficeReceptionistExistsAttribute))]
     
-    public async Task<ActionResult<GetOfficeResponse>> UpdateForOfficeAsync(Guid officeId,Guid id, [FromBody]EditOfficeReceptionistRequest request)
+    public async Task<ActionResult<GetOfficeResponse>> UpdateForOffice(Guid officeId,Guid id, [FromBody]EditOfficeReceptionistRequest request)
     {
         var receptionist = HttpContext.Items["receptionist"] as OfficeReceptionist;
 

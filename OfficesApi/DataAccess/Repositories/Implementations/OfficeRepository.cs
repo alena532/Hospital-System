@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using OfficesApi.DataAccess.Models;
 using OfficesApi.DataAccess.Repositories.Interfaces;
+using RepositoryBase.Implementations;
 
 namespace OfficesApi.DataAccess.Repositories.Implementations;
 
@@ -11,22 +12,22 @@ public class OfficeRepository : RepositoryBase<Office>, IOfficeRepository
     {
     }
     
-    public async Task CreateOfficeAsync(Office office)
+    public async override Task  CreateAsync(Office office)
     {
-        await CreateAsync(office);
+        await base.CreateAsync(office);
     }
 
-    public async Task DeleteOfficeAsync(Office office)
+    public async override Task DeleteAsync(Office office)
     {
-        await DeleteAsync(office);
+        await base.DeleteAsync(office);
     }
     
-    public async Task<List<Office>> GetAllOfficesAsync(bool trackChanges)
+    public async Task<List<Office>> GetAllAsync(bool trackChanges)
     {
         return await FindAll(trackChanges).ToListAsync();
     }
 
-    public async Task<Office> GetOfficeAsync(Guid id, bool trackChanges)
+    public async Task<Office> GetByIdAsync(Guid id, bool trackChanges)
     {
         return await FindByCondition(p => p.Id.Equals(id), trackChanges).SingleOrDefaultAsync();
     }

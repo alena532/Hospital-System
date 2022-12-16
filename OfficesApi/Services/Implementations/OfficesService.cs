@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using OfficesApi.Contracts.Requests.Offices;
 using OfficesApi.Contracts.Responses.Offices;
 using OfficesApi.DataAccess.Models;
@@ -21,37 +22,61 @@ public class OfficesService:IOfficesService
 
     public async Task<ICollection<GetOfficeResponse>> GetAllAsync()
     {
-        var offices = await _repository.GetAllOfficesAsync(trackChanges: false);
+        var offices = await _repository.GetAllAsync();
 
         return _mapper.Map<ICollection<GetOfficeResponse>>(offices);
     }
-    
-    public async Task<GetOfficeResponse> GetByIdAsync(Office office)
-        => _mapper.Map<GetOfficeResponse>(office);
-        
-    
-    public async Task DeleteAsync(Office office)
-        => await _repository.DeleteOfficeAsync(office);
+
+    public async Task<GetOfficeResponse> GetByIdAsync(Guid id)
+    {
+       var office =  await _repository.GetByIdAsync(id);
+       if (office == null)
+       {
+           throw new BadHttpRequestException("Office doesnt found");
+       }
+
+       return _mapper.Map<GetOfficeResponse>(office);
+    }
+
+
+    public async Task DeleteAsync(Guid id)
+    {
+        var office =  await _repository.GetByIdAsync(id);
+        if (office == null)
+        {
+            throw new BadHttpRequestException("Office doesnt found");
+        }
+
+        await _repository.DeleteAsync(office);
+    }
 
 
     public async Task<GetOfficeResponse> CreateAsync(CreateOfficeRequest request)
     {
         var office = _mapper.Map<Office>(request);
-        
-        await _repository.CreateOfficeAsync(office);
-
+        await _repository.CreateAsync(office);
         return _mapper.Map<GetOfficeResponse>(office);
     }
 
-    public async Task<GetOfficeResponse> UpdateAsync(Office office,EditOfficeRequest request)
+    public async Task<GetOfficeResponse> UpdateAsync(EditOfficeRequest request)
     {
+        var office =  await _repository.GetByIdAsync(request.Id);
+        if (office == null)
+        {
+            throw new BadHttpRequestException("Office doesnt found");
+        }
         _mapper.Map(request, office);
-        await _repository.SaveChangesAsync();
+        await _repository.UpdateAsync(office);
         return _mapper.Map<GetOfficeResponse>(office);
     }
     
-    public async Task<GetOfficeResponse> UpdateStatusAsync(Office office,EditOfficeStatusRequest request)
+    public async Task<GetOfficeResponse> UpdateStatusAsync(EditOfficeStatusRequest request)
     {
+        var office =  await _repository.GetByIdAsync(request.Id);
+        if (office == null)
+        {
+            throw new BadHttpRequestException("Office doesnt found");
+        }
         office.Status = request.Status;
         await _repository.UpdateAsync(office);
         return _mapper.Map<GetOfficeResponse>(office);

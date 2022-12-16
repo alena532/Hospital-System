@@ -46,14 +46,11 @@ public static class ServiceExtensions
     {
         services.AddScoped<IDoctorProfilesService,DoctorProfilesService>();
         services.AddTransient<IMailService, MailService>();
-    }
-
-    public static void ConfigureRepositories(this IServiceCollection services)
-    {
         services.AddTransient<IDoctorProfileRepository, DoctorProfileRepository>();
         services.AddTransient<IAccountRepository,AccountRepository>();
+        
     }
-    
+
     public static void ConfigureFilters(this IServiceCollection services)
     {
         services.AddScoped<ValidationModelAttribute>();

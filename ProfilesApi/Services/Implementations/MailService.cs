@@ -32,7 +32,7 @@ public class MailService : IMailService
 
     public async Task VerifiedEmail(Guid accountId)
     {
-        var account = _accountRepository.GetAccountById(accountId, trackChanges: true);
+        var account = _accountRepository.GetById(accountId, trackChanges: true);
         account.IsEmailVerified = true;
     }
     
@@ -40,7 +40,7 @@ public class MailService : IMailService
     private MimeMessage CreateEmailMessage(MailRequest message)
     {
         var emailMessage = new MimeMessage();
-        var account = _accountRepository.GetAccountById(message.AccountId, trackChanges: false);
+        var account = _accountRepository.GetById(message.AccountId, trackChanges: false);
         if (account == null)
         {
             throw new BadHttpRequestException("Account doesnt exists");

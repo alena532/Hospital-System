@@ -62,13 +62,9 @@ public static class ServiceExtensions
         services.AddScoped<ValidationModelAttribute>();
     }
     
-    public static void ConfigureAuthService(this IServiceCollection services)
+    public static void ConfigureServices(this IServiceCollection services)
     {
         services.AddScoped<IAuthService, AuthService>();
-    }
-    
-    public static void ConfigureJwtService(this IServiceCollection services)
-    {
         services.AddScoped<IJwtService, JwtService>();
     }
     

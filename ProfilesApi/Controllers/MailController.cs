@@ -10,24 +10,24 @@ namespace ProfilesApi.Controllers;
 [Route("api/[controller]")]
 public class MailController : Controller
 {
-    private readonly IMailService mailService;
+    private readonly IMailService _service;
     
     public MailController(IMailService mailService)
     {
-        this.mailService = mailService;
+        this._service = mailService;
     }
     
     [HttpPost("send")]
-    public async Task<IActionResult> SendMailAsync([FromBody]MailRequest request)
+    public async Task<IActionResult> SendMail([FromBody]MailRequest request)
     {
-        await mailService.SendEmailAsync(request);
+        await _service.SendEmailAsync(request);
         return Ok();
     }
     
     [HttpPost("verified")]
-    public IActionResult VerifiedEmailAsync([FromBody]Guid accountId)
+    public IActionResult VerifiedEmail([FromBody]Guid accountId)
     {
-        mailService.VerifiedEmail(accountId);
+        _service.VerifiedEmail(accountId);
         return Ok();
     }
     

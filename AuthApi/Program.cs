@@ -14,8 +14,8 @@ services.ConfigureSqlContext(builder.Configuration);
 services.ConfigureIdentity();
 services.ConfigureJWT(builder.Configuration);
 services.ConfigureFilters();
-services.ConfigureAuthService();
-services.ConfigureJwtService();
+services.ConfigureServices();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())

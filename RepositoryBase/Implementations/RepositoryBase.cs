@@ -1,46 +1,45 @@
-
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using OfficesApi.DataAccess.Repositories.Base;
+using RepositoryBase.Interfaces;
 
-namespace OfficesApi.DataAccess.Repositories.Implementations;
+namespace RepositoryBase.Implementations;
 
 public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
 {
-    protected AppDbContext _repositoryContext;
+    protected DbContext _repositoryContext;
     
-    public RepositoryBase(AppDbContext repositoryContext)
+    public RepositoryBase(DbContext repositoryContext)
     {
         _repositoryContext = repositoryContext;
     }
     
-    public async Task CreateAsync(T entity)
+    public virtual async Task CreateAsync(T entity)
     {
         await _repositoryContext.Set<T>().AddAsync(entity);
         await SaveChangesAsync();
     }
     
-    public async Task DeleteAsync(T entity)
+    public virtual async Task DeleteAsync(T entity)
     {
         _repositoryContext.Set<T>().Remove(entity);
         await SaveChangesAsync();
     }
     
-    public async Task UpdateAsync(T entity)
+    public virtual async Task UpdateAsync(T entity)
     {
         _repositoryContext.Set<T>().Update(entity);
         await SaveChangesAsync();
     }
 
-    public IQueryable<T> FindAll(bool trackChanges)
+    public virtual IQueryable<T> FindAll(bool trackChanges)
     {
         return (!trackChanges) ?
             _repositoryContext.Set<T>().AsNoTracking() :
             _repositoryContext.Set<T>();
     }
 
-    public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression,
+    public virtual IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression,
         bool trackChanges)
     {
         return (!trackChanges) ?
@@ -59,6 +58,7 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
             throw new ValidationException(e.Message, e.InnerException);
         }
     }
+    
 
 
 }

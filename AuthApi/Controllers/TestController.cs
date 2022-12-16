@@ -17,9 +17,5 @@ public class TestController : Controller
         
     }
     
-    [HttpGet]
-    public User GetDoctorEmail([FromQuery] string id)
-    {
-        return _context.Users.Where(x => x.Id == id).FirstOrDefault();
-    }
+    
 }

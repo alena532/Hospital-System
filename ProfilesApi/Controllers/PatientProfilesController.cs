@@ -24,7 +24,7 @@ public class PatientProfilesController:ControllerBase
     
     [HttpGet("matches/{id:Guid}")]
     [ServiceFilter(typeof(ValidationModelAttribute))]
-    public async Task<ActionResult<ICollection<GetDoctorProfilesResponse>>> GetMatchesAsync(Guid id)
+    public async Task<ActionResult<ICollection<GetDoctorProfilesResponse>>> GetMatches(Guid id)
     {
         return Ok(await _service.GetMatchesAsync(id));
     }
@@ -33,7 +33,7 @@ public class PatientProfilesController:ControllerBase
     //for patient
     [HttpPost("")]
     [ServiceFilter(typeof(ValidationModelAttribute))]
-    public async Task<ActionResult> CreateAsync(CreatePatientProfileRequest request)
+    public async Task<ActionResult> Create(CreatePatientProfileRequest request)
     { 
         _service.CreateAsync(request);
         return Ok(StatusCode(201));
