@@ -9,7 +9,7 @@ public interface IAuthService
 {
     Task<AuthenticatedResponse> LoginAsync(LoginRequest request);
     Task<User> RegisterAsync(RegisterRequest request);
-    Task<AuthenticatedResponse> Refresh(TokensRequest tokens);
-    Task UpdatePassword(ChangePasswordRequest request);
-    Task Revoke();
+    Task<AuthenticatedResponse> RefreshAsync(TokensRequest tokens);
+    Task UpdatePasswordAsync(ChangePasswordRequest request);
+    Task RevokeAsync();
 }

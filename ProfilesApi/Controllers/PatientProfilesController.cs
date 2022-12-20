@@ -5,6 +5,7 @@ using ProfilesApi.Contracts.Requests.DoctorProfiles;
 using ProfilesApi.Contracts.Requests.Mail;
 using ProfilesApi.Contracts.Requests.PatientProfiles;
 using ProfilesApi.Contracts.Responses.DoctorProfiles;
+using ProfilesApi.Contracts.Responses.PatientProfiles;
 using ProfilesApi.Services.Interfaces;
 
 namespace ProfilesApi.Controllers;
@@ -16,18 +17,15 @@ public class PatientProfilesController:ControllerBase
 {
     private readonly IPatientProfilesService _service;
     
-    
     public PatientProfilesController(IPatientProfilesService service)
     {
         _service = service;
     } 
     
-    [HttpGet("matches/{id:Guid}")]
+    [HttpPost("CreateAccount")]
     [ServiceFilter(typeof(ValidationModelAttribute))]
-    public async Task<ActionResult<ICollection<GetDoctorProfilesResponse>>> GetMatches(Guid id)
-    {
-        return Ok(await _service.GetMatchesAsync(id));
-    }
+    public async Task<ActionResult<Guid>> CreateAccount(CreatePatientAccountRequest request)
+        =>Ok(await _service.CreateAccountAsync(request));
     
     
     //for patient
@@ -38,6 +36,17 @@ public class PatientProfilesController:ControllerBase
         _service.CreateAsync(request);
         return Ok(StatusCode(201));
     }
+
+    
+    [HttpGet("LinkToAccount/{id:Guid}")]
+    public async Task<ActionResult<GetPatientProfilesResponse>> LinkToAccount(Guid id)
+        => Ok(await _service.LinkPatientProfileToAccountAsync(id));
+    
+    
+    [HttpGet("Matches/{id:Guid}")]
+    [ServiceFilter(typeof(ValidationModelAttribute))]
+    public async Task<ActionResult<ICollection<GetDoctorProfilesResponse>>> GetMatches(CredentialsPatientProfileRequest request)
+        =>Ok(await _service.GetMatchesAsync(request));
     
     
     

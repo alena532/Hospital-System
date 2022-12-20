@@ -24,31 +24,51 @@ public class MailService : IMailService
 
     public async Task SendEmailAsync(MailRequest mailRequest)
     {
-        var emailMessage = CreateEmailMessage(mailRequest);
-
+        MimeMessage emailMessage;
+        if (mailRequest is MailForPatientRegistrationRequest patientMessage)
+        {
+            emailMessage = await CreateMailForPatientRegistrationMessage(patientMessage);
+        }
+        else
+        {
+            emailMessage = CreateMailForDoctorConfirmationMessage((MailForDoctorConfirmationRequest)mailRequest);
+        }
         await SendAsync(emailMessage);
-        
     }
 
     public async Task VerifiedEmail(Guid accountId)
     {
-        var account = _accountRepository.GetById(accountId, trackChanges: true);
+        var account = await _accountRepository.GetByIdAsync(accountId, trackChanges: true);
         account.IsEmailVerified = true;
+        await _accountRepository.SaveChangesAsync();
     }
-    
-    
-    private MimeMessage CreateEmailMessage(MailRequest message)
+
+    private async Task<MimeMessage> CreateMailForPatientRegistrationMessage(MailForPatientRegistrationRequest message)
     {
         var emailMessage = new MimeMessage();
-        var account = _accountRepository.GetById(message.AccountId, trackChanges: false);
+        
+        var account = await _accountRepository.GetByIdAsync(message.AccountId, trackChanges: false);
         if (account == null)
         {
             throw new BadHttpRequestException("Account doesnt exists");
         }
+        
         emailMessage.From.Add(new MailboxAddress("email",_mailSettings.Mail));
         emailMessage.To.Add(MailboxAddress.Parse(message.ToEmail));
         emailMessage.Subject = "Checking email";
         emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = string.Format("<a href='https://localhost:1234?accountId={0}' style='color:black;'>Create profile</a>", message.AccountId) };
+        
+        return emailMessage;
+    }
+    
+    private MimeMessage CreateMailForDoctorConfirmationMessage(MailForDoctorConfirmationRequest message)
+    {
+        var emailMessage = new MimeMessage();
+
+        emailMessage.From.Add(new MailboxAddress("email",_mailSettings.Mail));
+        emailMessage.To.Add(MailboxAddress.Parse(message.ToEmail));
+        emailMessage.Subject = "Confirmation email";
+        emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = string.Format("<p>Hello,{0} {1} {2} </p> <a href='https://localhost:1234?doctorId={3}' style='color:black;'>Confirm profile</a>", message.FirstName,message.LastName,message.MiddleName,message.AccountId) };
         
         return emailMessage;
     }

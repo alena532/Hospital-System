@@ -13,11 +13,9 @@ using Serilog.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
-services.AddHttpClient<DoctorProfilesService>(a =>
-{
-    a.BaseAddress = new Uri("https://localhost:5002/");
-});
-//services.AddHttpContextAccessor();
+
+services.ConfigureCors();
+
 services.AddControllers()
     .AddFluentValidation(options =>
     {
@@ -27,6 +25,9 @@ services.AddControllers()
         
         options.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
     });
+
+
+services.AddHttpContextAccessor();
 
 var logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
@@ -65,7 +66,7 @@ else
 {
     app.UseHsts();
 }
-
+app.ConfigureExceptionHandler();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
@@ -73,12 +74,5 @@ app.UseRouting();
 app.UseAuthentication();
 
 app.UseAuthorization();
-
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller}/{action=Index}/{id?}");
-
-app.MapFallbackToFile("index.html");
 
 app.Run();

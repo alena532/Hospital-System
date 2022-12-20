@@ -6,7 +6,6 @@ namespace ProfilesApi.DataAccess.Repositories.Interfaces.Base;
 public interface IAccountRepository:IRepositoryBase<Account>
 {
     Task CreateAsync(Account account);
-
-    Account GetById(Guid Id,bool trackChanges=false);
+    Task<Account> GetByIdAsync(Guid Id,bool trackChanges=false);
     //Task<Account> GetAccountForDoctorAsync ()
 }

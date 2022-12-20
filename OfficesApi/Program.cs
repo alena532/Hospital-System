@@ -19,9 +19,7 @@ services.AddHttpContextAccessor();
 services.AddControllers();
 services.AddFluentValidation(options =>
 {
-    
     options.RegisterValidatorsFromAssembly(typeof(Program).Assembly);
-    
 });
 var logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
@@ -70,11 +68,5 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller}/{action=Index}/{id?}");
-
-app.MapFallbackToFile("index.html");
 
 app.Run();

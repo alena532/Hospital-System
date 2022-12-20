@@ -44,13 +44,35 @@ public static class ServiceExtensions
     
     public static void ConfigureServices(this IServiceCollection services)
     {
-        services.AddScoped<IDoctorProfilesService,DoctorProfilesService>();
+        services.AddTransient<IDoctorProfilesService,DoctorProfilesService>();
         services.AddTransient<IMailService, MailService>();
         services.AddTransient<IDoctorProfileRepository, DoctorProfileRepository>();
+        services.AddTransient<IPatientProfilesService, PatientProfilesService>();
+        services.AddTransient<IPatientProfileRepository, PatientProfileRepository>();
         services.AddTransient<IAccountRepository,AccountRepository>();
-        
+        services.AddHttpClient<IDoctorProfilesService, DoctorProfilesService>(client =>
+            client.BaseAddress = new Uri("http://localhost:5088")
+        );
+        services.AddHttpClient<IPatientProfilesService, PatientProfilesService>(client =>
+            client.BaseAddress = new Uri("http://localhost:5088")
+        );
     }
 
+    public static void ConfigureCors(this IServiceCollection services)
+    {
+        var  MyAllowedOrigins = "_myAllowSpecificOrigins";
+        services.AddCors(options =>
+        {
+            options.AddPolicy(name: MyAllowedOrigins,
+                policy  =>
+                {
+                    policy.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+        });
+        
+    }
     public static void ConfigureFilters(this IServiceCollection services)
     {
         services.AddScoped<ValidationModelAttribute>();

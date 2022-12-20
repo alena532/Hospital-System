@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using ProfilesApi.DataAccess.Models;
 
 using ProfilesApi.DataAccess.Repositories.Interfaces.Base;
@@ -17,9 +18,9 @@ public class AccountRepository : RepositoryBase<Account>,IAccountRepository
         await base.CreateAsync(account);
     }
 
-    public Account GetById(Guid Id,bool trackChanges)
+    public async Task<Account> GetByIdAsync(Guid Id,bool trackChanges)
     {
-        return FindByCondition(x => x.Id == Id, trackChanges).SingleOrDefault();
+        return await FindByCondition(x => x.Id == Id, trackChanges).SingleOrDefaultAsync();
     }
 
     

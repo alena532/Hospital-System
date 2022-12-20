@@ -11,20 +11,14 @@ using Microsoft.Extensions.Options;
 
 namespace AuthApi.Controllers;
 
-[ApiController]
 [AllowAnonymous]
+[ApiController]
 [Route("api/[controller]")]
 public class AuthController:ControllerBase
 {
-    private readonly AppDbContext _context;
-    private readonly UserManager<User> _userManager;
-    private readonly JwtOptions _jwtOptions;
     private readonly IAuthService _authService;
-    public AuthController(AppDbContext context, UserManager<User> userManager, IOptions<JwtOptions> jwtOptions,IAuthService authService)
+    public AuthController(IAuthService authService)
     {
-        _context = context;
-        _userManager = userManager;
-        _jwtOptions = jwtOptions?.Value ?? throw new ArgumentNullException(nameof(JwtOptions));
         _authService = authService ?? throw new ArgumentNullException(nameof(authService));
     }
 
@@ -36,12 +30,13 @@ public class AuthController:ControllerBase
         return Ok(authResponse);
     }
     
+    [AllowAnonymous]
     [HttpPost("Register")]
     [ValidationModel]
-    public async Task<ActionResult> Register([FromBody] RegisterRequest request)
+    public async Task<ActionResult<Guid>> Register([FromBody] RegisterRequest request)
     {
         var user = await _authService.RegisterAsync(request);
-        return Ok(StatusCode(201));
+        return Ok(user.Id);
     }
     
     [HttpPost]
@@ -49,7 +44,7 @@ public class AuthController:ControllerBase
     [ValidationModel]
     public async Task<ActionResult<AuthenticatedResponse>> Refresh([FromBody] TokensRequest tokens)
     {
-        var authResponse = await _authService.Refresh(tokens);
+        var authResponse = await _authService.RefreshAsync(tokens);
         return Ok(authResponse);
     }
     
@@ -58,7 +53,7 @@ public class AuthController:ControllerBase
     [ValidationModel]
     public async Task<ActionResult<AuthenticatedResponse>> ChangePassword([FromBody] ChangePasswordRequest request)
     {
-        await _authService.UpdatePassword(request);
+        await _authService.UpdatePasswordAsync(request);
         return StatusCode(201);
     }
 
@@ -67,7 +62,7 @@ public class AuthController:ControllerBase
     [Route("Revoke")]
     public async Task<ActionResult> Revoke()
     {
-        await _authService.Revoke();
+        await _authService.RevokeAsync();
         return NoContent();
     }
 }

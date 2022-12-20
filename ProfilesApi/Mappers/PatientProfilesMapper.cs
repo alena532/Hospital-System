@@ -10,7 +10,10 @@ public class PatientProfilesMapper:Profile
 {
     public PatientProfilesMapper()
     {
-        CreateMap<CreatePatientProfileRequest, Patient>();
+        CreateMap<CreatePatientProfileRequest, Patient>()
+            .ForMember(dest => dest.DateOfBirth,
+            opt => opt.MapFrom(src => src.DateOfBirth.ToDateTime(TimeOnly.MinValue)));
+
         CreateMap<Patient, GetPatientProfilesResponse>();
 
     }

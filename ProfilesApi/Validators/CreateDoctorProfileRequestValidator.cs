@@ -6,7 +6,6 @@ namespace ProfilesApi.Validators;
 
 public class CreateDoctorProfileRequestValidator : AbstractValidator<CreateDoctorProfileRequest>
 {
-    
     public CreateDoctorProfileRequestValidator()
     { 
         RuleFor(profile => profile.FirstName).NotNull().NotEmpty().Length(1,40);
@@ -16,6 +15,7 @@ public class CreateDoctorProfileRequestValidator : AbstractValidator<CreateDocto
         RuleFor(profile => profile.Address).NotNull().NotEmpty();
         RuleFor(profile => profile.OfficeId).NotNull().NotEmpty();
         RuleFor(profile => profile.PhoneNumber).NotNull().NotEmpty();
+        RuleFor(x => x.PhoneNumber).Matches("^\\+");
         RuleFor(profile => profile.Status).NotNull().Must(status =>status == DoctorStatusEnum.Inactive || status == DoctorStatusEnum.AtWork || status == DoctorStatusEnum.OnVacation || status == DoctorStatusEnum.SelfIsolation || status == DoctorStatusEnum.SickDay || status == DoctorStatusEnum.SickLeave || status == DoctorStatusEnum.LeaveWithoutPay);
         RuleFor(profile => profile.CareerStartYear).NotEmpty().Must(year => year <= DateTime.Now.Year && year >= 1920);
         RuleFor(profile => profile.DateOfBirth).NotNull().NotEmpty().Must(date => date.CompareTo(DateOnly.FromDateTime(DateTime.Now)) == -1);

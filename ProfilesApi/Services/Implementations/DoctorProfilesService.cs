@@ -1,10 +1,13 @@
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
+using System.Text.Json;
 using AutoMapper;
 using ProfilesApi.Contracts.Requests;
 using ProfilesApi.Contracts.Requests.DoctorProfiles;
+using ProfilesApi.Contracts.Requests.Mail;
 using ProfilesApi.Contracts.Responses;
 using ProfilesApi.Contracts.Responses.DoctorProfiles;
+using ProfilesApi.Controllers;
 using ProfilesApi.DataAccess.Models;
 using ProfilesApi.DataAccess.Repositories.Interfaces.Base;
 using ProfilesApi.Services.Interfaces;
@@ -16,20 +19,26 @@ public class DoctorProfilesService:IDoctorProfilesService
 {
     private readonly IMapper _mapper;
     private readonly IAccountRepository _accountRepository;
-    private readonly IDoctorProfileRepository _repository;
+    private readonly IDoctorProfileRepository _doctorRepository;
     private readonly HttpClient _httpClient;
+    private readonly IMailService _mailService;
 
-    public DoctorProfilesService(IMapper mapper,IAccountRepository accountRepository,IDoctorProfileRepository repository, HttpClient httpClient)
+    public DoctorProfilesService(IMapper mapper,IAccountRepository accountRepository,IDoctorProfileRepository doctorRepository,HttpClient httpClient,IMailService mailService)
     {
         _mapper = mapper;
         _accountRepository = accountRepository;
-        _repository = repository;
-        _httpClient = new HttpClient();
+        _doctorRepository = doctorRepository;
+        _httpClient = httpClient;
+        _mailService = mailService;
     }
-    
     
     public async Task CreateAsync(CreateDoctorProfileRequest request)
     {
+        var checkEmail = _httpClient.PostAsJsonAsync("api/AuthValidator",request.Email).Result;
+        if (checkEmail.IsSuccessStatusCode == false)
+        { 
+            throw new BadHttpRequestException($"{checkEmail.Content} {checkEmail.ReasonPhrase}");
+        }
         
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         string password = new string(Enumerable.Repeat(chars, 30)
@@ -40,52 +49,48 @@ public class DoctorProfilesService:IDoctorProfilesService
             Email = request.Email,
             RoleId = request.RoleId,
             Password = password
-
         };
+
+        var createdUser = await _httpClient.PostAsJsonAsync("api/Auth/Register", authEntity);
+        if (createdUser.IsSuccessStatusCode == false)
+        {
+            throw new BadHttpRequestException($"{createdUser.Content} {createdUser.ReasonPhrase}");
+        }
+        var userIdStream = await createdUser.Content.ReadAsStreamAsync();
+        var userId = JsonSerializer.Deserialize<Guid>(userIdStream);
+        
+        var account = _mapper.Map<Account>(request);
+        account.UserId = userId;
+        //add createdBy UpdatedBy
+        await _accountRepository.CreateAsync(account);
+        
         var doctor = _mapper.Map<Doctor>(request);
-        Guid UserId;
-       //using (var client = new HttpClient())
-       //{
-           _httpClient.Timeout = TimeSpan.FromHours(1);
-           try
-           {
-               var message = _httpClient.PostAsJsonAsync("https://localhost:5002/api/Auth/Register", authEntity).Result;
+        doctor.AccountId = account.Id;
+        await _doctorRepository.CreateAsync(doctor);
 
-           }
-           catch(Exception ex)
-           {
-               throw ex;
-           }
-       //}
-       //var doctor = _mapper.Map<Doctor>(request);
-       
-       /*var account = _mapper.Map<Account>(request);
-       
-       account.CreatedAt = DateTime.Now;
-       account.UpdateAt = DateTime.Now;
-       account.IsEmailVerified = false;
-       //when use jwt get from httpAccessor
-       account.CreatedBy = request.OfficeId;
-       account.UpdatedBy = request.OfficeId;
-       
-      
-       //account.PasswordHash = HashPassword(password);
+        var mail = new MailForDoctorConfirmationRequest()
+        {
+            ToEmail = request.Email,
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            MiddleName = request.MiddleName,
+            AccountId = account.Id
+        };
 
-       await _accountRepository.CreateAsync(account);
-       
-       doctor.AccountId = account.Id;
-
-       await _doctorProfileRepository.CreateAsync(doctor);
-       */
+        await _mailService.SendEmailAsync(mail);
     }
-
+    
+    public async Task ConfirmEmailAsync(Guid id)
+    {
+        var doctor = await _doctorRepository.GetByIdAsync(id, trackChanges: true);
+        var account = await _accountRepository.GetByIdAsync(doctor.AccountId, trackChanges: true);
+        account.IsEmailVerified = true;
+    }
+    
     public async Task<ICollection<GetDoctorProfilesResponse>> GetAllAsync()
     {
-        var doctorsProfiles = await _repository.GetAllAsync();
+        var doctorsProfiles = await _doctorRepository.GetAllAsync();
         return _mapper.Map<ICollection<GetDoctorProfilesResponse>>(doctorsProfiles);
     }
-    
-    
-    
     
 }

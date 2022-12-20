@@ -17,15 +17,22 @@ public class MailController : Controller
         this._service = mailService;
     }
     
-    [HttpPost("send")]
-    public async Task<IActionResult> SendMail([FromBody]MailRequest request)
+    [HttpPost("SendToDoctor")]
+    public async Task<IActionResult> SendToDoctorMail([FromBody]MailForDoctorConfirmationRequest request)
     {
         await _service.SendEmailAsync(request);
         return Ok();
     }
     
-    [HttpPost("verified")]
-    public IActionResult VerifiedEmail([FromBody]Guid accountId)
+    [HttpPost("SendToPatient")]
+    public async Task<IActionResult> SendToPatientMail([FromBody]MailForPatientRegistrationRequest request)
+    {
+        await _service.SendEmailAsync(request);
+        return Ok();
+    }
+    
+    [HttpPost("Verified")]
+    public IActionResult SetEmailVerified([FromBody]Guid accountId)
     {
         _service.VerifiedEmail(accountId);
         return Ok();

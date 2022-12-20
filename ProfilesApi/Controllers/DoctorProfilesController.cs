@@ -13,8 +13,7 @@ namespace ProfilesApi.Controllers;
 public class DoctorProfilesController:ControllerBase
 {
     private readonly IDoctorProfilesService _service;
-    
-    
+
     public DoctorProfilesController(IDoctorProfilesService service)
     {
         _service = service;
@@ -25,18 +24,16 @@ public class DoctorProfilesController:ControllerBase
     [ServiceFilter(typeof(ValidationModelAttribute))]
     public async Task<ActionResult> Create(CreateDoctorProfileRequest request)
     { 
-        _service.CreateAsync(request);
-       return Ok(StatusCode(201));
+        await _service.CreateAsync(request);
+       return Ok();
     }
+    
     
     [HttpGet("")]
     public async Task<ActionResult<ICollection<GetDoctorProfilesResponse>>> GetAll()
     {
         return Ok(await _service.GetAllAsync());
     }
-    
-    
-
     
     
 }

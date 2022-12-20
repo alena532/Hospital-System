@@ -6,6 +6,6 @@ namespace AuthApi.Services.Interfaces;
 
 public interface IJwtService
 {
-    AuthenticatedResponse GenerateJwtTokenAsync(User user);
+    AuthenticatedResponse GenerateJwtToken(User user);
     ClaimsPrincipal GetPrincipalFromExpiredToken(string token);
 }

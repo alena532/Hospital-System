@@ -14,7 +14,6 @@ public class TestController : Controller
     public TestController(AppDbContext context)
     {
         _context = context;
-        
     }
     
     

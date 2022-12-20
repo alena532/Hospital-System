@@ -66,6 +66,34 @@ public static class ServiceExtensions
     {
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IJwtService, JwtService>();
+        services.AddScoped<IAuthValidatorService,AuthValidatorService>();
+        var  MyAllowedOrigins = "_myAllowSpecificOrigins";
+        services.AddCors(options =>
+        {
+            options.AddPolicy(name: MyAllowedOrigins,
+                policy  =>
+                {
+                    policy.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+        });
+        
+    }
+    public static void ConfigureCors(this IServiceCollection services)
+    {
+        var  MyAllowedOrigins = "_myAllowSpecificOrigins";
+        services.AddCors(options =>
+        {
+            options.AddPolicy(name: MyAllowedOrigins,
+                policy  =>
+                {
+                    policy.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+        });
+        
     }
     
     public static void ConfigureIdentity(this IServiceCollection services)

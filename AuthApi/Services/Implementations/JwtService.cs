@@ -49,7 +49,7 @@ public class JwtService:IJwtService
         }
     }
 
-    public AuthenticatedResponse GenerateJwtTokenAsync(User user)
+    public AuthenticatedResponse GenerateJwtToken(User user)
     {
         if (user == null) throw new ArgumentNullException(nameof(user));
         

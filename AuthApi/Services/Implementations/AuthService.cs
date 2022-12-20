@@ -40,7 +40,7 @@ public class AuthService:IAuthService
 
         user = _context.Users.Where(x => x.Id == user.Id).Include(x => x.Role).FirstOrDefault();
             
-        var authResponse = _jwtService.GenerateJwtTokenAsync(user);
+        var authResponse = _jwtService.GenerateJwtToken(user);
         
         if (authResponse == null)
         {
@@ -80,7 +80,7 @@ public class AuthService:IAuthService
         return newUser;
     }
     
-    public async Task<AuthenticatedResponse> Refresh(TokensRequest tokens)
+    public async Task<AuthenticatedResponse> RefreshAsync(TokensRequest tokens)
     {
         string accessToken = tokens.AccessToken;
         string refreshToken = tokens.RefreshToken;
@@ -89,14 +89,14 @@ public class AuthService:IAuthService
         
         var username = principal.Identity?.Name;
         
-        var user = _context.Users.Where(x => x.UserName == username).Include(x=>x.Role).FirstOrDefault();
+        var user = await _context.Users.Where(x => x.UserName == username).Include(x=>x.Role).FirstOrDefaultAsync();
 
         if (user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
         {
             throw new ApplicationException("Invalid user");
         }
 
-        var authResponse = _jwtService.GenerateJwtTokenAsync(user);
+        var authResponse = _jwtService.GenerateJwtToken(user);
         
         if (authResponse == null)
         {
@@ -109,10 +109,10 @@ public class AuthService:IAuthService
         return authResponse;
     }
     
-    public async Task Revoke()
+    public async Task RevokeAsync()
     {
         var username = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
-        var user = _context.Users.Where(x => x.UserName == username).FirstOrDefault();
+        var user = await _context.Users.Where(x => x.UserName == username).FirstOrDefaultAsync();
         if (user == null)
         {
             throw new BadHttpRequestException("Invalid user");
@@ -122,7 +122,7 @@ public class AuthService:IAuthService
     }
 
     
-    public async Task UpdatePassword (ChangePasswordRequest request)
+    public async Task UpdatePasswordAsync (ChangePasswordRequest request)
     {
         var username = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
 

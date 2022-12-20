@@ -12,8 +12,8 @@ using ProfilesApi.DataAccess;
 namespace ProfilesApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20221212082903_initial0")]
-    partial class initial0
+    [Migration("20221220101111_initial0343")]
+    partial class initial0343
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -43,18 +43,16 @@ namespace ProfilesApi.Migrations
                     b.Property<bool>("IsEmailVerified")
                         .HasColumnType("bit");
 
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdateAt")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("UpdatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -79,7 +77,7 @@ namespace ProfilesApi.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("date");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -90,13 +88,15 @@ namespace ProfilesApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MiddleName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("OfficeId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("PhotoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("SpecializationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("SpecializationName")
@@ -118,11 +118,62 @@ namespace ProfilesApi.Migrations
                     b.ToTable("Doctors");
                 });
 
+            modelBuilder.Entity("ProfilesApi.DataAccess.Models.Patient", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsLinkedToAccount")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MiddleName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("PhotoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.ToTable("Patients");
+                });
+
             modelBuilder.Entity("ProfilesApi.DataAccess.Models.Doctor", b =>
                 {
                     b.HasOne("ProfilesApi.DataAccess.Models.Account", "Account")
                         .WithOne("Doctor")
                         .HasForeignKey("ProfilesApi.DataAccess.Models.Doctor", "AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+                });
+
+            modelBuilder.Entity("ProfilesApi.DataAccess.Models.Patient", b =>
+                {
+                    b.HasOne("ProfilesApi.DataAccess.Models.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
