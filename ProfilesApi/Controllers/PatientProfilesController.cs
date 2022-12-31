@@ -24,7 +24,7 @@ public class PatientProfilesController:ControllerBase
     
     [HttpPost("CreateAccount")]
     [ServiceFilter(typeof(ValidationModelAttribute))]
-    public async Task<ActionResult<Guid>> CreateAccount(CreatePatientAccountRequest request)
+    public async Task<ActionResult<GetAccountUserCredentialsResponse>> CreateAccount(CreatePatientAccountRequest request)
         =>Ok(await _service.CreateAccountAsync(request));
     
     

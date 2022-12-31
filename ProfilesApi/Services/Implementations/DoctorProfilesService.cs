@@ -62,12 +62,27 @@ public class DoctorProfilesService:IDoctorProfilesService
         var account = _mapper.Map<Account>(request);
         account.UserId = userId;
         //add createdBy UpdatedBy
-        await _accountRepository.CreateAsync(account);
+        try
+        {
+            await _accountRepository.CreateAsync(account);
+        }
+        catch
+        {
+            await RollBackUserAsync(account.UserId);
+        }
         
         var doctor = _mapper.Map<Doctor>(request);
         doctor.AccountId = account.Id;
-        await _doctorRepository.CreateAsync(doctor);
-
+        try
+        {
+            await _doctorRepository.CreateAsync(doctor);
+        }
+        catch
+        {
+            await RollBackUserAsync(account.UserId);
+            await _accountRepository.DeleteAsync(account);
+        }
+        
         var mail = new MailForDoctorConfirmationRequest()
         {
             ToEmail = request.Email,
@@ -91,6 +106,15 @@ public class DoctorProfilesService:IDoctorProfilesService
     {
         var doctorsProfiles = await _doctorRepository.GetAllAsync();
         return _mapper.Map<ICollection<GetDoctorProfilesResponse>>(doctorsProfiles);
+    }
+    
+    public async Task RollBackUserAsync(Guid userId)
+    {
+        var result = _httpClient.DeleteAsync($"api/User/{userId}").Result;
+        if (result.IsSuccessStatusCode == false)
+        {
+            throw new BadHttpRequestException($"{result.Content} {result.ReasonPhrase}");
+        }
     }
     
 }

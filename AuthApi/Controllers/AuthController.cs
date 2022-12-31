@@ -30,7 +30,7 @@ public class AuthController:ControllerBase
         return Ok(authResponse);
     }
     
-    [AllowAnonymous]
+    
     [HttpPost("Register")]
     [ValidationModel]
     public async Task<ActionResult<Guid>> Register([FromBody] RegisterRequest request)
@@ -42,7 +42,7 @@ public class AuthController:ControllerBase
     [HttpPost]
     [Route("Refresh")]
     [ValidationModel]
-    public async Task<ActionResult<AuthenticatedResponse>> Refresh([FromBody] TokensRequest tokens)
+    public async Task<ActionResult<AuthenticatedResponse>> Refresh([FromBody] AuthenticatedResponse tokens)
     {
         var authResponse = await _authService.RefreshAsync(tokens);
         return Ok(authResponse);

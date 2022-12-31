@@ -30,5 +30,9 @@ public class PatientProfileRepository: RepositoryBase<Patient>,IPatientProfileRe
     {
         return await FindByCondition(x => x.Id == id,trackChanges).SingleOrDefaultAsync();
     }
-    
+
+    public async Task<Patient> GetByAccountIdAsync(Guid accountId, bool trackChanges)
+    {
+        return await FindByCondition(x => x.AccountId == accountId,trackChanges).SingleOrDefaultAsync();
+    }
 }

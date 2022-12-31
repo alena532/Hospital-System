@@ -19,17 +19,19 @@ public class AuthService:IAuthService
     private readonly AppDbContext _context;
     private readonly IJwtService _jwtService;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IAuthValidatorService _validatorService;
 
-    public AuthService(UserManager<User> userManager,AppDbContext context,IJwtService jwtService,IHttpContextAccessor httpContextAccessor)
+    public AuthService(UserManager<User> userManager,AppDbContext context,IJwtService jwtService,IAuthValidatorService validatorService,IHttpContextAccessor httpContextAccessor)
     {
         _userManager = userManager;
         _context = context;
         _jwtService = jwtService;
         _httpContextAccessor = httpContextAccessor;
+        _validatorService = validatorService;
     }
     
     
-    public async Task<AuthenticatedResponse>  LoginAsync(LoginRequest request)
+    public async Task<AuthenticatedResponse> LoginAsync(LoginRequest request)
     {
         var user = await _userManager.FindByNameAsync(request.Email);
         
@@ -39,7 +41,7 @@ public class AuthService:IAuthService
         }
 
         user = _context.Users.Where(x => x.Id == user.Id).Include(x => x.Role).FirstOrDefault();
-            
+
         var authResponse = _jwtService.GenerateJwtToken(user);
         
         if (authResponse == null)
@@ -51,6 +53,11 @@ public class AuthService:IAuthService
         user.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
 
         _context.SaveChanges();
+        authResponse.User = new UserCredentialsResponse()
+        {
+            Email = user.Email,
+            Id = user.Id
+        };
         
         return authResponse;
     }
@@ -58,11 +65,12 @@ public class AuthService:IAuthService
     public async Task<User> RegisterAsync(RegisterRequest request)
     {
         var role = await _context.Roles.FindAsync(request.RoleId);
-        
         if (role == null)
         {
             throw new BadHttpRequestException("Role not found");
         }
+        
+        await _validatorService.ValidateEmailAsync(request.Email);
 
         var newUser = new User
         {
@@ -70,7 +78,7 @@ public class AuthService:IAuthService
             Email = request.Email,
             Role = role
         };
-        
+
         var result = await _userManager.CreateAsync(newUser, request.Password);
         if (!result.Succeeded)
         {
@@ -80,9 +88,9 @@ public class AuthService:IAuthService
         return newUser;
     }
     
-    public async Task<AuthenticatedResponse> RefreshAsync(TokensRequest tokens)
+    public async Task<AuthenticatedResponse> RefreshAsync(AuthenticatedResponse tokens)
     {
-        string accessToken = tokens.AccessToken;
+        string accessToken = tokens.Token;
         string refreshToken = tokens.RefreshToken;
         
         var principal = _jwtService.GetPrincipalFromExpiredToken(accessToken);
@@ -93,7 +101,7 @@ public class AuthService:IAuthService
 
         if (user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
         {
-            throw new ApplicationException("Invalid user");
+            throw new BadHttpRequestException("Invalid user");
         }
 
         var authResponse = _jwtService.GenerateJwtToken(user);

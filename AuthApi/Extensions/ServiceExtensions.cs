@@ -67,18 +67,7 @@ public static class ServiceExtensions
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IAuthValidatorService,AuthValidatorService>();
-        var  MyAllowedOrigins = "_myAllowSpecificOrigins";
-        services.AddCors(options =>
-        {
-            options.AddPolicy(name: MyAllowedOrigins,
-                policy  =>
-                {
-                    policy.AllowAnyOrigin()
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                });
-        });
-        
+
     }
     public static void ConfigureCors(this IServiceCollection services)
     {
@@ -106,7 +95,7 @@ public static class ServiceExtensions
                 o.Password.RequireLowercase = false;
                 o.Password.RequireUppercase = false;
                 o.Password.RequireNonAlphanumeric = false;
-                o.Password.RequiredLength = 6;
+                o.Password.RequiredLength = 8;
                 o.User.RequireUniqueEmail = true;
             })
             .AddEntityFrameworkStores<AppDbContext>();

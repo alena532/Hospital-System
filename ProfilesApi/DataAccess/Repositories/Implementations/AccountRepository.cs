@@ -23,6 +23,10 @@ public class AccountRepository : RepositoryBase<Account>,IAccountRepository
         return await FindByCondition(x => x.Id == Id, trackChanges).SingleOrDefaultAsync();
     }
 
+    public async Task<Account> GetByUserIdAsync(Guid userId, bool trackChanges)
+    {
+        return await FindByCondition(x => x.UserId == userId, trackChanges).SingleOrDefaultAsync();
+    }
     
     
 }

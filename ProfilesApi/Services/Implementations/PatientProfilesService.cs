@@ -30,17 +30,24 @@ public class PatientProfilesService : IPatientProfilesService
         var patient = _mapper.Map<Patient>(request);
         patient.AccountId = request.AccountId;
         patient.IsLinkedToAccount = true;
-        
+       
         var account = await _accountRepository.GetByIdAsync(request.AccountId, trackChanges: true);
         account.PhoneNumber = request.PhoneNumber;
         //when use jwt get from httpAccessor
         //account.CreatedBy = request.OfficeId;
         //account.UpdatedBy = request.OfficeId;
-        
-        await _patientRepository.CreateAsync(patient);
+        try
+        {
+            await _patientRepository.CreateAsync(patient);
+        }
+        catch
+        {
+            await RollBackUserAsync(account.UserId);
+            await _accountRepository.DeleteAsync(account);
+        }
     }
 
-    public async Task<Guid> CreateAccountAsync(CreatePatientAccountRequest request)
+    public async Task<GetAccountUserCredentialsResponse> CreateAccountAsync(CreatePatientAccountRequest request)
     {
         var checkEmail = _httpClient.PostAsJsonAsync("api/AuthValidator",request.Email).Result;
         if (checkEmail.IsSuccessStatusCode == false)
@@ -66,8 +73,21 @@ public class PatientProfilesService : IPatientProfilesService
         var account = _mapper.Map<Account>(request);
         account.UserId = userId;
         //add createdBy UpdatedBy
-        await _accountRepository.CreateAsync(account);
-        return account.Id;
+        try
+        {
+            await _accountRepository.CreateAsync(account);
+        }
+        catch
+        {
+            await RollBackUserAsync(userId);
+        }
+
+        GetAccountUserCredentialsResponse response = new()
+        {
+            AccountId = account.Id,
+            ToEmail = authEntity.Email
+        };
+        return response;
     }
 
     public async Task<ICollection<GetPatientProfilesResponse>> GetMatchesAsync(CredentialsPatientProfileRequest request)
@@ -77,25 +97,18 @@ public class PatientProfilesService : IPatientProfilesService
         int points = 0;
         foreach (var patient in patientsProfiles)
         {
-            if (patient.FirstName.Equals(request.FirstName,StringComparison.OrdinalIgnoreCase))
-            {
-                points += (int) CredentialsPatientProfileEnum.FirstName;
-            }
-            
-            if (patient.LastName.Equals(request.LastName,StringComparison.OrdinalIgnoreCase))
-            {
-                points += (int) CredentialsPatientProfileEnum.LastName;
-            }
-            
-            if (patient.MiddleName.Equals(request.MiddleName,StringComparison.OrdinalIgnoreCase))
-            {
-                points += (int) CredentialsPatientProfileEnum.MiddleName;
-            }
-            
-            if (patient.DateOfBirth.ToString().Equals(request.DateOfBirth.ToString(),StringComparison.OrdinalIgnoreCase))
-            {
-                points += (int) CredentialsPatientProfileEnum.DateOfBirth;
-            }
+            points += patient.FirstName.Equals(request.FirstName, StringComparison.OrdinalIgnoreCase)
+                ? (int) CredentialsPatientProfileEnum.FirstName
+                : 0;
+            points += patient.LastName.Equals(request.LastName,StringComparison.OrdinalIgnoreCase)
+                ? (int) CredentialsPatientProfileEnum.LastName
+                : 0;
+            points += patient.FirstName.Equals(request.MiddleName, StringComparison.OrdinalIgnoreCase)
+                ? (int) CredentialsPatientProfileEnum.MiddleName
+                : 0;
+            points += patient.DateOfBirth.ToString().Equals(request.DateOfBirth.ToString(),StringComparison.OrdinalIgnoreCase)
+                ? (int) CredentialsPatientProfileEnum.DateOfBirth
+                : 0;
 
             if (points >= 13)
             {
@@ -111,6 +124,20 @@ public class PatientProfilesService : IPatientProfilesService
        patient.IsLinkedToAccount = true;
        await _patientRepository.SaveChangesAsync();
        return _mapper.Map<GetPatientProfilesResponse>(patient);
+    }
+
+    public async Task RollBackUserAsync(Guid userId)
+    {
+        var result = _httpClient.DeleteAsync($"api/User/{userId}").Result;
+        if (result.IsSuccessStatusCode == false)
+        {
+            throw new BadHttpRequestException($"{result.Content} {result.ReasonPhrase}");
+        }
+    }
+
+    public async Task<Patient> GetByAccountId(Guid accountId)
+    {
+        return await _patientRepository.GetByAccountIdAsync(accountId);
     }
     
     
