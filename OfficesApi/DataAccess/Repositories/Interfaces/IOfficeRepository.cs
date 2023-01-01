@@ -9,6 +9,6 @@ public interface IOfficeRepository:IRepositoryBase<Office>
     Task<List<Office>> GetAllAsync (bool trackChanges=false);
     Task<Office> GetByIdAsync(Guid id, bool trackChanges=false );
     Task CreateAsync(Office office);
-    Task DeleteAsync(Office office);
+    //Task DeleteAsync(Office office);
     
 }

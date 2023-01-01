@@ -51,7 +51,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Remove="Contracts\Requests\TokensRequest.cs" />
+      <ProjectReference Include="..\RepositoryBase\RepositoryBase.csproj" />
     </ItemGroup>
 
 </Project>

@@ -42,23 +42,28 @@ public class AuthService:IAuthService
 
         user = _context.Users.Where(x => x.Id == user.Id).Include(x => x.Role).FirstOrDefault();
 
-        var authResponse = _jwtService.GenerateJwtToken(user);
+        var tokensResponse = _jwtService.GenerateJwtToken(user);
         
-        if (authResponse == null)
+        if (tokensResponse == null)
         {
             throw new BadHttpRequestException("Invalid attempt");
         }
 
-        user.RefreshToken = authResponse.RefreshToken;
+        user.RefreshToken = tokensResponse.RefreshToken;
         user.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
 
         _context.SaveChanges();
-        authResponse.User = new UserCredentialsResponse()
+
+        var authResponse = new AuthenticatedResponse()
         {
-            Email = user.Email,
-            Id = user.Id
+            Tokens = tokensResponse,
+            User = new UserCredentialsResponse()
+            {
+                Id = user.Id,
+                Email = user.Email
+            }
         };
-        
+
         return authResponse;
     }
     
@@ -88,7 +93,7 @@ public class AuthService:IAuthService
         return newUser;
     }
     
-    public async Task<AuthenticatedResponse> RefreshAsync(AuthenticatedResponse tokens)
+    public async Task<TokensResponse> RefreshAsync(TokensRequest tokens)
     {
         string accessToken = tokens.Token;
         string refreshToken = tokens.RefreshToken;
@@ -104,17 +109,17 @@ public class AuthService:IAuthService
             throw new BadHttpRequestException("Invalid user");
         }
 
-        var authResponse = _jwtService.GenerateJwtToken(user);
+        var tokensResponse = _jwtService.GenerateJwtToken(user);
         
-        if (authResponse == null)
+        if (tokensResponse == null)
         {
             throw new BadHttpRequestException("Invalid attempt");
         }
 
-        user.RefreshToken = authResponse.RefreshToken;
+        user.RefreshToken = tokensResponse.RefreshToken;
         _context.SaveChangesAsync();
 
-        return authResponse;
+        return tokensResponse;
     }
     
     public async Task RevokeAsync()

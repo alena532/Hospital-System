@@ -42,10 +42,10 @@ public class AuthController:ControllerBase
     [HttpPost]
     [Route("Refresh")]
     [ValidationModel]
-    public async Task<ActionResult<AuthenticatedResponse>> Refresh([FromBody] AuthenticatedResponse tokens)
+    public async Task<ActionResult<TokensResponse>> Refresh([FromBody] TokensRequest tokens)
     {
-        var authResponse = await _authService.RefreshAsync(tokens);
-        return Ok(authResponse);
+        var tokenResponse = await _authService.RefreshAsync(tokens);
+        return Ok(tokenResponse);
     }
     
     [HttpPut]

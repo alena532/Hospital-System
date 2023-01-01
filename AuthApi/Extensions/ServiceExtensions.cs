@@ -8,6 +8,8 @@ using System.Text;
 using AuthApi.Common.Attributes;
 using AuthApi.ConfigurationOptions;
 using AuthApi.DataAccess;
+using AuthApi.DataAccess.Repositories.Implementations;
+using AuthApi.DataAccess.Repositories.Interfaces;
 using AuthApi.Services.Implementations;
 using AuthApi.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -64,6 +66,7 @@ public static class ServiceExtensions
     
     public static void ConfigureServices(this IServiceCollection services)
     {
+        services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IAuthValidatorService,AuthValidatorService>();
