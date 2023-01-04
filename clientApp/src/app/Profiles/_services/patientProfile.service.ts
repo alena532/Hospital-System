@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable()
-export class ProfilesService {
+export class PatientProfilesService {
 
   private accessPointUrl: string = 'https://localhost:7097/api/PatientProfiles';
 

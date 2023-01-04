@@ -12,6 +12,7 @@ import { AuthService } from './_services/auth.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { JwtHelperService, JwtModule, JWT_OPTIONS } from '@auth0/angular-jwt';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 
@@ -27,7 +28,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     AppRoutingModule,
     ReactiveFormsModule,
     HttpClientModule,
-    JwtModule
+    JwtModule,
+    NgbModule
   ],
   providers: [
     AuthService,

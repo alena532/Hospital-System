@@ -10,10 +10,10 @@ export class AccountsService {
   }
 
   getByUserId(userId:string) {
-    return this.http.get<any>(this.accessPointUrl+ `/${userId}`);
+    return this.http.get<any>(this.accessPointUrl+ `GetByUserId/${userId}`);
   }
 
-  getById(id:string) {
+  checkAccountBeforeCreation(id:string) {
     return this.http.get<any>(this.accessPointUrl+`/CheckAccountBeforeProfileCreation/${id}`);
   }
 }

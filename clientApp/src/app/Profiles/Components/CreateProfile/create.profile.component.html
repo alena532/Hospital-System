@@ -1,4 +1,4 @@
-<div *ngIf="stop; then thenBlock else elseBlock"></div>
+<div *ngIf="!stop; then thenBlock else elseBlock"></div>
 <ng-template #thenBlock>
   <div class="col-md-6 offset-md-3 mt-5">
     <div class="card">

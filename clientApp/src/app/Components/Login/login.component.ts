@@ -13,6 +13,9 @@ import {Router} from "@angular/router";
   export class LoginComponent implements OnInit {
     loginForm: FormGroup;
     error = '';
+    submitted = false;
+    loading = false;
+    userId! :string;
   
     constructor(
       private formBuilder: FormBuilder,
@@ -32,19 +35,23 @@ import {Router} from "@angular/router";
     get f() { return this.loginForm.controls; }
   
     onSubmit() {
+      this.submitted = true;
+
       if (this.loginForm.invalid) {
         return;
       }
-  
+      
+      this.loading = true;
+
       this.authService.login(this.f['email'].value, this.f['password'].value)
         .subscribe(
           data => {},
           error => {
+            this.loading = false;
             console.log(error.status)
-            if(error.status === 400){
-              this.error = 'Either an email or a password is incorrect';
-            }
-          });
+            this.error = 'Either an email or a password is incorrect';
+          }
+        );
     }
   }
   

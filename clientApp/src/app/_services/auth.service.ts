@@ -6,13 +6,15 @@ import { catchError, finalize, tap } from 'rxjs/operators';
 import {User} from "../_models/User"
 import { FormGroupDirective } from '@angular/forms';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthService {
 
   private accessPointUrl: string = 'https://localhost:5002/api/Auth';
   private loggedUser: User | any;
-
-  //currentUser: User | undefined;
+  private userId!:string | any;
+  currentUser: User | undefined;
   constructor(private http: HttpClient) {
 
   }
@@ -21,11 +23,36 @@ export class AuthService {
     return this.http.post<any>(this.accessPointUrl+'/Login', { email, password })
     .pipe(
       tap((tokens)=> {
-      this.storeTokens(tokens);
       let userInfo = tokens['user'];
-      this.loggedUser = new User(userInfo['id'],userInfo['email']);
+      this.userId = userInfo['id'];
+      console.log(`in method login ${tokens}`);
+      this.storeTokens(tokens['tokens']);
+      this.http.get<User>(`https://localhost:7097/api/Accounts/CheckAccountBeforeProfileLogin/${this.userId}`)
+      .subscribe(
+        (data:any)=>{
+          console.log(`in method checkUserBeforeLogin ${data}`);
+          let patient = data['patient'];
+          this.currentUser = new User(patient['firstName'],patient['lastName'],patient['id'],data['email']);
+        }
+      )
       }),
     )
+    
+    
+  }
+  checkUserBeforeLogin(){
+    console.log(`in checkUserBeforeLogin ${this.userId}`)
+    return this.http.get<User>(`https://localhost:7097/api/Accounts/CheckAccountBeforeProfileLogin/${this.userId}`)
+    .pipe(
+      map((data:any)=>{
+        console.log(`in method checkUserBeforeLogin ${data}`);
+        let patient = data['patient'];
+        return new User(patient['firstName'],patient['lastName'],patient['id'],data['email']);
+      }
+
+      )
+    )
+
   }
 
   register(email: string,password: string){
@@ -60,6 +87,7 @@ export class AuthService {
 
   logout(){
     this.loggedUser = null;
+    this.userId = null;
     localStorage.removeItem('token');
     localStorage.removeItem('refresh_token');
   }

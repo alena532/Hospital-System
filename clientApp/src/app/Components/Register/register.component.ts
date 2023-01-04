@@ -55,10 +55,9 @@ import {Router} from "@angular/router";
           },
           error => {
             console.log(error.status)
-            if(error.status === 500){
-              this.loading = false;
-                this.error = 'Someone already uses this email';
-            }
+            this.loading = false;
+            this.error = 'Someone already uses this email';
+            
           });
     }
   }

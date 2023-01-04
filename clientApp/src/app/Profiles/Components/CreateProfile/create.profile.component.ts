@@ -4,9 +4,8 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { AuthService } from 'src/app/_services/auth.service';
 import {ActivatedRoute,Router} from "@angular/router";
 import * as internal from 'stream';
-import { ProfilesService } from '../../_services/profiles.service';
+import { PatientProfilesService } from '../../_services/patientProfile.service';
 import { AccountsService } from '../../_services/account.service';
-
 
 
 @Component({
@@ -29,39 +28,42 @@ import { AccountsService } from '../../_services/account.service';
   
     constructor(
       private formBuilder: FormBuilder,
-      private router: ActivatedRoute,
-      private profileService: ProfilesService,
+      private route: ActivatedRoute,
+      private router: Router,
+      private profileService: PatientProfilesService,
       private accountService: AccountsService
-
     )
     {
       let now = new Date();
       now.setFullYear(now.getFullYear() - 18);
       this.maxDate = now;
-
-     
     }
   
     ngOnInit(): void {
+      this.accountId = this.route.snapshot.paramMap.get("accountId")!;
+      this.accountService.checkAccountBeforeCreation(this.accountId).subscribe(
+        data=>{},
+        error => {
+          console.log(error.status)
+          if(error.status === 500){
+            this.error = 'Sorry but url is incorrect';
+            this.stop = true;
+          }
+        }
+      )
+
       this.profileForm = new FormGroup({
         "firstName": new FormControl("", [Validators.required]),
         "lastName": new FormControl("", [Validators.required]),
         "middleName": new FormControl(null),
         "phoneNumber": new FormControl("+",[Validators.pattern('^\\+[0-9][0-9]*')]),
         "dateOfBirth": new FormControl("", [Validators.required]),
-        "photo": new FormControl(null),
+        "accountId": new FormControl(this.accountId)
+       // "photo": new FormControl(null),
 
       });
-      this.accountId = this.router.snapshot.params['accountId'];
-      this.accountService.getById(this.accountId).subscribe(
-        error => {
-          console.log(error.status)
-          if(error.status === 400){
-            this.error = 'Sorry but url is incorrect';
-            this.stop = true;
-          }
-        }
-      )
+    
+      
     }
   
     get f() { return this.profileForm.controls; }
@@ -77,11 +79,12 @@ import { AccountsService } from '../../_services/account.service';
         .subscribe(
           data => {},
           error => {
+            this.loading = false;
             console.log(error.status)
-            if(error.status === 400){
-              this.error = 'Either an email or a password is incorrect';
-            }
+            this.error = 'Either an email or a password is incorrect';
+            
           });
+          this.router.navigate(['login']);
     }
   }
   
