@@ -31,10 +31,9 @@ public class PatientProfilesController:ControllerBase
     //for patient
     [HttpPost("")]
     [ServiceFilter(typeof(ValidationModelAttribute))]
-    public async Task<ActionResult> Create(CreatePatientProfileRequest request)
-    { 
-        _service.CreateAsync(request);
-        return Ok(StatusCode(201));
+    public async Task<ActionResult<Guid>> Create([FromBody]CreatePatientProfileRequest request)
+    {
+        return Ok(await _service.CreateAsync(request));
     }
 
     

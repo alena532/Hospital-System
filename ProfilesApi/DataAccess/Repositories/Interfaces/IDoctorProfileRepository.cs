@@ -6,10 +6,10 @@ namespace ProfilesApi.DataAccess.Repositories.Interfaces.Base;
 
 public interface IDoctorProfileRepository:IRepositoryBase<Doctor>
 {  
-   Task  CreateAsync(Doctor doctor);
+   Task CreateAsync(Doctor doctor);
    Task<List<Doctor>> GetAllAsync (bool trackChanges=false);
    Task<List<Doctor>> GetAllByOfficeIdAsync(Guid officeId, bool trackChanges=false);
-
+   public Task<List<Doctor>> SearchByCredentialsAsync(string firstName, string? lastName);
    Task<Doctor> GetByIdAsync(Guid id, bool trackChanges = false);
    /*Task<Office> GetDoctorProfileAsync(int id, bool trackChanges);
    Task UpdateDoctorProfileAsync(Office office);

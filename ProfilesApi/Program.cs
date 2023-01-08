@@ -1,21 +1,19 @@
 using System.Reflection;
-using Castle.Windsor;
-using Castle.Windsor.Installer;
 using FluentValidation.AspNetCore;
 using MassTransit;
-using Microsoft.Extensions.DependencyInjection;
 using ProfilesApi.Common.Settings;
 using ProfilesApi.Consumers;
 using ProfilesApi.Extensions;
-using ProfilesApi.Services.Implementations;
 using Serilog;
 using Serilog.Filters;
+
 var  MyAllowedOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 
 services.ConfigureCors();
 
+services.AddHttpContextAccessor();
 services.AddControllers()
     .AddFluentValidation(options =>
     {
@@ -27,8 +25,6 @@ services.AddControllers()
     });
 
 
-services.AddHttpContextAccessor();
-
 var logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .Filter.ByIncludingOnly(Matching.FromSource("ProfilesApi"))
@@ -39,10 +35,13 @@ services.ConfigureAutoMapper();
 
 services.ConfigureSwagger();
 
-services.ConfigureServices();
-services.ConfigureFilters();
-
 services.ConfigureSqlContext(builder.Configuration);
+
+//services.ConfigureServices();
+services.ConfigureFilters();
+services.ConfigureRepositories();
+services.ConfigureServices();
+//services.ConfigureSqlContext(builder.Configuration);
 services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 services.AddMassTransit(x =>

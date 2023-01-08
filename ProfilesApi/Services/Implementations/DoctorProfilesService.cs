@@ -2,6 +2,8 @@ using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text.Json;
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
+using ProfilesApi.Contracts;
 using ProfilesApi.Contracts.Requests;
 using ProfilesApi.Contracts.Requests.DoctorProfiles;
 using ProfilesApi.Contracts.Requests.Mail;
@@ -61,6 +63,7 @@ public class DoctorProfilesService:IDoctorProfilesService
         
         var account = _mapper.Map<Account>(request);
         account.UserId = userId;
+        account.PhoneNumber = request.PhoneNumber;
         //add createdBy UpdatedBy
         try
         {
@@ -102,10 +105,36 @@ public class DoctorProfilesService:IDoctorProfilesService
         account.IsEmailVerified = true;
     }
     
-    public async Task<ICollection<GetDoctorProfilesResponse>> GetAllAsync()
+    public async Task<PageResult<GetDoctorProfilesResponse>> GetAllAsync(int pageNumber, int pageSize,SearchAndFilterParameters parameters)
     {
-        var doctorsProfiles = await _doctorRepository.GetAllAsync();
-        return _mapper.Map<ICollection<GetDoctorProfilesResponse>>(doctorsProfiles);
+        var doctors = await _doctorRepository.GetAllAsync();
+        doctors =  doctors.Where(status => status.Status == DoctorStatusEnum.AtWork).ToList();
+        
+        //List<Doctor> doctorsByOfficeId = new();
+        if (parameters.OfficeId != null)
+        {
+            //doctorsByOfficeId = await _doctorRepository.GetAllByOfficeIdAsync((Guid) parameters.OfficeId);
+            doctors.Where(x => x.OfficeId == parameters.OfficeId).ToList();
+            //doctors = doctors.Intersect(doctorsByOfficeId).ToList();
+        }
+        
+        //List<Doctor> doctorsByCredentials = new();
+        if (parameters.FirstName != "null")
+        {
+            parameters.LastName = parameters.LastName != "null" ? parameters.LastName : "";
+            //doctorsByCredentials = await _doctorRepository.SearchByCredentialsAsync(parameters.FirstName, parameters.LastName);
+            doctors.Where(x =>
+                x.FirstName.ToLower().Contains(parameters.FirstName.ToLower()) &&
+                x.LastName.ToLower().Contains(parameters.LastName.ToLower())).ToList();
+            //doctors = doctors.Intersect(doctorsByCredentials).ToList();
+        }
+        
+        var result = new PageResult<GetDoctorProfilesResponse>
+        {
+            Count = doctors.Count,
+            Items = _mapper.Map<List<GetDoctorProfilesResponse>>(doctors.Skip((pageNumber - 1) * pageSize).Take(pageSize))
+        };
+        return result;
     }
     
     public async Task RollBackUserAsync(Guid userId)

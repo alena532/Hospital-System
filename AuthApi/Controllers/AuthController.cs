@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using AuthApi.Common.Attributes;
 using AuthApi.ConfigurationOptions;
 using AuthApi.Contracts.Requests;
@@ -53,7 +54,8 @@ public class AuthController:ControllerBase
     [ValidationModel]
     public async Task<ActionResult<AuthenticatedResponse>> ChangePassword([FromBody] ChangePasswordRequest request)
     {
-        await _authService.UpdatePasswordAsync(request);
+        var username = HttpContext.User.FindFirstValue(ClaimTypes.Name);
+        await _authService.UpdatePasswordAsync(request,username);
         return StatusCode(201);
     }
 
@@ -62,7 +64,8 @@ public class AuthController:ControllerBase
     [Route("Revoke")]
     public async Task<ActionResult> Revoke()
     {
-        await _authService.RevokeAsync();
+        var username = HttpContext.User.FindFirstValue(ClaimTypes.Name);
+        await _authService.RevokeAsync(username);
         return NoContent();
     }
 }

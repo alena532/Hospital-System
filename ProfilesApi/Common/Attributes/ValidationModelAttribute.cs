@@ -5,8 +5,6 @@ namespace ProfilesApi.Common.Attributes;
 
 public class ValidationModelAttribute:IAsyncActionFilter
 {
-   
-    
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
         if (!context.ModelState.IsValid)

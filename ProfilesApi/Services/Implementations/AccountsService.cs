@@ -1,5 +1,6 @@
 using AutoMapper;
 using ProfilesApi.Contracts.Responses.Accounts;
+using ProfilesApi.Contracts.Responses.PatientProfiles;
 using ProfilesApi.DataAccess.Repositories.Interfaces.Base;
 using ProfilesApi.Services.Interfaces;
 
@@ -10,7 +11,6 @@ public class AccountsService : IAccountsService
     private readonly IMapper _mapper;
     private readonly IAccountRepository _accountRepository;
     private readonly IPatientProfileRepository _patientRepository;
-   
 
     public AccountsService(IMapper mapper,IAccountRepository accountRepository, IPatientProfileRepository patientRepository)
     {
@@ -30,9 +30,9 @@ public class AccountsService : IAccountsService
         return _mapper.Map<GetAccountResponse>(account);
     }
 
-    public async Task<GetAccountResponse> CheckAccountBeforeProfileCreationAsync(Guid id)
+    public async Task CheckAccountBeforeProfileCreationAsync(Guid id)
     {
-        var account = await _accountRepository.GetByIdAsync(id);
+        var account = await _accountRepository.GetByIdAsync(id,trackChanges:false);
         if (account == null)
         {
             throw new BadHttpRequestException("Account doesn't found");
@@ -43,7 +43,27 @@ public class AccountsService : IAccountsService
         {
             throw new BadHttpRequestException("Patient was found");
         }
-        
-        return _mapper.Map<GetAccountResponse>(account);
+    }
+    
+    public async Task<GetAccountResponse> CheckAccountBeforeProfileLoginAsync(Guid userId)
+    {
+        var account = await _accountRepository.GetByUserIdAsync(userId,trackChanges:false);
+        if (account == null)
+        {
+            throw new BadHttpRequestException("Account doesn't found");
+        }
+
+        var patient = await _patientRepository.GetByAccountIdAsync(account.Id);
+        if (patient == null)
+        {
+            throw new BadHttpRequestException("Patient was found");
+        }
+
+        var response = new GetAccountResponse()
+        {
+            Patient = _mapper.Map<GetPatientProfilesResponse>(patient),
+            Email = account.Email
+        };
+        return response;
     }
 }

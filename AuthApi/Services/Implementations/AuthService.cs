@@ -18,32 +18,26 @@ public class AuthService:IAuthService
     private readonly UserManager<User> _userManager;
     private readonly AppDbContext _context;
     private readonly IJwtService _jwtService;
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IAuthValidatorService _validatorService;
 
-    public AuthService(UserManager<User> userManager,AppDbContext context,IJwtService jwtService,IAuthValidatorService validatorService,IHttpContextAccessor httpContextAccessor)
+    public AuthService(UserManager<User> userManager,AppDbContext context,IJwtService jwtService,IAuthValidatorService validatorService)
     {
         _userManager = userManager;
         _context = context;
         _jwtService = jwtService;
-        _httpContextAccessor = httpContextAccessor;
         _validatorService = validatorService;
     }
-    
-    
+
     public async Task<AuthenticatedResponse> LoginAsync(LoginRequest request)
     {
         var user = await _userManager.FindByNameAsync(request.Email);
-        
         if (user == null || !await _userManager.CheckPasswordAsync(user, request.Password))
         {
             throw new BadHttpRequestException("Invalid email and (or) password");
         }
-
         user = _context.Users.Where(x => x.Id == user.Id).Include(x => x.Role).FirstOrDefault();
 
         var tokensResponse = _jwtService.GenerateJwtToken(user);
-        
         if (tokensResponse == null)
         {
             throw new BadHttpRequestException("Invalid attempt");
@@ -101,16 +95,13 @@ public class AuthService:IAuthService
         var principal = _jwtService.GetPrincipalFromExpiredToken(accessToken);
         
         var username = principal.Identity?.Name;
-        
         var user = await _context.Users.Where(x => x.UserName == username).Include(x=>x.Role).FirstOrDefaultAsync();
-
         if (user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
         {
             throw new BadHttpRequestException("Invalid user");
         }
 
         var tokensResponse = _jwtService.GenerateJwtToken(user);
-        
         if (tokensResponse == null)
         {
             throw new BadHttpRequestException("Invalid attempt");
@@ -122,9 +113,8 @@ public class AuthService:IAuthService
         return tokensResponse;
     }
     
-    public async Task RevokeAsync()
+    public async Task RevokeAsync(string username)
     {
-        var username = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
         var user = await _context.Users.Where(x => x.UserName == username).FirstOrDefaultAsync();
         if (user == null)
         {
@@ -135,12 +125,9 @@ public class AuthService:IAuthService
     }
 
     
-    public async Task UpdatePasswordAsync (ChangePasswordRequest request)
+    public async Task UpdatePasswordAsync(ChangePasswordRequest request,string username)
     {
-        var username = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
-
         var user = await _userManager.FindByNameAsync(username);
-        
         if (user == null || !await _userManager.CheckPasswordAsync(user, request.CurrentPassword))
         {
             throw new BadHttpRequestException("Invalid email and (or) password");

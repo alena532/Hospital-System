@@ -13,9 +13,9 @@ public class PatientProfileRepository: RepositoryBase<Patient>,IPatientProfileRe
     {
     }
     
-    public async Task CreateAsync(Patient patient)
+    public override async Task CreateAsync(Patient patient)
     {
-        await CreateAsync(patient);
+        await base.CreateAsync(patient);
     }
 
     public async Task<List<Patient>> GetMatchesAsync(CredentialsPatientProfileRequest parameters)

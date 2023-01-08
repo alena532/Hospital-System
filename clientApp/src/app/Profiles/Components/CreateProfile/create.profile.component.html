@@ -32,6 +32,13 @@
             </div>
           </div>
           <div class="form-group">
+            <br>
+            <input #fileUplaoder type="file" multiple (change)="onSelect(fileUplaoder.files)">
+            <div class="preview-image" *ngIf="imagePreview !== '' && imagePreview && profileForm.get('photo')?.value != null">
+              <img [src]="imagePreview" [alt]="profileForm.value.title">
+            </div>
+          </div>
+          <div class="form-group">
             <mat-form-field appearance="outline">
             <input matInput formControlName="dateOfBirth" [ngClass]="{ 'is-invalid': submitted && f['dateOfBirth'].errors }" [min]="minDate" [max]="maxDate"  [matDatepicker]="picker">
             <mat-hint>MM/DD/YYYY</mat-hint>

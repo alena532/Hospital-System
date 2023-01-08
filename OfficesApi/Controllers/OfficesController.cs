@@ -71,9 +71,10 @@ public class OfficesController:ControllerBase
 
     [HttpPut("UpdateStatus")]
     [ServiceFilter(typeof(ValidationModelAttribute))]
-
     public async Task<ActionResult<GetOfficeResponse>> UpdateStatusById([FromBody] EditOfficeStatusRequest request)
         => Ok(await _service.UpdateStatusAsync(request));
+    
+    
     
 
 

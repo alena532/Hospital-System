@@ -25,14 +25,15 @@ public class PatientProfilesService : IPatientProfilesService
         _httpClient = httpClient;
     }
     
-    public async Task CreateAsync(CreatePatientProfileRequest request)
+    public async Task<Guid> CreateAsync(CreatePatientProfileRequest request)
     {
         var patient = _mapper.Map<Patient>(request);
         patient.AccountId = request.AccountId;
         patient.IsLinkedToAccount = true;
-       
-        var account = await _accountRepository.GetByIdAsync(request.AccountId, trackChanges: true);
+        
+        var account = await _accountRepository.GetByIdAsync(request.AccountId,trackChanges:true);
         account.PhoneNumber = request.PhoneNumber;
+        await _accountRepository.SaveChangesAsync();
         //when use jwt get from httpAccessor
         //account.CreatedBy = request.OfficeId;
         //account.UpdatedBy = request.OfficeId;
@@ -45,6 +46,8 @@ public class PatientProfilesService : IPatientProfilesService
             await RollBackUserAsync(account.UserId);
             await _accountRepository.DeleteAsync(account);
         }
+
+        return patient.Id;
     }
 
     public async Task<GetAccountUserCredentialsResponse> CreateAccountAsync(CreatePatientAccountRequest request)

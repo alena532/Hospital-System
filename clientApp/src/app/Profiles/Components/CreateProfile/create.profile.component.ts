@@ -17,9 +17,11 @@ import { AccountsService } from '../../_services/account.service';
   export class CreateProfileComponent implements OnInit {
 
     profileForm!: FormGroup;
+    photoData: FormData =new FormData();
     public placeholder: String = 'Date of Birth';
     accountId!: string;
     error = '';
+    imagePreview!: string;
     stop = false;
     submitted = false;
     loading = false;
@@ -58,33 +60,75 @@ import { AccountsService } from '../../_services/account.service';
         "middleName": new FormControl(null),
         "phoneNumber": new FormControl("+",[Validators.pattern('^\\+[0-9][0-9]*')]),
         "dateOfBirth": new FormControl("", [Validators.required]),
-        "accountId": new FormControl(this.accountId)
-       // "photo": new FormControl(null),
+        "accountId": new FormControl(this.accountId),
+        "photo": new FormControl(null),
 
-      });
-    
-      
+      }); 
     }
   
     get f() { return this.profileForm.controls; }
   
     onSubmit() {
       this.submitted = true;
-
+      
       if (this.profileForm.invalid) {
         return;
       }
+      const time =(new Date(this.profileForm.get('dateOfBirth')?.value)).toUTCString();
+      
+      console.log(typeof(time))
+      console.log(time)
+      
+      const formData = new FormData();
+      formData.append("firstName",this.profileForm.get('firstName')?.value)
+      formData.append("lastName",this.profileForm.get('lastName')?.value)
+      formData.append("middleName",this.profileForm.get('middleName')?.value)
+      formData.append("phoneNumber",this.profileForm.get('phoneNumber')?.value)
+      formData.append("dateOfBirth",time)
+      formData.append("accountId",this.profileForm.get('accountId')?.value)
+      formData.append("photo",this.profileForm.get('photo')?.value)
       this.loading = true;
-      this.profileService.createProfile(this.profileForm.value)
+      console.log(typeof(this.profileForm.get('dateOfBirth')?.value))
+      this.profileService.createProfile(formData)
         .subscribe(
-          data => {},
+          data => {
+            this.photoData = new FormData();
+          },
           error => {
             this.loading = false;
             console.log(error.status)
             this.error = 'Either an email or a password is incorrect';
-            
           });
           this.router.navigate(['login']);
     }
+
+    upload(files:any) {
+      if (files.length === 0)
+        return;
+      console.log(files);
+      this.photoData = new FormData();
+    
+      for (const file of files) {
+        this.profileForm.get('photo')?.setValue(file);
+        this.photoData.append(file.name, file);
+      }
+    }
+
+    onSelect(files:any) {
+      if (files.length === 0)
+        return;
+
+      const file = files[0];
+      this.profileForm.patchValue({photo:file});
+      this.profileForm.get('photo')?.updateValueAndValidity();
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreview = reader.result?.toString()!;
+      };
+      reader.readAsDataURL(file);
+
+    }
+
+    
   }
   

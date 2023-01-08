@@ -12,4 +12,5 @@ public class Account
     public DateTime CreatedAt { get; set;}
     public DateTime UpdateAt { get; set; }
     public virtual Doctor Doctor { get; set; }
+    public virtual Patient Patient { get; set; }
 }

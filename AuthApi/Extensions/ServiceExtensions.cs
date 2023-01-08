@@ -70,7 +70,7 @@ public static class ServiceExtensions
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IAuthValidatorService,AuthValidatorService>();
-
+       
     }
     public static void ConfigureCors(this IServiceCollection services)
     {

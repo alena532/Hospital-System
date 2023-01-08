@@ -91,9 +91,6 @@ namespace ProfilesApi.Migrations
                     b.Property<Guid>("OfficeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("PhotoId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("SpecializationId")
                         .HasColumnType("uniqueidentifier");
 
@@ -103,10 +100,6 @@ namespace ProfilesApi.Migrations
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -140,12 +133,6 @@ namespace ProfilesApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MiddleName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("PhotoId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Url")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

@@ -18,15 +18,18 @@ public class AccountRepository : RepositoryBase<Account>,IAccountRepository
         await base.CreateAsync(account);
     }
 
-    public async Task<Account> GetByIdAsync(Guid Id,bool trackChanges)
+    public async Task<Account> GetByIdAsync(Guid id,bool trackChanges)
     {
-        return await FindByCondition(x => x.Id == Id, trackChanges).SingleOrDefaultAsync();
+        var accounts = FindByCondition(x => x.Id == id, trackChanges);
+        return accounts.SingleOrDefault();
     }
 
     public async Task<Account> GetByUserIdAsync(Guid userId, bool trackChanges)
     {
         return await FindByCondition(x => x.UserId == userId, trackChanges).SingleOrDefaultAsync();
     }
+    
+    
     
     
 }

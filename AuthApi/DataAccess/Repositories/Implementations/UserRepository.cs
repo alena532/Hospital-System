@@ -11,7 +11,6 @@ public class UserRepository:RepositoryBase<User>, IUserRepository
     {
     }
     
-    
     public async Task<User> GetByIdAsync(Guid id, bool trackChanges)
     {
         return await FindByCondition(p => p.Id.Equals(id), trackChanges).SingleOrDefaultAsync();

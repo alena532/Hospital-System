@@ -1,6 +1,9 @@
+using ProfilesApi.Contracts.Responses.PatientProfiles;
+
 namespace ProfilesApi.Contracts.Responses.Accounts;
 
 public class GetAccountResponse
 {
-    public Guid Id { get; set; }
+    public string Email { get; set; }
+    public GetPatientProfilesResponse Patient { get; set; }
 }
