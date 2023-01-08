@@ -1,0 +1,48 @@
+<div class="form-group has-search " style="width: 100%;display: flex;justify-content: flex-end;">
+    <div style="width:200px;margin: 10px 20px;">
+        <form [formGroup]="searchAndFilter" (ngSubmit)="onSubmit()">
+            <div class="form-group">
+                <span class="fa fa-search form-control-feedback"></span>
+                <input #search type="search" id="form1" class="form-control" formControlName="search"  placeholder="Enter surname than name"/>
+            </div>
+            <div class="form-group">
+                <select formControlName="office">
+                    <option [ngValue]="null" disabled>Select Office</option>
+                    <option *ngFor="let office of offices" [ngValue]="office.id">{{office.address}}</option>
+                  </select>
+            </div>
+            <button  class="btn btn-primary">
+                Find
+            </button>
+        </form>
+       
+    </div>
+    
+  </div>
+
+
+<div class="row">
+    <div class="col-10">
+    <div class="card-group">
+        <div *ngFor="let doctor of doctors | paginate: {
+            itemsPerPage: pagination.pageSize,
+            currentPage: pagination.page,
+            totalItems: pagination.collectionSize
+        }; let i = index">
+            <div class="card m-2 p-1 text-center ">
+                <img class="card-img-top" src="..." alt="Card image cap">
+                <div class="card-body">
+                  <h5 class="card-title">{{doctor.fullName}}</h5>
+                  <p class="card-text">Address:{{doctor.address}}</p>
+                </div>
+                <div class="card-footer">
+                  <small class="text-muted">Last updated 3 mins ago</small>
+                </div>
+              </div>
+        </div>
+    </div>
+    <pagination-controls [responsive]="true" previousLabel="Prev" nextLabel="Next" aria-label="Default pagination" (pageChange)="onPageChange($event)"></pagination-controls>
+    </div>
+</div> 
+
+

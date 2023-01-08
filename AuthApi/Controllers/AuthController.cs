@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using AuthApi.Common.Attributes;
 using AuthApi.ConfigurationOptions;
 using AuthApi.Contracts.Requests;
@@ -30,7 +31,7 @@ public class AuthController:ControllerBase
         return Ok(authResponse);
     }
     
-    [AllowAnonymous]
+    
     [HttpPost("Register")]
     [ValidationModel]
     public async Task<ActionResult<Guid>> Register([FromBody] RegisterRequest request)
@@ -42,10 +43,10 @@ public class AuthController:ControllerBase
     [HttpPost]
     [Route("Refresh")]
     [ValidationModel]
-    public async Task<ActionResult<AuthenticatedResponse>> Refresh([FromBody] TokensRequest tokens)
+    public async Task<ActionResult<TokensResponse>> Refresh([FromBody] TokensRequest tokens)
     {
-        var authResponse = await _authService.RefreshAsync(tokens);
-        return Ok(authResponse);
+        var tokenResponse = await _authService.RefreshAsync(tokens);
+        return Ok(tokenResponse);
     }
     
     [HttpPut]
@@ -53,7 +54,8 @@ public class AuthController:ControllerBase
     [ValidationModel]
     public async Task<ActionResult<AuthenticatedResponse>> ChangePassword([FromBody] ChangePasswordRequest request)
     {
-        await _authService.UpdatePasswordAsync(request);
+        var username = HttpContext.User.FindFirstValue(ClaimTypes.Name);
+        await _authService.UpdatePasswordAsync(request,username);
         return StatusCode(201);
     }
 
@@ -62,7 +64,8 @@ public class AuthController:ControllerBase
     [Route("Revoke")]
     public async Task<ActionResult> Revoke()
     {
-        await _authService.RevokeAsync();
+        var username = HttpContext.User.FindFirstValue(ClaimTypes.Name);
+        await _authService.RevokeAsync(username);
         return NoContent();
     }
 }

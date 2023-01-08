@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using AuthApi.ConfigurationOptions;
+using AuthApi.Contracts.Requests;
 using AuthApi.Contracts.Responses;
 using AuthApi.DataAccess;
 using AuthApi.Services.Interfaces;
@@ -49,7 +50,7 @@ public class JwtService:IJwtService
         }
     }
 
-    public AuthenticatedResponse GenerateJwtToken(User user)
+    public TokensResponse GenerateJwtToken(User user)
     {
         if (user == null) throw new ArgumentNullException(nameof(user));
         
@@ -57,10 +58,10 @@ public class JwtService:IJwtService
             _jwtOptions.Audience,
             GetClaims(user),
             null,
-            expires: DateTime.Now.AddMinutes(15),
+            expires: DateTime.Now.AddMinutes(5),
             signingCredentials: GetSigningCredentials());
 
-        var response = new AuthenticatedResponse()
+        var response = new TokensResponse()
         {
             Token = new JwtSecurityTokenHandler().WriteToken(token),
             RefreshToken = GenerateRefreshToken()

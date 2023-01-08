@@ -8,6 +8,8 @@ using System.Text;
 using AuthApi.Common.Attributes;
 using AuthApi.ConfigurationOptions;
 using AuthApi.DataAccess;
+using AuthApi.DataAccess.Repositories.Implementations;
+using AuthApi.DataAccess.Repositories.Interfaces;
 using AuthApi.Services.Implementations;
 using AuthApi.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -64,21 +66,11 @@ public static class ServiceExtensions
     
     public static void ConfigureServices(this IServiceCollection services)
     {
+        services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IAuthValidatorService,AuthValidatorService>();
-        var  MyAllowedOrigins = "_myAllowSpecificOrigins";
-        services.AddCors(options =>
-        {
-            options.AddPolicy(name: MyAllowedOrigins,
-                policy  =>
-                {
-                    policy.AllowAnyOrigin()
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                });
-        });
-        
+       
     }
     public static void ConfigureCors(this IServiceCollection services)
     {
@@ -106,7 +98,7 @@ public static class ServiceExtensions
                 o.Password.RequireLowercase = false;
                 o.Password.RequireUppercase = false;
                 o.Password.RequireNonAlphanumeric = false;
-                o.Password.RequiredLength = 6;
+                o.Password.RequiredLength = 8;
                 o.User.RequireUniqueEmail = true;
             })
             .AddEntityFrameworkStores<AppDbContext>();

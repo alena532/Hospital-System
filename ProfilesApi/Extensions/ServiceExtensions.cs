@@ -39,17 +39,22 @@ public static class ServiceExtensions
     
     public static void ConfigureAutoMapper(this IServiceCollection services)
     {
-        services.AddAutoMapper( typeof(AccountsMapper),typeof(DoctorProfilesMapper));
+        services.AddAutoMapper(typeof(AccountsMapper),typeof(DoctorProfilesMapper));
     }
-    
+
+    public static void ConfigureRepositories(this IServiceCollection services)
+    {
+        services.AddScoped<IDoctorProfileRepository, DoctorProfileRepository>();
+        services.AddScoped<IPatientProfileRepository, PatientProfileRepository>();
+        services.AddScoped<IAccountRepository,AccountRepository>();
+    }
     public static void ConfigureServices(this IServiceCollection services)
     {
         services.AddTransient<IDoctorProfilesService,DoctorProfilesService>();
         services.AddTransient<IMailService, MailService>();
-        services.AddTransient<IDoctorProfileRepository, DoctorProfileRepository>();
         services.AddTransient<IPatientProfilesService, PatientProfilesService>();
-        services.AddTransient<IPatientProfileRepository, PatientProfileRepository>();
-        services.AddTransient<IAccountRepository,AccountRepository>();
+        services.AddTransient<IAccountsService, AccountsService>();
+        
         services.AddHttpClient<IDoctorProfilesService, DoctorProfilesService>(client =>
             client.BaseAddress = new Uri("http://localhost:5088")
         );
@@ -71,7 +76,6 @@ public static class ServiceExtensions
                         .AllowAnyMethod();
                 });
         });
-        
     }
     public static void ConfigureFilters(this IServiceCollection services)
     {

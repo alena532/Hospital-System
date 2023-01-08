@@ -24,17 +24,16 @@ public class PatientProfilesController:ControllerBase
     
     [HttpPost("CreateAccount")]
     [ServiceFilter(typeof(ValidationModelAttribute))]
-    public async Task<ActionResult<Guid>> CreateAccount(CreatePatientAccountRequest request)
+    public async Task<ActionResult<GetAccountUserCredentialsResponse>> CreateAccount(CreatePatientAccountRequest request)
         =>Ok(await _service.CreateAccountAsync(request));
     
     
     //for patient
     [HttpPost("")]
     [ServiceFilter(typeof(ValidationModelAttribute))]
-    public async Task<ActionResult> Create(CreatePatientProfileRequest request)
-    { 
-        _service.CreateAsync(request);
-        return Ok(StatusCode(201));
+    public async Task<ActionResult<Guid>> Create([FromBody]CreatePatientProfileRequest request)
+    {
+        return Ok(await _service.CreateAsync(request));
     }
 
     

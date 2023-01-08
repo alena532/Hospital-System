@@ -32,10 +32,20 @@
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
       <PackageReference Include="MimeKit" Version="3.4.3" />
+      <PackageReference Include="MongoDB.Driver" Version="2.18.0" />
+      <PackageReference Include="MongoDB.Driver.GridFS" Version="2.18.0" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
       <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
       <PackageReference Include="Serilog.Expressions" Version="3.4.1" />
       <PackageReference Include="Serilog.Settings.Configuration" Version="3.4.0" />
       <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+      <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.4.0" />
+      <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.4.0" />
+      <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.4.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Contracts\Responses" />
     </ItemGroup>
 
 </Project>

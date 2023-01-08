@@ -86,7 +86,20 @@ public static class ServiceExtensions
         services.AddAutoMapper( typeof(OfficesMapper),typeof(OfficeReceptionistsMapper));
     }
     
-    
+    public static void ConfigureCors(this IServiceCollection services)
+    {
+        var  MyAllowedOrigins = "_myAllowSpecificOrigins";
+        services.AddCors(options =>
+        {
+            options.AddPolicy(name: MyAllowedOrigins,
+                policy  =>
+                {
+                    policy.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+        });
+    }
     
     
     

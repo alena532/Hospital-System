@@ -12,14 +12,9 @@ public class OfficeRepository : RepositoryBase<Office>, IOfficeRepository
     {
     }
     
-    public async override Task  CreateAsync(Office office)
+    public async override Task CreateAsync(Office office)
     {
         await base.CreateAsync(office);
-    }
-
-    public async override Task DeleteAsync(Office office)
-    {
-        await base.DeleteAsync(office);
     }
     
     public async Task<List<Office>> GetAllAsync(bool trackChanges)
@@ -31,5 +26,10 @@ public class OfficeRepository : RepositoryBase<Office>, IOfficeRepository
     {
         return await FindByCondition(p => p.Id.Equals(id), trackChanges).SingleOrDefaultAsync();
     }
-    
+
+    public async override Task DeleteAsync(Office office)
+    {
+        await base.DeleteAsync(office);
+    }
+
 }

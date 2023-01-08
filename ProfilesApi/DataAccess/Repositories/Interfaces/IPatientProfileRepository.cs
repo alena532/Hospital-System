@@ -9,5 +9,6 @@ public interface IPatientProfileRepository:IRepositoryBase<Patient>
     Task CreateAsync(Patient patient);
     Task<List<Patient>> GetMatchesAsync(CredentialsPatientProfileRequest parameters);
     Task<Patient> GetByIdAsync(Guid id, bool trackChanges=false);
+    Task<Patient> GetByAccountIdAsync(Guid accountId, bool trackChanges=false);
     
 }
