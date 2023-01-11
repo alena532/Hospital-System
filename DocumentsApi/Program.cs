@@ -18,6 +18,7 @@ services.AddMassTransit(x =>
     x.UsingRabbitMq();
 });
 
+//TODO: Why?
 services.AddHttpContextAccessor();
 services.AddControllers();
 services.AddFluentValidation(options =>
@@ -59,6 +60,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
 
+//TODO: there is no such file
 app.MapFallbackToFile("index.html");
 
 

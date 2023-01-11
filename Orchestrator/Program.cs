@@ -7,15 +7,13 @@ var services = builder.Services;
 
 services.ConfigureCors();
 
+//TODO: Why?
 services.AddHttpContextAccessor();
 services.AddControllers();
 
 services.ConfigureSwagger();
-
 services.ConfigureFilters();
 services.ConfigureServices();
-//services.ConfigureSqlContext(builder.Configuration);
-
 
 var app = builder.Build();
 
@@ -30,6 +28,7 @@ else
 }
 
 app.UseHttpsRedirection();
+//TODO: Why?
 app.UseStaticFiles();
 app.UseRouting();
 app.UseCors(MyAllowedOrigins);

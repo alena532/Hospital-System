@@ -22,10 +22,9 @@ public class AccountsService : IAccountsService
     public async Task<GetAccountResponse> GetByUserIdAsync(Guid userId)
     {
         var account = await _accountRepository.GetByUserIdAsync(userId);
+        //TODO: in short methods it's ok to remove curvy brackets. It just expands th code 
         if (account == null)
-        {
             throw new BadHttpRequestException("Account doesn't found");
-        }
         
         return _mapper.Map<GetAccountResponse>(account);
     }
@@ -35,7 +34,7 @@ public class AccountsService : IAccountsService
         var account = await _accountRepository.GetByIdAsync(id,trackChanges:false);
         if (account == null)
         {
-            throw new BadHttpRequestException("Account doesn't found");
+            throw new BadHttpRequestException("Account not found");
         }
 
         var patient = await _patientRepository.GetByAccountIdAsync(account.Id);

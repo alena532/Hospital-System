@@ -18,9 +18,6 @@ public class DoctorProfilesMapper:Profile
             .ForMember(dest => dest.FullName,
                 opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}{src.MiddleName}"))
             .ForMember(dest => dest.Experience,
-            opt => opt.MapFrom(src => DateTime.Now.Year - src.CareerStartYear + 1));
-        
-    }
-    
-   
+            opt => opt.MapFrom(src => DateTime.Now.Year - src.CareerStartYear + 1));   
+    }  
 }

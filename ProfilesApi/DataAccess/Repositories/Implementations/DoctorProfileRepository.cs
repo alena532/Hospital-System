@@ -18,12 +18,13 @@ public class DoctorProfileRepository: RepositoryBase<Doctor>,IDoctorProfileRepos
         await base.CreateAsync(doctor);
     }
 
-    public async Task<List<Doctor>> GetAllAsync(bool trackChanges)
+    //TODO: Use abstractions, not concrete implementations
+    public async Task<IEnumerable<Doctor>> GetAllAsync(bool trackChanges)
     {
         return await FindAll(trackChanges).ToListAsync();
     }
     
-    public async Task<List<Doctor>> GetAllByOfficeIdAsync(Guid officeId,bool trackChanges)
+    public async Task<IEnumerable<Doctor>> GetAllByOfficeIdAsync(Guid officeId,bool trackChanges)
     {
         return await FindByCondition(x=>x.OfficeId==officeId,trackChanges).ToListAsync();
     }
@@ -33,9 +34,30 @@ public class DoctorProfileRepository: RepositoryBase<Doctor>,IDoctorProfileRepos
         return await FindByCondition(x=>x.Id==id,trackChanges).SingleOrDefaultAsync();
     }
 
-    public async Task<List<Doctor>> SearchByCredentialsAsync(string firstName, string? lastName)
+    public async Task<IEnumerable<Doctor>> SearchByCredentialsAsync(string firstName, string? lastName)
     {
         
-        return await FindByCondition(x=>x.FirstName.ToLower().Contains(firstName.ToLower()) && x.LastName.ToLower().Contains(lastName.ToLower()),trackChanges:false).ToListAsync();
+        return await FindByCondition(x=>x.FirstName.ToLower().Contains(firstName.ToLower()) 
+            && x.LastName.ToLower().Contains(lastName.ToLower()),trackChanges:false).ToListAsync();
+    }
+    
+    public async Task<IEnumerable<Doctor>> SearchByCredentialsAsync(Guid? officeId, string? firstName, string? lastName)
+    {
+        IEnumerable<Doctor> result;
+        IQueryable<Doctor> doctors = _repositoryContext.Set<Doctor>();
+        doctors = doctors.Where(status => status.Status == DoctorStatusEnum.AtWork);
+
+        if (officeId != null)
+            doctors = doctors.Where(x => x.OfficeId == officeId);
+        
+        if (firstName != "null")
+        {
+            lastName = lastName != "null" ? lastName : "";
+            doctors = doctors.Where(x =>
+                x.FirstName.ToLower().Contains(firstName.ToLower()) &&
+                x.LastName.ToLower().Contains(lastName.ToLower()));
+        }
+        result = await doctors.ToListAsync();
+        return result;
     }
 }

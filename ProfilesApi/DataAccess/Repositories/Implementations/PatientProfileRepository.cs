@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using ProfilesApi.Contracts.Requests.PatientProfiles;
 using ProfilesApi.DataAccess.Models;
 using ProfilesApi.DataAccess.Repositories.Interfaces.Base;
-using ProfilesApi.Services.Interfaces;
 using RepositoryBase.Implementations;
 
 namespace ProfilesApi.DataAccess.Repositories.Implementations;
@@ -20,10 +19,17 @@ public class PatientProfileRepository: RepositoryBase<Patient>,IPatientProfileRe
 
     public async Task<List<Patient>> GetMatchesAsync(CredentialsPatientProfileRequest parameters)
     {
+        //TODO: For readability
         return await FindByCondition(x =>
             x.IsLinkedToAccount==false &&
-            (x.FirstName.Equals(parameters.FirstName,StringComparison.OrdinalIgnoreCase) || x.LastName.Equals(parameters.LastName,StringComparison.OrdinalIgnoreCase) ||
-            x.MiddleName.Equals(parameters.MiddleName,StringComparison.OrdinalIgnoreCase) || x.DateOfBirth.ToString().Equals(parameters.DateOfBirth.ToString(),StringComparison.OrdinalIgnoreCase)),trackChanges:true).ToListAsync();
+            (x.FirstName.Equals(parameters.FirstName,StringComparison.OrdinalIgnoreCase) 
+            || x.LastName.Equals(parameters.LastName,StringComparison.OrdinalIgnoreCase) 
+            || x.MiddleName.Equals(parameters.MiddleName,StringComparison.OrdinalIgnoreCase)
+            //TODO: implement DateTime class for easy comparison
+            //|| x.DateOfBirth.Date.Compare(parameters.DateOfBirth.Date)
+            || x.DateOfBirth.ToString().Equals(parameters.DateOfBirth.ToString(),StringComparison.OrdinalIgnoreCase))
+            ,trackChanges:true)
+            .ToListAsync();
     }
 
     public async Task<Patient> GetByIdAsync(Guid id,bool trackChanges)

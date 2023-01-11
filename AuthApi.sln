@@ -1,24 +1,27 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthApi", "AuthApi\AuthApi.csproj", "{D70B519F-6E4C-4B5C-BCC1-A475F628FB39}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32825.248
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthApi", "AuthApi\AuthApi.csproj", "{D70B519F-6E4C-4B5C-BCC1-A475F628FB39}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppointmentsApi", "AppointmentsApi\AppointmentsApi.csproj", "{D47E9034-5F1F-4A6D-8C48-0543A40511AE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppointmentsApi", "AppointmentsApi\AppointmentsApi.csproj", "{D47E9034-5F1F-4A6D-8C48-0543A40511AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_GateWay", "_GateWay\_GateWay.csproj", "{C7C1749F-B83B-4411-85DB-F9457E2D2606}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_GateWay", "_GateWay\_GateWay.csproj", "{C7C1749F-B83B-4411-85DB-F9457E2D2606}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentsApi", "DocumentsApi\DocumentsApi.csproj", "{F28B8AC0-C3E8-4A09-AA36-16F2A651CD32}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocumentsApi", "DocumentsApi\DocumentsApi.csproj", "{F28B8AC0-C3E8-4A09-AA36-16F2A651CD32}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficesApi", "OfficesApi\OfficesApi.csproj", "{3379F798-1DAD-4C8B-8A22-A886C9B03465}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfficesApi", "OfficesApi\OfficesApi.csproj", "{3379F798-1DAD-4C8B-8A22-A886C9B03465}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProfilesApi", "ProfilesApi\ProfilesApi.csproj", "{4DACB4DB-AC74-447E-B3ED-13E99F35B1B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProfilesApi", "ProfilesApi\ProfilesApi.csproj", "{4DACB4DB-AC74-447E-B3ED-13E99F35B1B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicesApi", "ServicesApi\ServicesApi.csproj", "{4A14C1F4-32EF-4F49-AE5D-D4EDFAEB50B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServicesApi", "ServicesApi\ServicesApi.csproj", "{4A14C1F4-32EF-4F49-AE5D-D4EDFAEB50B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedModels", "SharedModels\SharedModels.csproj", "{B807BE6F-9E6F-407C-8B9A-F8C3444F29D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedModels", "SharedModels\SharedModels.csproj", "{B807BE6F-9E6F-407C-8B9A-F8C3444F29D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RepositoryBase", "RepositoryBase\RepositoryBase.csproj", "{7AC34002-5004-4796-B81D-96CEE02B0726}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RepositoryBase", "RepositoryBase\RepositoryBase.csproj", "{7AC34002-5004-4796-B81D-96CEE02B0726}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orchestrator", "Orchestrator\Orchestrator.csproj", "{1B017FFF-DC7E-496B-B0FF-7C001BA17D64}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orchestrator", "Orchestrator\Orchestrator.csproj", "{1B017FFF-DC7E-496B-B0FF-7C001BA17D64}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -66,5 +69,11 @@ Global
 		{1B017FFF-DC7E-496B-B0FF-7C001BA17D64}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B017FFF-DC7E-496B-B0FF-7C001BA17D64}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B017FFF-DC7E-496B-B0FF-7C001BA17D64}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {53492A5E-C907-4FB3-8A6B-3FDBF6682C4C}
 	EndGlobalSection
 EndGlobal

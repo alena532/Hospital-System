@@ -9,6 +9,7 @@ public interface IPatientProfilesService
     public Task<Guid> CreateAsync(CreatePatientProfileRequest request);
     public Task<GetAccountUserCredentialsResponse> CreateAccountAsync(CreatePatientAccountRequest request);
     Task<GetPatientProfilesResponse> LinkPatientProfileToAccountAsync(Guid id);
+    //TODO: ICollection
     Task<ICollection<GetPatientProfilesResponse>> GetMatchesAsync(CredentialsPatientProfileRequest request);
     Task<Patient> GetByAccountId(Guid accountId);
 }

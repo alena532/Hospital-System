@@ -24,6 +24,7 @@ public class ProfilesService:IProfilesService
             DateOfBirth = request.DateOfBirth,
             PhoneNumber = request.PhoneNumber
         };
+        //TODO: move routes to static class. At least ports
         var createdPatient = await _client.PostAsJsonAsync("https://localhost:7097/api/PatientProfiles", profileRequest);
         if (createdPatient.IsSuccessStatusCode == false)
         {

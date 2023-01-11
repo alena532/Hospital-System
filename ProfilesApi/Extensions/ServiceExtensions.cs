@@ -1,5 +1,3 @@
-using MassTransit.MultiBus;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
@@ -26,10 +24,9 @@ public static class ServiceExtensions
                 Format = "date",
                 Example = new OpenApiString("2022-01-01")
             });
-        }
-
-        );
+        }        );
     }
+
     public static void ConfigureSqlContext(this IServiceCollection services,
         IConfiguration configuration)
     {
@@ -55,6 +52,7 @@ public static class ServiceExtensions
         services.AddTransient<IPatientProfilesService, PatientProfilesService>();
         services.AddTransient<IAccountsService, AccountsService>();
         
+        //TODO: just inject services, no need to send request to from the service to itself
         services.AddHttpClient<IDoctorProfilesService, DoctorProfilesService>(client =>
             client.BaseAddress = new Uri("http://localhost:5088")
         );

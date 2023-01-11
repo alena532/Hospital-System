@@ -1,6 +1,5 @@
 using AutoMapper;
 using ProfilesApi.Contracts.Requests.PatientProfiles;
-using ProfilesApi.Contracts.Responses.DoctorProfiles;
 using ProfilesApi.Contracts.Responses.PatientProfiles;
 using ProfilesApi.DataAccess.Models;
 
@@ -12,8 +11,5 @@ public class PatientProfilesMapper:Profile
     {
         CreateMap<CreatePatientProfileRequest, Patient>();
         CreateMap<Patient, GetPatientProfilesResponse>();
-
-    }
-    
-   
+    }  
 }

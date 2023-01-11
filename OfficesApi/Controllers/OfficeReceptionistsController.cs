@@ -15,6 +15,7 @@ namespace OfficesApi.Controllers;
 public class OfficeReceptionistsController:ControllerBase
 {
     private readonly IOfficeReceptionistsService _receptionistsService;
+    //TODO: remove
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogger<OfficesController> _logger;
     
@@ -38,6 +39,7 @@ public class OfficeReceptionistsController:ControllerBase
     public async Task<ActionResult<GetOfficeResponse>> GetByIdForOffice(Guid officeId,Guid id)
     {
         _logger.LogInformation($"Getting receptionist {id} for office office {officeId}");
+        //TODO:  Use Context
         var receptionist = _httpContextAccessor.HttpContext.Items["receptionist"] as OfficeReceptionist;
 
         return Ok(await _receptionistsService.GetByIdForOfficeAsync(receptionist));
@@ -49,6 +51,7 @@ public class OfficeReceptionistsController:ControllerBase
     public async Task<IActionResult> DeleteFromOffice(Guid officeId,Guid id)
     {
         _logger.LogInformation($"Deleting receptionist {id} from office {officeId}");
+        //TODO: Use Context
         var receptionist = _httpContextAccessor.HttpContext.Items["receptionist"] as OfficeReceptionist;
         
         await _receptionistsService.DeleteFromOfficeAsync(receptionist);

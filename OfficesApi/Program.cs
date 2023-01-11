@@ -18,6 +18,7 @@ services.AddMassTransit(x =>
     x.UsingRabbitMq();
 });
 
+//TODO: Why?
 services.AddHttpContextAccessor();
 services.AddControllers();
 services.AddFluentValidation(options =>
@@ -41,17 +42,9 @@ services.ConfigureOfficeReceptionistsService();
 services.ConfigureOfficeReceptionistRepository();
 services.ConfigureSqlContext(builder.Configuration);
 
-
 services.ConfigureFilters();
 
 var app = builder.Build();
-
-/*using (var scope = app.Services.CreateScope())
-{
-    var getServices = scope.ServiceProvider;
-    SeedData.Initialize(getServices);
-}
-*/
 
 if (app.Environment.IsDevelopment())
 {
@@ -64,6 +57,7 @@ else
 }
 app.ConfigureExceptionHandler();
 app.UseHttpsRedirection();
+//TODO: Why?
 app.UseStaticFiles();
 app.UseRouting();
 app.UseCors(MyAllowedOrigins);
