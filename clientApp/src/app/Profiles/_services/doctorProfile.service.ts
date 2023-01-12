@@ -13,7 +13,7 @@ export class DoctorProfilesService {
   constructor(private http: HttpClient) {
   }
 
-  getAll(pageNumber:number,pageSize:number,firstName:string,lastName:string,office:number) {
+  getAll(pageNumber:number,pageSize:number,firstName:any,lastName:any,office:number) {
     let queryParams = new HttpParams();
     queryParams = queryParams.append("pageNumber",pageNumber);
     queryParams = queryParams.append("pageSize",pageSize);

@@ -1,0 +1,21 @@
+<div class="container">
+    <br />
+    <br />
+    <div class="card">
+      <div class="card-header">
+        <div class="row">
+          <div class="col">
+            <h4>Your credentials</h4>
+          </div>
+        </div>
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item"><b>First name:</b> {{ this.currentUser.firstName }}</li>
+        <li class="list-group-item"><b>Last name:</b> {{ this.currentUser.lastName }}</li>
+        <li class="list-group-item"><b>Middle name:</b> {{ this.currentUser.middleName }}</li>
+        <li class="list-group-item"><b>Phone number:</b> {{ this.currentUser.phoneNumber }}</li>
+        <li class="list-group-item"><b>Date of birth:</b> {{ this.currentUser.dateOfBirth }}</li>
+        <li class="list-group-item"><b>Photo:</b> <img [src]="image"/></li>
+      </ul>
+    </div>
+  </div>

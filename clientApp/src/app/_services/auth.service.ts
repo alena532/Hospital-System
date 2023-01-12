@@ -5,54 +5,49 @@ import {map, Observable, of, throwError} from "rxjs";
 import { catchError, finalize, tap } from 'rxjs/operators';
 import {User} from "../_models/User"
 import { FormGroupDirective } from '@angular/forms';
+import { switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-
   private accessPointUrl: string = 'https://localhost:5002/api/Auth';
-  private loggedUser: User | any;
-  private userId!:string | any;
+  userId!: string;
   currentUser: User | undefined;
+  isAuthenticated: boolean = false;
   constructor(private http: HttpClient) {
-
   }
 
   login(email: string,password: string) {
     return this.http.post<any>(this.accessPointUrl+'/Login', { email, password })
     .pipe(
-      tap((tokens)=> {
-      let userInfo = tokens['user'];
-      this.userId = userInfo['id'];
-      console.log(`in method login ${tokens}`);
-      this.storeTokens(tokens['tokens']);
-      this.http.get<User>(`https://localhost:7097/api/Accounts/CheckAccountBeforeProfileLogin/${this.userId}`)
-      .subscribe(
-        (data:any)=>{
-          console.log(`in method checkUserBeforeLogin ${data}`);
-          let patient = data['patient'];
-          this.currentUser = new User(patient['firstName'],patient['lastName'],patient['id'],data['email']);
-        }
-      )
-      }),
+      switchMap((tokens) => {
+        let userInfo = tokens['user'];
+        console.log(`in method login ${tokens}`);
+        this.storeTokens(tokens['tokens']);
+        this.userId = userInfo['id'];
+        return this.http.get<User>(`https://localhost:7097/api/Accounts/CheckPatientAccountBeforeProfileLogin/${userInfo['id']}`)
+          .pipe(
+            map((data:any)=>{
+              console.log("in login")
+              console.log(this.isAuthenticated)
+              let patient = data['patient'];
+              this.currentUser = new User(data['email'],patient['id'],patient['firstName'],patient['lastName'],patient['middleName'],data['phoneNumber'],patient['dateOfBirth'],patient['accountId']);
+              localStorage.setItem("currentUser",JSON.stringify(this.currentUser));
+              this.isAuthenticated = true;
+              localStorage.setItem("isAuthenticated",JSON.stringify(this.isAuthenticated));
+            },
+          )
+        )
+      })
     )
-    
-    
   }
-  checkUserBeforeLogin(){
-    console.log(`in checkUserBeforeLogin ${this.userId}`)
-    return this.http.get<User>(`https://localhost:7097/api/Accounts/CheckAccountBeforeProfileLogin/${this.userId}`)
-    .pipe(
-      map((data:any)=>{
-        console.log(`in method checkUserBeforeLogin ${data}`);
-        let patient = data['patient'];
-        return new User(patient['firstName'],patient['lastName'],patient['id'],data['email']);
-      }
 
-      )
-    )
-
+  getIsAuthenticated():Boolean{
+    return JSON.parse(localStorage.getItem('isAuthenticated')!);
+  }
+  getCurrentUser():User{
+    return JSON.parse(localStorage.getItem('currentUser')!);
   }
 
   register(email: string,password: string){
@@ -60,7 +55,6 @@ export class AuthService {
     return this.http.post<any>('https://localhost:7097/api/PatientProfiles/CreateAccount', { email, password, roleId})
     .pipe(
       tap((AccountId)=> {
-        //let a={toEmail:AccountId.toEmail,accountId:AccountId.accountId}
         this.http.post<any>('https://localhost:7097/api/Mail/SendToPatient',AccountId ).subscribe()
       })
     )
@@ -86,8 +80,10 @@ export class AuthService {
 
 
   logout(){
-    this.loggedUser = null;
-    this.userId = null;
+    this.currentUser = undefined;
+    this.isAuthenticated = false;
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('isAuthenticated');
     localStorage.removeItem('token');
     localStorage.removeItem('refresh_token');
   }

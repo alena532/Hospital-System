@@ -47,6 +47,7 @@ import {Router} from "@angular/router";
         .subscribe(
           data => {},
           error => {
+            this.authService.logout();
             this.loading = false;
             console.log(error.status)
             this.error = 'Either an email or a password is incorrect';

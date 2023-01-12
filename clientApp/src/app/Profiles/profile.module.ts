@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule,FormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
+import { PhotosService } from '../Documents/_services/photo.service';
 import { CreateProfileComponent } from './Components/CreateProfile/create.profile.component';
 import { PatientProfilesService } from './_services/patientProfile.service';
 import { ProfilesRoutingModule } from './profile-routing.module';
@@ -19,10 +19,16 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { GetDoctorsComponent } from './Components/GetDoctors/get.doctors.component';
 import { DoctorProfilesService } from './_services/doctorProfile.service';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { GetProfileComponent } from './Components/ViewProfile/get.profile.component';
+import { DomSanitizer } from '@angular/platform-browser';
+import { SafeHtmlPipe } from './safeHtml.pipe';
+
 @NgModule({
   declarations: [
     CreateProfileComponent,
-    GetDoctorsComponent
+    GetDoctorsComponent,
+    GetProfileComponent,
+    SafeHtmlPipe
   ],
   imports: [
     NgbModule,
@@ -41,7 +47,9 @@ import { NgxPaginationModule } from 'ngx-pagination';
   providers: [
     PatientProfilesService,
     AccountsService,
-    DoctorProfilesService
+    DoctorProfilesService,
+    PhotosService,
+
   ]
 })
 export class ProfilesModule { }

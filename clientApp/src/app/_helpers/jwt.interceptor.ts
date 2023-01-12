@@ -3,20 +3,26 @@ import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpErrorResponse
 import { catchError, Observable, throwError } from 'rxjs';
 import { AuthService } from '../_services/auth.service';
 import {Router} from "@angular/router";
-import {JwtHelperService} from '@auth0/angular-jwt';
+import jwt_decode from 'jwt-decode';
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthService, private jwtHelper: JwtHelperService, private router: Router) { }
+  constructor(private authService: AuthService, private router: Router) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    localStorage.removeItem('token')
-    console.log(localStorage.getItem('token'));
 
     console.log(!localStorage.getItem('token'));
     console.log(localStorage.getItem('refresh_token'));
-    if(!localStorage.getItem('token') || this.jwtHelper.isTokenExpired(localStorage.getItem('refresh_token'))) return next.handle(request);
-    //if(this.jwtHelper.isTokenExpired(localStorage.getItem('refresh_token'))) return next.handle(request);
+    let expired = true;
+    if(localStorage.getItem('token')){
+      const expiry = (JSON.parse(atob(localStorage.getItem('token')!.split('.')[1]))).exp;
+      
+      if(Date.now() < expiry*1000){
+        expired = false;
+      }
+    }
+    if(!localStorage.getItem('token') || expired) return next.handle(request);
+
     let token = JSON.parse(localStorage.getItem('token')! || '{}');
 
     request = request.clone({
