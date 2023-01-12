@@ -32,4 +32,10 @@ public class DoctorProfileRepository: RepositoryBase<Doctor>,IDoctorProfileRepos
     {
         return await FindByCondition(x=>x.Id==id,trackChanges).SingleOrDefaultAsync();
     }
+
+    public async Task<List<Doctor>> SearchByCredentialsAsync(string firstName, string? lastName)
+    {
+        
+        return await FindByCondition(x=>x.FirstName.ToLower().Contains(firstName.ToLower()) && x.LastName.ToLower().Contains(lastName.ToLower()),trackChanges:false).ToListAsync();
+    }
 }

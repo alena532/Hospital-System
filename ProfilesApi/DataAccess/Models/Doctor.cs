@@ -16,9 +16,5 @@ public class Doctor
     public string Address { get; set; }
     public Guid OfficeId { get; set; }
     public Guid AccountId { get; set; }
-    
-    public Guid PhotoId { get; set; }
-    public string Url { get; set; }
-    
     public virtual Account Account { get; set; }
 }

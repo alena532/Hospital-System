@@ -7,8 +7,11 @@ using OfficesApi.Extensions;
 using Serilog;
 using Serilog.Filters;
 
+var  MyAllowedOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
+
+services.ConfigureCors();
 
 services.AddMassTransit(x =>
 {
@@ -63,10 +66,15 @@ app.ConfigureExceptionHandler();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-
+app.UseCors(MyAllowedOrigins);
 app.UseAuthentication();
 
 app.UseAuthorization();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller}/{action=Index}/{id?}");
+
+app.MapFallbackToFile("index.html");
 
 
 app.Run();

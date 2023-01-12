@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProfilesApi.Common.Attributes;
+using ProfilesApi.Contracts;
 using ProfilesApi.Contracts.Requests.DoctorProfiles;
 using ProfilesApi.Contracts.Responses.DoctorProfiles;
 using ProfilesApi.Services.Interfaces;
@@ -30,9 +31,9 @@ public class DoctorProfilesController:ControllerBase
     
     
     [HttpGet("")]
-    public async Task<ActionResult<ICollection<GetDoctorProfilesResponse>>> GetAll()
+    public async Task<ActionResult<PageResult<GetDoctorProfilesResponse>>> GetAll([FromQuery]int pageNumber,[FromQuery]int pageSize,[FromQuery]SearchAndFilterParameters parameters)
     {
-        return Ok(await _service.GetAllAsync());
+        return Ok(await _service.GetAllAsync(pageNumber,pageSize,parameters));
     }
     
     

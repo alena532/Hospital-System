@@ -46,10 +46,8 @@ public class OfficesService:IOfficesService
         {
             throw new BadHttpRequestException("Office doesnt found");
         }
-
         await _repository.DeleteAsync(office);
     }
-
 
     public async Task<GetOfficeResponse> CreateAsync(CreateOfficeRequest request)
     {

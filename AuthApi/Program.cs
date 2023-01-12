@@ -1,9 +1,10 @@
 using AuthApi.DataAccess;
 using AuthApi.Extensions;
-
+var  MyAllowedOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 
 var services = builder.Services;
+services.ConfigureCors();
 services.AddHttpContextAccessor();
 services.AddControllers();
 
@@ -15,7 +16,6 @@ services.ConfigureIdentity();
 services.ConfigureJWT(builder.Configuration);
 services.ConfigureFilters();
 services.ConfigureServices();
-
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -37,10 +37,16 @@ else
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-
+app.UseCors(MyAllowedOrigins);
 app.UseAuthentication();
 
 app.UseAuthorization();
 
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller}/{action=Index}/{id?}");
+
+app.MapFallbackToFile("index.html");
 
 app.Run();

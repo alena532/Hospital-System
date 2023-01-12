@@ -11,7 +11,7 @@ public class CreatePatientProfileRequestValidator : AbstractValidator<CreatePati
         RuleFor(profile => profile.FirstName).NotNull().NotEmpty().Length(1,40);
         RuleFor(profile => profile.LastName).NotNull().NotEmpty().Length(1, 50);
         RuleFor(x => x.PhoneNumber).Matches("^\\+");
-        RuleFor(profile => profile.DateOfBirth).NotNull().NotEmpty().Must(date => date.CompareTo(DateOnly.FromDateTime(DateTime.Now)) == -1);
+        //RuleFor(profile => profile.DateOfBirth).NotNull().NotEmpty();
         
     }
 }
