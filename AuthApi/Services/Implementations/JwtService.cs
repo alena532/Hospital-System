@@ -58,7 +58,7 @@ public class JwtService:IJwtService
             _jwtOptions.Audience,
             GetClaims(user),
             null,
-            expires: DateTime.Now.AddMinutes(5),
+            expires: DateTime.Now.AddMinutes(15),
             signingCredentials: GetSigningCredentials());
 
         var response = new TokensResponse()

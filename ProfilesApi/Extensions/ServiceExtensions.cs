@@ -26,9 +26,7 @@ public static class ServiceExtensions
                 Format = "date",
                 Example = new OpenApiString("2022-01-01")
             });
-        }
-
-        );
+        });
     }
     public static void ConfigureSqlContext(this IServiceCollection services,
         IConfiguration configuration)

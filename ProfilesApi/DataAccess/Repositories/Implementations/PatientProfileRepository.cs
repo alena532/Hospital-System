@@ -22,8 +22,10 @@ public class PatientProfileRepository: RepositoryBase<Patient>,IPatientProfileRe
     {
         return await FindByCondition(x =>
             x.IsLinkedToAccount==false &&
-            (x.FirstName.Equals(parameters.FirstName,StringComparison.OrdinalIgnoreCase) || x.LastName.Equals(parameters.LastName,StringComparison.OrdinalIgnoreCase) ||
-            x.MiddleName.Equals(parameters.MiddleName,StringComparison.OrdinalIgnoreCase) || x.DateOfBirth.ToString().Equals(parameters.DateOfBirth.ToString(),StringComparison.OrdinalIgnoreCase)),trackChanges:true).ToListAsync();
+            (x.FirstName.Equals(parameters.FirstName,StringComparison.OrdinalIgnoreCase)
+             || x.LastName.Equals(parameters.LastName,StringComparison.OrdinalIgnoreCase) 
+             || x.MiddleName.Equals(parameters.MiddleName,StringComparison.OrdinalIgnoreCase) 
+             || x.DateOfBirth.CompareTo(parameters.DateOfBirth) == 0),trackChanges:true).ToListAsync();
     }
 
     public async Task<Patient> GetByIdAsync(Guid id,bool trackChanges)

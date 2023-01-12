@@ -1,10 +1,8 @@
 using DocumentsApi.Contracts.Requests.Photos;
-using DocumentsApi.DataAccess.Repositories.Interfaces;
 using DocumentsApi.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
-using MongoDB.Driver;
+
 
 namespace DocumentsApi.Controllers;
 
@@ -22,10 +20,16 @@ public class PhotosController : ControllerBase
     
     
     [HttpPost("Patient")]
-    public async Task<ActionResult> CreatePatientPhoto([FromForm]CreatePhotoForPatientRequest request)
+    public async Task<ActionResult> CreatePatientPhoto(CreatePhotoForPatientRequest request)
     {
         await _service.CreateAsync(request);
         return Ok();
+    }
+    
+    [HttpGet("{patientId:Guid}")]
+    public async Task<ActionResult<byte []>> GetPatientPhotoByPatientId(Guid patientId)
+    {
+        return Ok(await _service.GetByPatientIdAsync(patientId));
     }
 
 }

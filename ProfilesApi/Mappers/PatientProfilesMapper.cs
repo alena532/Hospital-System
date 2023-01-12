@@ -12,8 +12,5 @@ public class PatientProfilesMapper:Profile
     {
         CreateMap<CreatePatientProfileRequest, Patient>();
         CreateMap<Patient, GetPatientProfilesResponse>();
-
     }
-    
-   
 }

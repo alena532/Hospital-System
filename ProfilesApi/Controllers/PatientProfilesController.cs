@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProfilesApi.Common.Attributes;
-using ProfilesApi.Contracts.Requests.DoctorProfiles;
-using ProfilesApi.Contracts.Requests.Mail;
 using ProfilesApi.Contracts.Requests.PatientProfiles;
 using ProfilesApi.Contracts.Responses.DoctorProfiles;
 using ProfilesApi.Contracts.Responses.PatientProfiles;
@@ -28,7 +26,6 @@ public class PatientProfilesController:ControllerBase
         =>Ok(await _service.CreateAccountAsync(request));
     
     
-    //for patient
     [HttpPost("")]
     [ServiceFilter(typeof(ValidationModelAttribute))]
     public async Task<ActionResult<Guid>> Create([FromBody]CreatePatientProfileRequest request)

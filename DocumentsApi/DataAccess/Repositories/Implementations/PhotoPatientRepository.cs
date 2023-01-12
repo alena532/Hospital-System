@@ -24,4 +24,12 @@ public class PhotoPatientRepository:IPhotoPatientRepository
     {
         await _photosCollection.InsertOneAsync(request);
     }
+
+    public async Task<ObjectId> GetPhotoIdByPatientIdAsync(Guid patientId)
+    {
+        var filter = new BsonDocument { { "PatientId", patientId }};
+        var photoPatient = await _photosCollection.Find(filter).SingleOrDefaultAsync();
+        
+        return photoPatient.PhotoId;
+    }
 }

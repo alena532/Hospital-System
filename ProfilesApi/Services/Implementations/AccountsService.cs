@@ -23,14 +23,13 @@ public class AccountsService : IAccountsService
     {
         var account = await _accountRepository.GetByUserIdAsync(userId);
         if (account == null)
-        {
-            throw new BadHttpRequestException("Account doesn't found");
-        }
+            throw new BadHttpRequestException("Account not found");
+        
         
         return _mapper.Map<GetAccountResponse>(account);
     }
 
-    public async Task CheckAccountBeforeProfileCreationAsync(Guid id)
+    public async Task CheckPatientAccountBeforeProfileCreationAsync(Guid id)
     {
         var account = await _accountRepository.GetByIdAsync(id,trackChanges:false);
         if (account == null)
@@ -45,7 +44,7 @@ public class AccountsService : IAccountsService
         }
     }
     
-    public async Task<GetAccountResponse> CheckAccountBeforeProfileLoginAsync(Guid userId)
+    public async Task<GetAccountResponse> CheckPatientAccountBeforeProfileLoginAsync(Guid userId)
     {
         var account = await _accountRepository.GetByUserIdAsync(userId,trackChanges:false);
         if (account == null)
@@ -62,7 +61,8 @@ public class AccountsService : IAccountsService
         var response = new GetAccountResponse()
         {
             Patient = _mapper.Map<GetPatientProfilesResponse>(patient),
-            Email = account.Email
+            Email = account.Email,
+            PhoneNumber = account.PhoneNumber,
         };
         return response;
     }
