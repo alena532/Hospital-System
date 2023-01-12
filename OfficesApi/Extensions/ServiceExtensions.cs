@@ -1,15 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OfficesApi.Common.Attributes;
 using OfficesApi.DataAccess;
-using OfficesApi.DataAccess.Models;
 using OfficesApi.DataAccess.Repositories.Implementations;
 using OfficesApi.DataAccess.Repositories.Interfaces;
 using OfficesApi.Mappers;
 using OfficesApi.Services.Implementations;
 using OfficesApi.Services.Interfaces;
-using OfficesApi.Validators;
 
 namespace OfficesApi.Extensions;
 
@@ -58,27 +55,16 @@ public static class ServiceExtensions
     public static void ConfigureFilters(this IServiceCollection services)
     {
         services.AddScoped<ValidationModelAttribute>();
-        services.AddScoped<ValidationOfficeReceptionistExistsAttribute>();
     }
     
-    public static void ConfigureOfficesService(this IServiceCollection services)
+    public static void ConfigureServices(this IServiceCollection services)
     {
         services.AddTransient<IOfficesService,OfficesService>();
     }
 
-    public static void ConfigureOfficeReceptionistsService(this IServiceCollection services)
-    {
-        services.AddTransient<IOfficeReceptionistsService,OfficeReceptionistsService>();
-    }
-
-    public static void ConfigureOfficeRepository(this IServiceCollection services)
+    public static void ConfigureRepositories(this IServiceCollection services)
     {
         services.AddScoped<IOfficeRepository,OfficeRepository>();
-    }
-    
-    public static void ConfigureOfficeReceptionistRepository(this IServiceCollection services)
-    {
-        services.AddScoped<IOfficeReceptionistRepository,OfficeReceptionistRepository>();
     }
 
     public static void ConfigureAutoMapper(this IServiceCollection services)
@@ -100,7 +86,4 @@ public static class ServiceExtensions
                 });
         });
     }
-    
-    
-    
 }

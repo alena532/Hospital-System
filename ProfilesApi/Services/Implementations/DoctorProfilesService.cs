@@ -1,15 +1,10 @@
-using System.Net.Http.Headers;
-using System.Security.Cryptography;
 using System.Text.Json;
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc.TagHelpers;
 using ProfilesApi.Contracts;
 using ProfilesApi.Contracts.Requests;
 using ProfilesApi.Contracts.Requests.DoctorProfiles;
 using ProfilesApi.Contracts.Requests.Mail;
-using ProfilesApi.Contracts.Responses;
 using ProfilesApi.Contracts.Responses.DoctorProfiles;
-using ProfilesApi.Controllers;
 using ProfilesApi.DataAccess.Models;
 using ProfilesApi.DataAccess.Repositories.Interfaces.Base;
 using ProfilesApi.Services.Interfaces;
@@ -107,31 +102,11 @@ public class DoctorProfilesService:IDoctorProfilesService
     
     public async Task<PageResult<GetDoctorProfilesResponse>> GetAllAsync(int pageNumber, int pageSize,SearchAndFilterParameters parameters)
     {
-        var doctors = await _doctorRepository.GetAllAsync();
-        doctors =  doctors.Where(status => status.Status == DoctorStatusEnum.AtWork).ToList();
-        
-        //List<Doctor> doctorsByOfficeId = new();
-        if (parameters.OfficeId != null)
-        {
-            //doctorsByOfficeId = await _doctorRepository.GetAllByOfficeIdAsync((Guid) parameters.OfficeId);
-            doctors.Where(x => x.OfficeId == parameters.OfficeId).ToList();
-            //doctors = doctors.Intersect(doctorsByOfficeId).ToList();
-        }
-        
-        //List<Doctor> doctorsByCredentials = new();
-        if (parameters.FirstName != "null")
-        {
-            parameters.LastName = parameters.LastName != "null" ? parameters.LastName : "";
-            //doctorsByCredentials = await _doctorRepository.SearchByCredentialsAsync(parameters.FirstName, parameters.LastName);
-            doctors.Where(x =>
-                x.FirstName.ToLower().Contains(parameters.FirstName.ToLower()) &&
-                x.LastName.ToLower().Contains(parameters.LastName.ToLower())).ToList();
-            //doctors = doctors.Intersect(doctorsByCredentials).ToList();
-        }
+        var doctors = await _doctorRepository.SearchByCredentialsAsync(parameters.FirstName, parameters.LastName, parameters.OfficeId);
         
         var result = new PageResult<GetDoctorProfilesResponse>
         {
-            Count = doctors.Count,
+            Count = doctors.Count(),
             Items = _mapper.Map<List<GetDoctorProfilesResponse>>(doctors.Skip((pageNumber - 1) * pageSize).Take(pageSize))
         };
         return result;

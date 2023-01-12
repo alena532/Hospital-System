@@ -1,7 +1,10 @@
-using System.Text.Json;
+using System.Net;
+using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 using Orchestrator.Contracts.Requests.PatientProfiles;
 using Orchestrator.Contracts.Requests.Photo;
 using Orchestrator.Services.Interfaces;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Orchestrator.Services.Implementations;
 
@@ -34,16 +37,26 @@ public class ProfilesService:IProfilesService
         var patientId = JsonSerializer.Deserialize<Guid>(patientIdStream);
 
         if (request.Photo.Length <= 1) return;
+        
+        byte[] bytes;
+        using (var ms = new MemoryStream())
+        {
+            await request.Photo.CopyToAsync(ms);
+            bytes = ms.ToArray();
+        }
+
         var photoRequest = new CreatePhotoForPatientRequest()
         {
-            Photo = request.Photo,
-            PatientId = patientId
+            Photo = bytes,
+            FileName = request.Photo.FileName,
+           PatientId = patientId
         };
+       
         
         var createdPhoto = await _client.PostAsJsonAsync("https://localhost:7034/api/Photos/Patient", photoRequest);
         if (createdPhoto.IsSuccessStatusCode == false)
         {
-            throw new BadHttpRequestException($"{createdPatient.Content} {createdPatient.ReasonPhrase}");
+          //  throw new BadHttpRequestException($"{createdPatient.Content} {createdPatient.ReasonPhrase}");
         }
         
 

@@ -26,17 +26,25 @@ public class PhotoRepository:IPhotoRepository
         _photosCollection = mongoDatabase.GetCollection<Photo>(photoStoreDatabaseSettings.Value.PhotosCollectionName);
     }
 
-    public async Task<ObjectId> CreateAsync(IFormFile photo)
+    public async Task<ObjectId> CreateAsync(byte[] photo,string fileName)
     {
         ObjectId id;
-        using (var stream = photo.OpenReadStream())
-        {
-            id = await _gridFS.UploadFromStreamAsync(photo.FileName, stream);
-        }
+        id = await _gridFS.UploadFromBytesAsync(fileName, photo);
 
         return id;
     }
-    
+
+    public async Task<byte[]> GetByIdAsync(ObjectId id)
+    {
+        byte[] bytes;
+        using (var ms = new MemoryStream())
+        {
+            await _gridFS.DownloadToStreamAsync(id, ms);
+            bytes = ms.ToArray();
+        }
+
+        return bytes;
+    }
         
 
 }

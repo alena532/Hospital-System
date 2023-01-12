@@ -37,11 +37,10 @@ services.ConfigureSwagger();
 
 services.ConfigureSqlContext(builder.Configuration);
 
-//services.ConfigureServices();
 services.ConfigureFilters();
 services.ConfigureRepositories();
 services.ConfigureServices();
-//services.ConfigureSqlContext(builder.Configuration);
+
 services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 services.AddMassTransit(x =>
@@ -49,9 +48,7 @@ services.AddMassTransit(x =>
         x.AddConsumer<OfficeUpdatedConsumer>();
         x.SetKebabCaseEndpointNameFormatter();
         x.UsingRabbitMq((context, cfg) => cfg.ConfigureEndpoints(context));
-            
     }
-
 );
 
 var app = builder.Build();

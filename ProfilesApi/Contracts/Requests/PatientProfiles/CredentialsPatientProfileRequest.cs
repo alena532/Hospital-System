@@ -8,6 +8,5 @@ public class CredentialsPatientProfileRequest
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string MiddleName { get; set; }
-    [JsonConverter(typeof(DateOnlyJsonConverter))]
-    public DateOnly DateOfBirth { get; set; }
+    public DateTime DateOfBirth { get; set; }
 }

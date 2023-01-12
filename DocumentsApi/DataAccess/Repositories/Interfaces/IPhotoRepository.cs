@@ -6,5 +6,6 @@ namespace DocumentsApi.DataAccess.Repositories.Interfaces;
 
 public interface IPhotoRepository
 {
-    Task<ObjectId> CreateAsync(IFormFile photo);
+    Task<ObjectId> CreateAsync(byte[] photo, string fileName);
+    Task<byte[]> GetByIdAsync(ObjectId id);
 }

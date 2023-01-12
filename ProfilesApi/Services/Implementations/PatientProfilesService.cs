@@ -1,6 +1,5 @@
 using System.Text.Json;
 using AutoMapper;
-using Castle.Components.DictionaryAdapter;
 using ProfilesApi.Contracts.Requests;
 using ProfilesApi.Contracts.Requests.PatientProfiles;
 using ProfilesApi.Contracts.Responses.PatientProfiles;
@@ -109,7 +108,7 @@ public class PatientProfilesService : IPatientProfilesService
             points += patient.FirstName.Equals(request.MiddleName, StringComparison.OrdinalIgnoreCase)
                 ? (int) CredentialsPatientProfileEnum.MiddleName
                 : 0;
-            points += patient.DateOfBirth.ToString().Equals(request.DateOfBirth.ToString(),StringComparison.OrdinalIgnoreCase)
+            points += patient.DateOfBirth.CompareTo(request.DateOfBirth) == 0
                 ? (int) CredentialsPatientProfileEnum.DateOfBirth
                 : 0;
 

@@ -18,7 +18,6 @@ services.AddMassTransit(x =>
     x.UsingRabbitMq();
 });
 
-services.AddHttpContextAccessor();
 services.AddControllers();
 services.AddFluentValidation(options =>
 {

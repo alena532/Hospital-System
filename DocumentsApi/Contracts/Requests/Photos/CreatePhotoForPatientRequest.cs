@@ -5,7 +5,7 @@ namespace DocumentsApi.Contracts.Requests.Photos;
 
 public class CreatePhotoForPatientRequest
 {
-    public IFormFile Photo { get; set; }
-    
+    public byte[] Photo { get; set; }
+    public string FileName { get; set; }
     public Guid PatientId { get; set; }
 }

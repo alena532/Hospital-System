@@ -1,8 +1,5 @@
-using System.Reflection;
-using FluentValidation;
 using FluentValidation.AspNetCore;
 using MassTransit;
-using OfficesApi.DataAccess.Models;
 using OfficesApi.Extensions;
 using Serilog;
 using Serilog.Filters;
@@ -18,7 +15,6 @@ services.AddMassTransit(x =>
     x.UsingRabbitMq();
 });
 
-services.AddHttpContextAccessor();
 services.AddControllers();
 services.AddFluentValidation(options =>
 {
@@ -30,28 +26,17 @@ var logger = new LoggerConfiguration()
     .CreateLogger();
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
-//services.AddValidatorsFromAssemblyContaining<Office>();
 services.ConfigureAutoMapper();
-//services.ConfigureValidators();
 
 services.ConfigureSwagger();
-services.ConfigureOfficesService();
-services.ConfigureOfficeRepository();
-services.ConfigureOfficeReceptionistsService();
-services.ConfigureOfficeReceptionistRepository();
-services.ConfigureSqlContext(builder.Configuration);
+services.ConfigureServices();
+services.ConfigureRepositories();
 
+services.ConfigureSqlContext(builder.Configuration);
 
 services.ConfigureFilters();
 
 var app = builder.Build();
-
-/*using (var scope = app.Services.CreateScope())
-{
-    var getServices = scope.ServiceProvider;
-    SeedData.Initialize(getServices);
-}
-*/
 
 if (app.Environment.IsDevelopment())
 {
