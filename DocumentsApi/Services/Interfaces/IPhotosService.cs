@@ -6,6 +6,8 @@ namespace DocumentsApi.Services.Interfaces;
 
 public interface IPhotosService
 { 
-    Task<ObjectId> CreateAsync(CreatePhotoForPatientRequest request);
+    Task<ObjectId> CreatePatientPhotoAsync(CreatePhotoForPatientRequest request);
+    Task<ObjectId> CreateDoctorPhotoAsync(CreatePhotoForDoctorRequest request);
     Task<byte[]> GetByPatientIdAsync(Guid patientId);
+    Task<byte[]> GetByDoctorIdAsync(Guid doctorId);
 }

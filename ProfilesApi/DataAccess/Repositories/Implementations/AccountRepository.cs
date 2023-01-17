@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using ProfilesApi.DataAccess.Models;
-
 using ProfilesApi.DataAccess.Repositories.Interfaces.Base;
 using RepositoryBase.Implementations;
 
@@ -28,8 +27,5 @@ public class AccountRepository : RepositoryBase<Account>,IAccountRepository
     {
         return await FindByCondition(x => x.UserId == userId, trackChanges).SingleOrDefaultAsync();
     }
-    
-    
-    
     
 }

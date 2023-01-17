@@ -1,6 +1,6 @@
 namespace OfficesApi.DataAccess.Models;
 
-public enum OfficeStatus : int
+public enum OfficeStatus
 {
     Active,
     InActive

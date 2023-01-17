@@ -1,6 +1,5 @@
 using FluentValidation;
 using ProfilesApi.Contracts.Requests.PatientProfiles;
-using ProfilesApi.DataAccess.Models;
 
 namespace ProfilesApi.Validators;
 
@@ -11,7 +10,7 @@ public class CreatePatientProfileRequestValidator : AbstractValidator<CreatePati
         RuleFor(profile => profile.FirstName).NotNull().NotEmpty().Length(1,40);
         RuleFor(profile => profile.LastName).NotNull().NotEmpty().Length(1, 50);
         RuleFor(x => x.PhoneNumber).Matches("^\\+");
-        //RuleFor(profile => profile.DateOfBirth).NotNull().NotEmpty();
+        RuleFor(profile => profile.DateOfBirth).NotNull().NotEmpty().Must(date => DateTime.Now.Year - date.Year >= 18);
         
     }
 }

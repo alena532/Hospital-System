@@ -4,5 +4,6 @@ namespace Orchestrator.Services.Interfaces;
 
 public interface IProfilesService
 {
-    Task CreatePatientProfileAsync(PatientProfileRequest request);
+    Task CreatePatientProfileAsync(CreatePatientProfileAndPhotoRequest request);
+    Task CreateDoctorProfileAsync(CreateDoctorProfileAndPhotoRequest request);
 }

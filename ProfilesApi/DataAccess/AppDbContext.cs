@@ -18,11 +18,11 @@ public class AppDbContext:DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-
         modelBuilder.Entity<Account>()
             .HasOne(a => a.Doctor)
             .WithOne(a => a.Account)
             .HasForeignKey<Doctor>(d => d.AccountId);
+            
 
         base.OnModelCreating(modelBuilder);
     }

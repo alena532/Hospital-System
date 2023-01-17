@@ -20,18 +20,22 @@ public class DoctorProfilesController:ControllerBase
         _service = service;
     } 
     
-    //for receptionist
     [HttpPost("")]
     [ServiceFilter(typeof(ValidationModelAttribute))]
-    public async Task<ActionResult> Create(CreateDoctorProfileRequest request)
-    { 
-        await _service.CreateAsync(request);
-       return Ok();
+    public async Task<ActionResult<GetDoctorProfilesResponse>> Create(CreateDoctorProfileRequest request)
+    {
+        return Ok(await _service.CreateAsync(request));
     }
     
-    
+    [HttpPost("ConfirmEmail")]
+    public async Task<ActionResult> ConfirmEmail(Guid accountId)
+    {
+        await _service.ConfirmEmailAsync(accountId);
+        return Ok();
+    }
+
     [HttpGet("")]
-    public async Task<ActionResult<PageResult<GetDoctorProfilesResponse>>> GetAll([FromQuery]int pageNumber,[FromQuery]int pageSize,[FromQuery]SearchAndFilterParameters parameters)
+    public async Task<ActionResult<PageResult<GetDoctorAndPhotoProfilesResponse>>> GetAll([FromQuery]int pageNumber,[FromQuery]int pageSize,[FromQuery]SearchAndFilterParameters parameters)
     {
         return Ok(await _service.GetAllAsync(pageNumber,pageSize,parameters));
     }

@@ -12,7 +12,7 @@ public class AccountsMapper:Profile
     {
         CreateMap<CreateDoctorProfileRequest, Account>();
         CreateMap<CreatePatientAccountRequest, Account>();
-        CreateMap<Account, GetAccountResponse>();
+        CreateMap<Account, GetAccountAndPatientProfileResponse>();
     }
     
    

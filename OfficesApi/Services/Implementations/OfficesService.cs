@@ -37,8 +37,7 @@ public class OfficesService:IOfficesService
 
        return _mapper.Map<GetOfficeResponse>(office);
     }
-
-
+    
     public async Task DeleteAsync(Guid id)
     {
         var office =  await _repository.GetByIdAsync(id);
@@ -63,6 +62,7 @@ public class OfficesService:IOfficesService
         {
             throw new BadHttpRequestException("Office doesnt found");
         }
+        
         _mapper.Map(request, office);
         await _repository.UpdateAsync(office);
         return _mapper.Map<GetOfficeResponse>(office);
@@ -70,13 +70,14 @@ public class OfficesService:IOfficesService
     
     public async Task<GetOfficeResponse> UpdateStatusAsync(EditOfficeStatusRequest request)
     {
-        var office =  await _repository.GetByIdAsync(request.Id);
+        var office =  await _repository.GetByIdAsync(request.Id,true);
         if (office == null)
         {
             throw new BadHttpRequestException("Office doesnt found");
         }
+        
         office.Status = request.Status;
-        await _repository.UpdateAsync(office);
+        await _repository.SaveChangesAsync();
         return _mapper.Map<GetOfficeResponse>(office);
     }
     

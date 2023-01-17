@@ -10,8 +10,7 @@ public class GetPatientProfilesResponse
     public string LastName { get; set; }
     public string MiddleName { get; set; }
     public DateTime DateOfBirth { get; set; }
-    public string PhoneNumber { get; set; }
+    public bool IsLinkedToAccount { get; set; }
     public Guid AccountId { get; set; }
     
-    public string Url { get; set; }
 }

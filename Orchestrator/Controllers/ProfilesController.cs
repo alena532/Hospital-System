@@ -20,11 +20,20 @@ public class ProfilesController : Controller
 
     [HttpPost("CreatePatientProfile")]
     [ServiceFilter(typeof(ValidationModelAttribute))]
-    public async Task<ActionResult> CreatePatientProfile([FromForm]PatientProfileRequest request)
+    public async Task<ActionResult> CreatePatientProfile([FromForm]CreatePatientProfileAndPhotoRequest request)
     {
         await _service.CreatePatientProfileAsync(request);
         return Ok();
     }
+    
+    [HttpPost("CreateDoctorProfile")]
+    //[ServiceFilter(typeof(ValidationModelAttribute))]
+    public async Task<ActionResult> CreateDoctorProfile([FromForm]CreateDoctorProfileAndPhotoRequest request)
+    {
+        await _service.CreateDoctorProfileAsync(request);
+        return Ok();
+    }
        
+    
 
 }

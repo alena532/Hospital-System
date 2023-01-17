@@ -54,9 +54,10 @@ export class AuthService {
     let roleId = '3968115f-b6a0-40c1-1e44-08dadeca5a9a';
     return this.http.post<any>('https://localhost:7097/api/PatientProfiles/CreateAccount', { email, password, roleId})
     .pipe(
-      tap((AccountId)=> {
-        this.http.post<any>('https://localhost:7097/api/Mail/SendToPatient',AccountId ).subscribe()
-      })
+      switchMap((AccountId : any) => {
+        return this.http.post<any>('https://localhost:7097/api/Mail/SendToPatient',AccountId )
+      }
+      )
     )
   }
 

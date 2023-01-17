@@ -8,7 +8,6 @@ namespace ProfilesApi.DataAccess.Repositories.Implementations;
 
 public class DoctorProfileRepository: RepositoryBase<Doctor>,IDoctorProfileRepository
 {
-    
     public DoctorProfileRepository(AppDbContext repositoryContext): base(repositoryContext)
     {
     }

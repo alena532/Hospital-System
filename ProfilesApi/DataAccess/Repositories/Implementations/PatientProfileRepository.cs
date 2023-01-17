@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using ProfilesApi.Contracts.Requests.PatientProfiles;
+using ProfilesApi.Contracts.Responses.PatientProfiles;
 using ProfilesApi.DataAccess.Models;
 using ProfilesApi.DataAccess.Repositories.Interfaces.Base;
-using ProfilesApi.Services.Interfaces;
 using RepositoryBase.Implementations;
 
 namespace ProfilesApi.DataAccess.Repositories.Implementations;
@@ -18,7 +18,7 @@ public class PatientProfileRepository: RepositoryBase<Patient>,IPatientProfileRe
         await base.CreateAsync(patient);
     }
 
-    public async Task<List<Patient>> GetMatchesAsync(CredentialsPatientProfileRequest parameters)
+    public async Task<IEnumerable<Patient>> GetMatchesAsync(CredentialsPatientProfileRequest parameters)
     {
         return await FindByCondition(x =>
             x.IsLinkedToAccount==false &&
@@ -36,5 +36,10 @@ public class PatientProfileRepository: RepositoryBase<Patient>,IPatientProfileRe
     public async Task<Patient> GetByAccountIdAsync(Guid accountId, bool trackChanges)
     {
         return await FindByCondition(x => x.AccountId == accountId,trackChanges).SingleOrDefaultAsync();
+    }
+
+    public async Task<IEnumerable<Patient>> GetAllAsync()
+    {
+        return await FindAll(false).ToListAsync();
     }
 }
