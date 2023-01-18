@@ -8,6 +8,7 @@ using ProfilesApi.Contracts.Responses.DoctorProfiles;
 using ProfilesApi.DataAccess.Models;
 using ProfilesApi.DataAccess.Repositories.Interfaces.Base;
 using ProfilesApi.Services.Interfaces;
+using SharedModels.Routes;
 
 
 namespace ProfilesApi.Services.Implementations;
@@ -25,13 +26,13 @@ public class DoctorProfilesService:IDoctorProfilesService
         _mapper = mapper;
         _accountRepository = accountRepository;
         _doctorRepository = doctorRepository;
-        _httpClient = httpClient;
+        _httpClient = new HttpClient();
         _mailService = mailService;
     }
     
-    public async Task CreateAsync(CreateDoctorProfileRequest request)
+    public async Task<GetDoctorProfilesResponse> CreateAsync(CreateDoctorProfileRequest request)
     {
-        var checkEmail = _httpClient.PostAsJsonAsync("api/AuthValidator",request.Email).Result;
+        var checkEmail = _httpClient.PostAsJsonAsync( ApiRoutes.Auth + "api/AuthValidator",request.Email).Result;
         if (checkEmail.IsSuccessStatusCode == false)
         { 
             throw new BadHttpRequestException($"{checkEmail.Content} {checkEmail.ReasonPhrase}");
@@ -44,11 +45,11 @@ public class DoctorProfilesService:IDoctorProfilesService
         var authEntity = new RegisterRequest()
         {
             Email = request.Email,
-            RoleId = request.RoleId,
+            RoleId = new Guid("56ee1399-df20-444e-1e43-08dadeca5a9a"),
             Password = password
         };
 
-        var createdUser = await _httpClient.PostAsJsonAsync("api/Auth/Register", authEntity);
+        var createdUser = await _httpClient.PostAsJsonAsync(ApiRoutes.Auth + "api/Auth/Register", authEntity);
         if (createdUser.IsSuccessStatusCode == false)
         {
             throw new BadHttpRequestException($"{createdUser.Content} {createdUser.ReasonPhrase}");
@@ -67,6 +68,7 @@ public class DoctorProfilesService:IDoctorProfilesService
         catch
         {
             await RollBackUserAsync(account.UserId);
+            throw;
         }
         
         var doctor = _mapper.Map<Doctor>(request);
@@ -79,6 +81,7 @@ public class DoctorProfilesService:IDoctorProfilesService
         {
             await RollBackUserAsync(account.UserId);
             await _accountRepository.DeleteAsync(account);
+            throw;
         }
         
         var mail = new MailForDoctorConfirmationRequest()
@@ -91,23 +94,36 @@ public class DoctorProfilesService:IDoctorProfilesService
         };
 
         await _mailService.SendEmailAsync(mail);
+        return _mapper.Map<GetDoctorProfilesResponse>(doctor);
     }
     
-    public async Task ConfirmEmailAsync(Guid id)
+    public async Task ConfirmEmailAsync(Guid accountId)
     {
-        var doctor = await _doctorRepository.GetByIdAsync(id, trackChanges: true);
-        var account = await _accountRepository.GetByIdAsync(doctor.AccountId, trackChanges: true);
+        var account = await _accountRepository.GetByIdAsync(accountId,true);
         account.IsEmailVerified = true;
+        await _accountRepository.SaveChangesAsync();
     }
     
-    public async Task<PageResult<GetDoctorProfilesResponse>> GetAllAsync(int pageNumber, int pageSize,SearchAndFilterParameters parameters)
+    public async Task<PageResult<GetDoctorAndPhotoProfilesResponse>> GetAllAsync(int pageNumber, int pageSize,SearchAndFilterParameters parameters)
     {
         var doctors = await _doctorRepository.SearchByCredentialsAsync(parameters.FirstName, parameters.LastName, parameters.OfficeId);
+        var doctorsPerPage =
+            _mapper.Map<List<GetDoctorAndPhotoProfilesResponse>>(doctors.Skip((pageNumber - 1) * pageSize).Take(pageSize));
+        foreach (var doctor in doctorsPerPage)
+        {
+            var photoResponse = await _httpClient.GetAsync(ApiRoutes.Documents + $"api/Photos/DoctorPhoto/{doctor.Id}");
+            if (photoResponse.IsSuccessStatusCode)
+            {
+                var photoStream = await photoResponse.Content.ReadAsStreamAsync();
+                var photo = JsonSerializer.Deserialize<byte []>(photoStream);
+                doctor.Photo = photo;
+            }
+        }
         
-        var result = new PageResult<GetDoctorProfilesResponse>
+        var result = new PageResult<GetDoctorAndPhotoProfilesResponse>
         {
             Count = doctors.Count(),
-            Items = _mapper.Map<List<GetDoctorProfilesResponse>>(doctors.Skip((pageNumber - 1) * pageSize).Take(pageSize))
+            Items = doctorsPerPage
         };
         return result;
     }

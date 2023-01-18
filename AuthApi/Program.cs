@@ -5,7 +5,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 var services = builder.Services;
 services.ConfigureCors();
-services.AddHttpContextAccessor();
 services.AddControllers();
 
 services.ConfigureSwagger();
@@ -29,24 +28,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Events API"));
 }
-else
-{
-    app.UseHsts();
-}
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
-app.UseRouting();
 app.UseCors(MyAllowedOrigins);
-app.UseAuthentication();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller}/{action=Index}/{id?}");
-
-app.MapFallbackToFile("index.html");
+app.MapControllers();
 
 app.Run();

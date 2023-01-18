@@ -22,13 +22,13 @@ public class PatientProfilesController:ControllerBase
     
     [HttpPost("CreateAccount")]
     [ServiceFilter(typeof(ValidationModelAttribute))]
-    public async Task<ActionResult<GetAccountUserCredentialsResponse>> CreateAccount(CreatePatientAccountRequest request)
+    public async Task<ActionResult<GetAccountUserCredentialsResponse>> CreateAccount([FromBody]CreatePatientAccountRequest request)
         =>Ok(await _service.CreateAccountAsync(request));
     
     
     [HttpPost("")]
     [ServiceFilter(typeof(ValidationModelAttribute))]
-    public async Task<ActionResult<Guid>> Create([FromBody]CreatePatientProfileRequest request)
+    public async Task<ActionResult<GetPatientProfilesResponse>> Create([FromBody]CreatePatientProfileRequest request)
     {
         return Ok(await _service.CreateAsync(request));
     }
@@ -41,8 +41,12 @@ public class PatientProfilesController:ControllerBase
     
     [HttpGet("Matches/{id:Guid}")]
     [ServiceFilter(typeof(ValidationModelAttribute))]
-    public async Task<ActionResult<ICollection<GetDoctorProfilesResponse>>> GetMatches(CredentialsPatientProfileRequest request)
+    public async Task<ActionResult<ICollection<GetPatientProfilesResponse>>> GetMatches(CredentialsPatientProfileRequest request)
         =>Ok(await _service.GetMatchesAsync(request));
+    
+    [HttpGet]
+    public async Task<ActionResult<GetPatientProfilesResponse>> GetAll()
+        => Ok(await _service.GetAllAsync());
     
     
     

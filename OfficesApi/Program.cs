@@ -43,23 +43,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Events API"));
 }
-else
-{
-    app.UseHsts();
-}
 app.ConfigureExceptionHandler();
 app.UseHttpsRedirection();
-app.UseStaticFiles();
-app.UseRouting();
 app.UseCors(MyAllowedOrigins);
+
 app.UseAuthentication();
-
 app.UseAuthorization();
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller}/{action=Index}/{id?}");
 
-app.MapFallbackToFile("index.html");
-
+app.MapControllers();
 
 app.Run();
+

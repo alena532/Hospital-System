@@ -24,7 +24,7 @@ public class PatientProfilesService : IPatientProfilesService
         _httpClient = httpClient;
     }
     
-    public async Task<Guid> CreateAsync(CreatePatientProfileRequest request)
+    public async Task<GetPatientProfilesResponse> CreateAsync(CreatePatientProfileRequest request)
     {
         var patient = _mapper.Map<Patient>(request);
         patient.AccountId = request.AccountId;
@@ -33,7 +33,7 @@ public class PatientProfilesService : IPatientProfilesService
         var account = await _accountRepository.GetByIdAsync(request.AccountId,trackChanges:true);
         account.PhoneNumber = request.PhoneNumber;
         await _accountRepository.SaveChangesAsync();
-        //when use jwt get from httpAccessor
+        
         //account.CreatedBy = request.OfficeId;
         //account.UpdatedBy = request.OfficeId;
         try
@@ -44,9 +44,10 @@ public class PatientProfilesService : IPatientProfilesService
         {
             await RollBackUserAsync(account.UserId);
             await _accountRepository.DeleteAsync(account);
+            throw;
         }
 
-        return patient.Id;
+        return _mapper.Map<GetPatientProfilesResponse>(patient);
     }
 
     public async Task<GetAccountUserCredentialsResponse> CreateAccountAsync(CreatePatientAccountRequest request)
@@ -82,14 +83,17 @@ public class PatientProfilesService : IPatientProfilesService
         catch
         {
             await RollBackUserAsync(userId);
+            throw;
         }
-
+        
         GetAccountUserCredentialsResponse response = new()
         {
             AccountId = account.Id,
             ToEmail = authEntity.Email
         };
+            
         return response;
+
     }
 
     public async Task<ICollection<GetPatientProfilesResponse>> GetMatchesAsync(CredentialsPatientProfileRequest request)
@@ -137,9 +141,15 @@ public class PatientProfilesService : IPatientProfilesService
         }
     }
 
-    public async Task<Patient> GetByAccountId(Guid accountId)
+    public async Task<Patient> GetByAccountIdAsync(Guid accountId)
     {
         return await _patientRepository.GetByAccountIdAsync(accountId);
+    }
+
+    public async Task<IEnumerable<GetPatientProfilesResponse>> GetAllAsync()
+    {
+        var patients = await _patientRepository.GetAllAsync();
+        return _mapper.Map<ICollection<GetPatientProfilesResponse>>(patients);
     }
     
     

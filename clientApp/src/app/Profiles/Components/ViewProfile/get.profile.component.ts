@@ -49,8 +49,8 @@ import {User} from '../../../_models/User';
         
         this.photoService.getByPatientId(this.currentUser.id).subscribe(
             (data:any)=>{
-                let objectURL = 'data:image/png;base64,' + data;
-            this.image = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+              let objectURL = 'data:image/png;base64,' + data;
+              this.image = this.sanitizer.bypassSecurityTrustUrl(objectURL);
             }
         )
        

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ProfilesApi.Contracts.Responses.Accounts;
 using ProfilesApi.Contracts.Responses.PatientProfiles;
 using ProfilesApi.Services.Interfaces;
 
@@ -15,11 +16,7 @@ public class AccountsController:ControllerBase
     public AccountsController(IAccountsService service)
     {
         _service = service;
-    } 
-    
-    [HttpGet("GetByUserId/{userId:Guid}")]
-    public async Task<ActionResult<Guid>> GetByUserId(Guid userId)
-        =>Ok(await _service.GetByUserIdAsync(userId));
+    }
 
     [HttpGet("CheckPatientAccountBeforeProfileCreation/{id:Guid}")]
     public async Task<ActionResult> CheckPatientAccountBeforeProfileCreation(Guid id)
@@ -27,9 +24,8 @@ public class AccountsController:ControllerBase
         await _service.CheckPatientAccountBeforeProfileCreationAsync(id);
         return Ok();
     }
-    
-    
+
     [HttpGet("CheckPatientAccountBeforeProfileLogin/{userId:Guid}")]
-    public async Task<ActionResult<GetPatientProfilesResponse>> CheckPatientAccountBeforeProfileLogin(Guid userId)
+    public async Task<ActionResult<GetAccountAndPatientProfileResponse>> CheckPatientAccountBeforeProfileLogin(Guid userId)
         =>Ok(await _service.CheckPatientAccountBeforeProfileLoginAsync(userId));
 }

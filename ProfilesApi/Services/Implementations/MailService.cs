@@ -56,7 +56,7 @@ public class MailService : IMailService
         emailMessage.From.Add(new MailboxAddress("email",_mailSettings.Mail));
         emailMessage.To.Add(MailboxAddress.Parse(message.ToEmail));
         emailMessage.Subject = "Checking email";
-        emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = string.Format("<a href='https://localhost:4200/profiles/createProfile/{0}' style='color:black;'>Create profile</a>", message.AccountId) };
+        emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = string.Format("<a href='http://localhost:4200/profiles/createProfile/{0}' style='color:black;'>Create profile</a>", message.AccountId) };
         
         return emailMessage;
     }
@@ -68,7 +68,7 @@ public class MailService : IMailService
         emailMessage.From.Add(new MailboxAddress("email",_mailSettings.Mail));
         emailMessage.To.Add(MailboxAddress.Parse(message.ToEmail));
         emailMessage.Subject = "Confirmation email";
-        emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = string.Format("<p>Hello,{0} {1} {2} </p> <a href='https://localhost:1234?doctorId={3}' style='color:black;'>Confirm profile</a>", message.FirstName,message.LastName,message.MiddleName,message.AccountId) };
+        emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = string.Format("<p>Hello,{0} {1} {2} </p> <a href='http://localhost:4200?accountId={3}' style='color:black;'>Confirm profile</a>", message.FirstName,message.LastName,message.MiddleName,message.AccountId) };
         
         return emailMessage;
     }

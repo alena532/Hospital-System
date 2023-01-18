@@ -18,18 +18,30 @@ public class PhotosController : ControllerBase
         _service = service;
     }
     
-    
-    [HttpPost("Patient")]
+    [HttpPost("CreatePatientPhoto")]
     public async Task<ActionResult> CreatePatientPhoto(CreatePhotoForPatientRequest request)
     {
-        await _service.CreateAsync(request);
+        await _service.CreatePatientPhotoAsync(request);
         return Ok();
     }
     
-    [HttpGet("{patientId:Guid}")]
+    [HttpPost("CreateDoctorPhoto")]
+    public async Task<ActionResult> CreateDoctorPhoto(CreatePhotoForDoctorRequest request)
+    {
+        await _service.CreateDoctorPhotoAsync(request);
+        return Ok();
+    }
+    
+    [HttpGet("PatientPhoto/{patientId:Guid}")]
     public async Task<ActionResult<byte []>> GetPatientPhotoByPatientId(Guid patientId)
     {
         return Ok(await _service.GetByPatientIdAsync(patientId));
+    }
+    
+    [HttpGet("DoctorPhoto/{doctorId:Guid}")]
+    public async Task<ActionResult<byte []>> GetDoctorPhotoByDoctorId(Guid doctorId)
+    {
+        return Ok(await _service.GetByDoctorIdAsync(doctorId));
     }
 
 }

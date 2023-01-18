@@ -12,7 +12,7 @@ export class PhotosService {
   }
 
   getByPatientId(patientId:string){
-    return this.http.get<any>(this.accessPointUrl+ `${patientId}`);
+    return this.http.get<any>(this.accessPointUrl+ `PatientPhoto/${patientId}`);
   }
 
   

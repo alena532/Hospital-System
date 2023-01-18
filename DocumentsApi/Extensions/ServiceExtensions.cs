@@ -47,6 +47,7 @@ public static class ServiceExtensions
     {
         services.AddScoped<IPhotoRepository, PhotoRepository>();
         services.AddScoped<IPhotoPatientRepository, PhotoPatientRepository>();
+        services.AddScoped<IPhotoDoctorRepository, PhotoDoctorRepository>();
     }
     
     public static void ConfigureServices(this IServiceCollection services)

@@ -12,7 +12,6 @@ public class Doctor
     
     public Guid SpecializationId { get; set; }
     public string SpecializationName { get; set; }
-    
     public string Address { get; set; }
     public Guid OfficeId { get; set; }
     public Guid AccountId { get; set; }

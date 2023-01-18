@@ -1,6 +1,6 @@
 namespace Orchestrator.Contracts.Requests.Photo;
 
-public class CreatePhotoForPatientRequest
+public class CreatePhotoForPatientProfileRequest
 {
     public Guid PatientId { get; set; }
     public byte[] Photo { get; set; }

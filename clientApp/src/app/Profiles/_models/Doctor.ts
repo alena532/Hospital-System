@@ -4,7 +4,7 @@ export class Doctor {
       public fullName: string,
       public specialization: string,
       public experience: number,
-      public address: string
-
+      public address: string,
+      public photo: any
     ) {}
   }

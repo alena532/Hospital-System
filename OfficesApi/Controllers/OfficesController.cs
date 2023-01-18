@@ -34,9 +34,7 @@ public class OfficesController:ControllerBase
     [HttpGet("{id:Guid}", Name = "GetById")]
     public async Task<ActionResult<GetOfficeResponse>> GetById(Guid id)
         => Ok(await _service.GetByIdAsync(id));
-    
-    
-    
+
     [HttpDelete("{id:Guid}")]
     public async Task<IActionResult> Delete(Guid id)
     {
@@ -46,17 +44,14 @@ public class OfficesController:ControllerBase
 
     [HttpPost("")]
     [ServiceFilter(typeof(ValidationModelAttribute))]
-    
     public async Task<ActionResult<GetOfficeResponse>> Create([FromBody] CreateOfficeRequest request)
     {
         var officeReturn = await _service.CreateAsync(request);
         return CreatedAtRoute("GetById", new {id = officeReturn.Id}, officeReturn);
     }
     
-
     [HttpPut("")]
     [ServiceFilter(typeof(ValidationModelAttribute))]
-
     public async Task<ActionResult<GetOfficeResponse>> Update([FromBody]EditOfficeRequest request)
     {
         var eventReturn = await _service.UpdateAsync(request);
@@ -64,14 +59,13 @@ public class OfficesController:ControllerBase
         {
             Id = eventReturn.Id,
             Address = eventReturn.Address
-
         });
         return Ok(eventReturn);
     }
 
     [HttpPut("UpdateStatus")]
     [ServiceFilter(typeof(ValidationModelAttribute))]
-    public async Task<ActionResult<GetOfficeResponse>> UpdateStatusById([FromBody] EditOfficeStatusRequest request)
+    public async Task<ActionResult<GetOfficeResponse>> UpdateStatus([FromBody] EditOfficeStatusRequest request)
         => Ok(await _service.UpdateStatusAsync(request));
     
     

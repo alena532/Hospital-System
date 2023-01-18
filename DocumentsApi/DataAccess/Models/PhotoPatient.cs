@@ -11,5 +11,4 @@ public class PhotoPatient
     [BsonIgnore]
     public Photo PhotoReference {get; set;}
     public Guid PatientId {get; set;}
-    
 }
