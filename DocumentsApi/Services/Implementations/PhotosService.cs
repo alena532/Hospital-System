@@ -96,6 +96,11 @@ public class PhotosService:IPhotosService
     public async Task UpdateByDoctorIdAsync(EditPhotoForDoctorRequest request)
     {
         var photoId = await _photoDoctorRepository.GetPhotoIdByDoctorIdAsync(request.DoctorId);
+        if (photoId == null)
+        {
+            throw new BadHttpRequestException($"Photo id not found");
+        }
+        
         await _photoRepository.DeleteAsync(photoId);
         
         Photo photo = new()

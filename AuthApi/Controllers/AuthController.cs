@@ -46,6 +46,7 @@ public class AuthController:ControllerBase
     }
     
     [HttpPut]
+    [Route("ChangePassword")]
     [Authorize]
     [ValidationModel]
     public async Task<ActionResult<AuthenticatedResponse>> ChangePassword([FromBody] ChangePasswordRequest request)
