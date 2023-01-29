@@ -7,5 +7,7 @@ namespace DocumentsApi.DataAccess.Repositories.Interfaces;
 public interface IPhotoRepository
 {
     Task<ObjectId> CreateAsync(byte[] photo, string fileName);
+    public Task UpdateAsync(Photo photo, byte[] photoBytes);
+    public Task DeleteAsync(ObjectId id);
     Task<byte[]> GetByIdAsync(ObjectId id);
 }

@@ -17,17 +17,16 @@ import { AccountsService } from '../../_services/account.service';
   export class CreateProfileComponent implements OnInit {
 
     profileForm!: FormGroup;
-    photoData: FormData =new FormData();
     public placeholder: String = 'Date of Birth';
     accountId!: string;
     error = '';
-    imagePreview!: string;
     stop = false;
+    imagePreview!: string;
     submitted = false;
     loading = false;
     maxDate:Date;
     minDate = new Date('1920-04-26')
-  
+
     constructor(
       private formBuilder: FormBuilder,
       private route: ActivatedRoute,
@@ -40,17 +39,15 @@ import { AccountsService } from '../../_services/account.service';
       now.setFullYear(now.getFullYear() - 18);
       this.maxDate = now;
     }
-  
+
     ngOnInit(): void {
       this.accountId = this.route.snapshot.paramMap.get("accountId")!;
-      this.accountService.checkAccountBeforeCreation(this.accountId).subscribe(
+      this.accountService.checkPatientAccountBeforeCreation(this.accountId).subscribe(
         data=>{},
         error => {
           console.log(error.status)
-          if(error.status === 500){
-            this.error = 'Sorry but url is incorrect';
-            this.stop = true;
-          }
+          this.error = 'Sorry but url is incorrect';
+          this.stop = true;
         }
       )
 
@@ -63,22 +60,19 @@ import { AccountsService } from '../../_services/account.service';
         "accountId": new FormControl(this.accountId),
         "photo": new FormControl(null),
 
-      }); 
+      });
     }
-  
+
     get f() { return this.profileForm.controls; }
-  
+
     onSubmit() {
       this.submitted = true;
-      
+
       if (this.profileForm.invalid) {
         return;
       }
       const time =(new Date(this.profileForm.get('dateOfBirth')?.value)).toUTCString();
-      
-      console.log(typeof(time))
-      console.log(time)
-      
+
       const formData = new FormData();
       formData.append("firstName",this.profileForm.get('firstName')?.value)
       formData.append("lastName",this.profileForm.get('lastName')?.value)
@@ -92,7 +86,7 @@ import { AccountsService } from '../../_services/account.service';
       this.profileService.createProfile(formData)
         .subscribe(
           data => {
-            this.photoData = new FormData();
+            //this.photoData = new FormData();
           },
           error => {
             this.loading = false;
@@ -105,12 +99,11 @@ import { AccountsService } from '../../_services/account.service';
     upload(files:any) {
       if (files.length === 0)
         return;
-      console.log(files);
-      this.photoData = new FormData();
-    
+      //this.photoData = new FormData();
+
       for (const file of files) {
         this.profileForm.get('photo')?.setValue(file);
-        this.photoData.append(file.name, file);
+        //this.photoData.append(file.name, file);
       }
     }
 
@@ -129,6 +122,5 @@ import { AccountsService } from '../../_services/account.service';
 
     }
 
-    
+
   }
-  

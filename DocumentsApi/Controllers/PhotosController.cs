@@ -32,6 +32,13 @@ public class PhotosController : ControllerBase
         return Ok();
     }
     
+    [HttpPost("CreateReceptionistPhoto")]
+    public async Task<ActionResult> CreateReceptionistPhoto(CreatePhotoForReceptionistRequest request)
+    {
+        await _service.CreateReceptionistPhotoAsync(request);
+        return Ok();
+    }
+    
     [HttpGet("PatientPhoto/{patientId:Guid}")]
     public async Task<ActionResult<byte []>> GetPatientPhotoByPatientId(Guid patientId)
     {
@@ -42,6 +49,19 @@ public class PhotosController : ControllerBase
     public async Task<ActionResult<byte []>> GetDoctorPhotoByDoctorId(Guid doctorId)
     {
         return Ok(await _service.GetByDoctorIdAsync(doctorId));
+    }
+    
+    [HttpPut("UpdateDoctorPhoto")]
+    public async Task<ActionResult> UpdateDoctorPhotoByDoctorId(EditPhotoForDoctorRequest request)
+    {
+        await _service.UpdateByDoctorIdAsync(request);
+        return Ok();
+    }
+    
+    [HttpGet("ReceptionistPhoto/{receptionistId:Guid}")]
+    public async Task<ActionResult<byte []>> GetDoctorPhotoByReceptionistId(Guid receptionistId)
+    {
+        return Ok(await _service.GetByReceptionistIdAsync(receptionistId));
     }
 
 }

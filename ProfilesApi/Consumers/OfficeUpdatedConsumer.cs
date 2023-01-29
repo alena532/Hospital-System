@@ -27,8 +27,7 @@ public class OfficeUpdatedConsumer : IConsumer<IOfficeUpdated>
         {
             office.Address = context.Message.Address;
         }
-
-        _repository.SaveChangesAsync();
+        
         await _repository.SaveChangesAsync();
 
     }

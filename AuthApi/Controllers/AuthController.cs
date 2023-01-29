@@ -1,14 +1,10 @@
 using System.Security.Claims;
 using AuthApi.Common.Attributes;
-using AuthApi.ConfigurationOptions;
 using AuthApi.Contracts.Requests;
 using AuthApi.Contracts.Responses;
-using AuthApi.DataAccess;
 using AuthApi.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 namespace AuthApi.Controllers;
 

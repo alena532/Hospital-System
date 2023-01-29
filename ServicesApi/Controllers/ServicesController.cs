@@ -19,7 +19,6 @@ public class ServicesController : Controller
     public ServicesController(IServicesService service)
     {
         _service = service;
-        
     }
 
     [HttpPost]
@@ -50,7 +49,7 @@ public class ServicesController : Controller
     }
     
     [HttpGet("GetAllByMissingSpecialization")]
-    public async Task<ActionResult<GetServiceResponse>> GetAllByMissingSpecialization()
+    public async Task<ActionResult<IEnumerable<GetServiceResponse>>> GetAllByMissingSpecialization()
     {
         return Ok(await _service.GetAllByMissingSpecializationAsync());
     }

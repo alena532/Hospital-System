@@ -25,7 +25,9 @@ public static class ServiceExtensions
     
     public static void ConfigureServices(this IServiceCollection services)
     {
-        services.AddTransient<IProfilesService,ProfilesService>();
+        services.AddTransient<IDoctorProfilesService,DoctorProfilesService>();
+        services.AddTransient<IPatientProfilesService,PatientProfilesService>();
+        services.AddTransient<IReceptionistProfilesService,ReceptionistProfilesService>();
     }
 
     public static void ConfigureCors(this IServiceCollection services)

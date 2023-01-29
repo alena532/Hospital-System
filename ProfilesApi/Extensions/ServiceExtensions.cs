@@ -42,6 +42,7 @@ public static class ServiceExtensions
     {
         services.AddScoped<IDoctorProfileRepository, DoctorProfileRepository>();
         services.AddScoped<IPatientProfileRepository, PatientProfileRepository>();
+        services.AddScoped<IReceptionistProfileRepository, ReceptionistProfileRepository>();
         services.AddScoped<IAccountRepository,AccountRepository>();
     }
     public static void ConfigureServices(this IServiceCollection services)
@@ -49,6 +50,7 @@ public static class ServiceExtensions
         services.AddTransient<IDoctorProfilesService,DoctorProfilesService>();
         services.AddTransient<IMailService, MailService>();
         services.AddTransient<IPatientProfilesService, PatientProfilesService>();
+        services.AddTransient<IReceptionistProfilesService, ReceptionistProfilesService>();
         services.AddTransient<IAccountsService, AccountsService>();
         
         services.AddHttpClient<IDoctorProfilesService, DoctorProfilesService>(client =>

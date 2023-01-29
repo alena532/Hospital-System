@@ -20,9 +20,9 @@ public class DoctorProfilesController:ControllerBase
         _service = service;
     } 
     
-    [HttpPost("")]
+    [HttpPost]
     [ServiceFilter(typeof(ValidationModelAttribute))]
-    public async Task<ActionResult<GetDoctorProfilesResponse>> Create(CreateDoctorProfileRequest request)
+    public async Task<ActionResult<GetDoctorProfilesResponse>> Create([FromBody]CreateDoctorProfileRequest request)
     {
         return Ok(await _service.CreateAsync(request));
     }
@@ -33,11 +33,24 @@ public class DoctorProfilesController:ControllerBase
         await _service.ConfirmEmailAsync(accountId);
         return Ok();
     }
+    
+    [HttpPut]
+    [ServiceFilter(typeof(ValidationModelAttribute))]
+    public async Task<ActionResult<GetDoctorProfilesResponse>> Update([FromBody]EditDoctorProfileRequest request)
+    {
+        return Ok(await _service.UpdateAsync(request));
+    }
 
-    [HttpGet("")]
+    [HttpGet]
     public async Task<ActionResult<PageResult<GetDoctorAndPhotoProfilesResponse>>> GetAll([FromQuery]int pageNumber,[FromQuery]int pageSize,[FromQuery]SearchAndFilterParameters parameters)
     {
         return Ok(await _service.GetAllAsync(pageNumber,pageSize,parameters));
+    }
+
+    [HttpGet("{id:Guid}")]
+    public async Task<ActionResult<GetDoctorProfilesResponse>> GetById(Guid id)
+    {
+        return Ok(await _service.GetByIdAsync(id));
     }
     
     

@@ -23,4 +23,9 @@
       <ProjectReference Include="..\SharedModels\SharedModels.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Services\Interfaces\IProfilesService.cs" />
+      <Compile Remove="Services\Implementations\ProfilesService.cs" />
+    </ItemGroup>
+
 </Project>

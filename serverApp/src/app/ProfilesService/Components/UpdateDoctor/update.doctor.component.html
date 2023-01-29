@@ -1,0 +1,92 @@
+<div *ngIf="!stop; then thenBlock else elseBlock"></div>
+<ng-template #thenBlock>
+  <div class="col-md-6 offset-md-3 mt-5">
+    <div class="card">
+      <h4 class="card-header">Update</h4>
+      <div class="card-body">
+        <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label>First name</label>
+            <input type="text" formControlName="firstName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f['firstName'].errors }"/>
+            <div *ngIf="submitted && editForm.get('firstName')?.errors" class="invalid-feedback">
+              <div *ngIf="editForm.get('firstName')?.errors?.['required']">First name is required</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Last name</label>
+            <input type="text" formControlName="lastName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f['lastName'].errors }"/>
+            <div *ngIf="submitted && f['lastName'].errors" class="invalid-feedback">
+              <div *ngIf="f['lastName'].errors?.['required']">Last name is required</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Middle name</label>
+            <input type="text" formControlName="middleName" class="form-control"/>
+          </div>
+          <div class="form-group">
+            <label>Office address</label>
+            <select formControlName="office" class="form-select">
+                <option selected>{{this.doctor.address}}</option>
+                <ng-container *ngFor="let office of this.offices">
+                    <option  *ngIf = "office.id != this.doctor.officeId" [ngValue]="office">{{office.address}}</option>
+                </ng-container>
+              </select>
+          </div>
+          <div class="form-group">
+            <label>Doctor status</label>
+            <select formControlName="status" class="form-select">
+                <option *ngFor="let doctorStatus of this.doctorStatusTypes "
+                        [value]="doctorStatusEnum[doctorStatus]">
+                  {{doctorStatus}}
+                </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Specialization</label>
+            <select formControlName="office" class="form-select">
+                <option selected>{{this.doctor.specializationName}}</option>
+                <ng-container *ngFor="let specialization of specializations">
+                    <option  *ngIf = "specialization.id != this.doctor.specializationId" [ngValue]="specialization">{{specialization.specializationName}}</option>
+                </ng-container>
+              </select>
+          </div>
+          
+          <div class="form-group">
+            <br>
+            <input #fileUplaoder type="file" multiple (change)="onSelect(fileUplaoder.files)">
+            <div class="preview-image" *ngIf="imagePreview !== '' && imagePreview && this.editForm.get('photo')!=null">
+              <img [src]="imagePreview">
+            </div>
+          </div>
+          <div class="form-group">
+            <mat-form-field appearance="outline">
+            <input matInput formControlName="dateOfBirth" [ngClass]="{ 'is-invalid': submitted && f['dateOfBirth'].errors }" [min]="minDate" [max]="maxDate"  [matDatepicker]="picker">
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matSuffix [for]="picker" [disabled]="false"></mat-datepicker-toggle>
+            <mat-datepicker #picker [disabled]="false"></mat-datepicker>
+            </mat-form-field>
+            <div *ngIf="submitted && f['dateOfBirth'].errors" class="invalid-feedback">
+              <div *ngIf="f['dateOfBirth'].errors['required']">Date of birth is required</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Career start year</label>
+            <input type="text" formControlName="careerStartYear" class="form-control" min=1950 max=2022 [ngClass]="{ 'is-invalid': submitted && f['careerStartYear'].errors }"/>
+            <div *ngIf="submitted && editForm.get('careerStartYear')?.errors" class="invalid-feedback">
+              <div *ngIf="f['careerStartYear']?.errors?.['required']">Career start year is required</div>
+              <div *ngIf="f['careerStartYear'].errors?.['pattern'] || f['careerStartYear'].errors?.['min'] || f['careerStartYear'].errors?.['max']">Career start year must be less current year and more than 1960</div>
+            </div>
+          </div>
+          <button [disabled]="loading" class="btn btn-primary">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+            Update
+          </button>
+          <div *ngIf="error == 'Either an email or a password is incorrect' " class="alert alert-danger mt-3 mb-0">Either an email or a password is incorrect</div>
+        </form>
+      </div>
+    </div>
+  </div>
+</ng-template>  
+<ng-template #elseBlock>
+  <div *ngIf="error == 'Sorry but url is incorrect' " class="alert alert-danger mt-3 mb-0">Sorry but url is incorrect</div>
+</ng-template> 

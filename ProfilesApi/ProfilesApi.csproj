@@ -49,4 +49,12 @@
       <ProjectReference Include="..\SharedModels\SharedModels.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Migrations\20221220101111_initial0343.cs" />
+      <Compile Remove="Migrations\20221220101111_initial0343.Designer.cs" />
+      <Compile Remove="Migrations\20221229141607_initial035.Designer.cs" />
+      <Compile Remove="Migrations\20230102110557_initial0357.cs" />
+      <Compile Remove="Migrations\20230102110557_initial0357.Designer.cs" />
+    </ItemGroup>
+
 </Project>

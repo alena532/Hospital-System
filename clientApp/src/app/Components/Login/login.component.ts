@@ -16,7 +16,7 @@ import {Router} from "@angular/router";
     submitted = false;
     loading = false;
     userId! :string;
-  
+
     constructor(
       private formBuilder: FormBuilder,
       private router: Router,
@@ -28,24 +28,27 @@ import {Router} from "@angular/router";
         "email": new FormControl("", [ Validators.required, Validators.email]),
       });
     }
-  
+
     ngOnInit(): void {
     }
-  
+
     get f() { return this.loginForm.controls; }
-  
+
     onSubmit() {
       this.submitted = true;
 
       if (this.loginForm.invalid) {
         return;
       }
-      
+
       this.loading = true;
 
       this.authService.login(this.f['email'].value, this.f['password'].value)
         .subscribe(
-          data => {},
+          data => {
+            this.loading = false;
+            this.router.navigate(['profiles/profile']);
+          },
           error => {
             this.authService.logout();
             this.loading = false;
@@ -53,6 +56,6 @@ import {Router} from "@angular/router";
             this.error = 'Either an email or a password is incorrect';
           }
         );
+
     }
   }
-  

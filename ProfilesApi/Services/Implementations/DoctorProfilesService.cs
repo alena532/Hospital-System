@@ -84,13 +84,14 @@ public class DoctorProfilesService:IDoctorProfilesService
             throw;
         }
         
-        var mail = new MailForDoctorConfirmationRequest()
+        var mail = new MailForStuffConfirmationRequest()
         {
             ToEmail = request.Email,
             FirstName = request.FirstName,
             LastName = request.LastName,
             MiddleName = request.MiddleName,
-            AccountId = account.Id
+            AccountId = account.Id,
+            Password = password
         };
 
         await _mailService.SendEmailAsync(mail);
@@ -102,6 +103,30 @@ public class DoctorProfilesService:IDoctorProfilesService
         var account = await _accountRepository.GetByIdAsync(accountId,true);
         account.IsEmailVerified = true;
         await _accountRepository.SaveChangesAsync();
+    }
+
+    public async Task<GetDoctorProfilesResponse> UpdateAsync(EditDoctorProfileRequest request)
+    {
+        var doctor =  await _doctorRepository.GetByIdAsync(request.Id);
+        if (doctor == null)
+        {
+            throw new BadHttpRequestException("Doctor not found");
+        }
+        
+        _mapper.Map(request, doctor);
+        await _doctorRepository.UpdateAsync(doctor);
+        return _mapper.Map<GetDoctorProfilesResponse>(doctor);
+    }
+
+    public async Task<GetDoctorProfilesResponse> GetByIdAsync(Guid id)
+    {
+        var doctor =  await _doctorRepository.GetByIdAsync(id);
+        if (doctor == null)
+        {
+            throw new BadHttpRequestException("Doctor not found");
+        }
+        
+        return _mapper.Map<GetDoctorProfilesResponse>(doctor);
     }
     
     public async Task<PageResult<GetDoctorAndPhotoProfilesResponse>> GetAllAsync(int pageNumber, int pageSize,SearchAndFilterParameters parameters)

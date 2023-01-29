@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using ProfilesApi.Contracts.Requests.PatientProfiles;
-using ProfilesApi.Contracts.Responses.PatientProfiles;
 using ProfilesApi.DataAccess.Models;
 using ProfilesApi.DataAccess.Repositories.Interfaces.Base;
 using RepositoryBase.Implementations;

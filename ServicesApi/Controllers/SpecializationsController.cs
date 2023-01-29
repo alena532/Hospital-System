@@ -51,7 +51,7 @@ public class SpecializationsController : Controller
     }
     
     [HttpGet]
-    public async Task<ActionResult<GetSpecializationByIdResponse>> GetAll()
+    public async Task<ActionResult<IEnumerable<GetSpecializationByIdResponse>>> GetAll()
     {
         return Ok(await _service.GetAllAsync());
     }

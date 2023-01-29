@@ -13,7 +13,7 @@ export class AccountsService {
     return this.http.get<any>(this.accessPointUrl+ `GetByUserId/${userId}`);
   }
 
-  checkAccountBeforeCreation(id:string) {
-    return this.http.get<any>(this.accessPointUrl+`/CheckAccountBeforeProfileCreation/${id}`);
+  checkPatientAccountBeforeCreation(id:string) {
+    return this.http.get<any>(this.accessPointUrl+`/CheckPatientAccountBeforeProfileCreation/${id}`);
   }
 }

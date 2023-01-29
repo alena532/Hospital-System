@@ -29,7 +29,12 @@ public class PhotoDoctorRepository:IPhotoDoctorRepository
     {
         var filter = new BsonDocument { { "DoctorId", doctorId }};
         var photoDoctor = await _photoDoctorsCollection.Find(filter).SingleOrDefaultAsync();
-        
+        if (photoDoctor == null || photoDoctor.PhotoId == null)
+        {
+            throw new BadHttpRequestException("Photo for doctor not found");
+        }
         return photoDoctor.PhotoId;
     }
+    
+    
 }

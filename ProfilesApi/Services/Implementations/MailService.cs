@@ -31,7 +31,7 @@ public class MailService : IMailService
         }
         else
         {
-            emailMessage = CreateMailForDoctorConfirmationMessage((MailForDoctorConfirmationRequest)mailRequest);
+            emailMessage = CreateMailForStuffConfirmationMessage((MailForStuffConfirmationRequest)mailRequest);
         }
         await SendAsync(emailMessage);
     }
@@ -61,14 +61,14 @@ public class MailService : IMailService
         return emailMessage;
     }
     
-    private MimeMessage CreateMailForDoctorConfirmationMessage(MailForDoctorConfirmationRequest message)
+    private MimeMessage CreateMailForStuffConfirmationMessage(MailForStuffConfirmationRequest message)
     {
         var emailMessage = new MimeMessage();
 
         emailMessage.From.Add(new MailboxAddress("email",_mailSettings.Mail));
         emailMessage.To.Add(MailboxAddress.Parse(message.ToEmail));
         emailMessage.Subject = "Confirmation email";
-        emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = string.Format("<p>Hello,{0} {1} {2} </p> <a href='http://localhost:4200?accountId={3}' style='color:black;'>Confirm profile</a>", message.FirstName,message.LastName,message.MiddleName,message.AccountId) };
+        emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = string.Format("<p>Hello,{0} {1} {2}.Your password is {3}</p> <a href='http://localhost:4200?accountId={4}' style='color:black;'>Confirm profile</a>", message.FirstName,message.LastName,message.MiddleName,message.Password,message.AccountId) };
         
         return emailMessage;
     }
