@@ -5,5 +5,5 @@ namespace Orchestrator.Services.Interfaces;
 
 public interface IReceptionistProfilesService
 {
-    Task CreateAsync([FromForm] CreateReceptionistProfileAndPhotoRequest request);
+    Task CreateAsync(CreateReceptionistProfileAndPhotoRequest request);
 }

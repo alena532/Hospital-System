@@ -1,3 +1,5 @@
+
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace AuthApi.DataAccess;
@@ -10,7 +12,7 @@ public static class SeedData
                    serviceProvider.GetRequiredService<
                        DbContextOptions<AppDbContext>>()))
         {
-            
+            //serviceProvider.GetRequiredService<RoleManager<Role>>()
             if (context.Roles.Any()) return;
             
             context.Roles.AddRange(

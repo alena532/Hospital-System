@@ -1,34 +1,19 @@
 {
   "Routes": [
+    
     {
-      "DownstreamPathTemplate": "/api/Auth/Login",
+      "DownstreamPathTemplate": "/api/Auth/Revoke",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [{
         "Host": "localhost",
         "Port": 5002
       }],
-      "UpstreamPathTemplate": "/Auth/Login",
-      "UpstreamHttpMethod": ["Post"]
-    },
-    {
-      "DownstreamPathTemplate": "/api/Auth/Register",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [{
-        "Host": "localhost",
-        "Port": 5002
-      }],
-      "UpstreamPathTemplate": "/Auth/Register",
-      "UpstreamHttpMethod": ["Post"]
-    },
-    {
-      "DownstreamPathTemplate": "/api/Auth/Refresh",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [{
-        "Host": "localhost",
-        "Port": 5002
-      }],
-      "UpstreamPathTemplate": "/Auth/Refresh",
-      "UpstreamHttpMethod": ["Post"]
+      "UpstreamPathTemplate": "/AuthApi/Auth/Revoke",
+      "UpstreamHttpMethod": ["Post"],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
     },
     {
       "DownstreamPathTemplate": "/api/Auth/ChangePassword",
@@ -37,161 +22,91 @@
         "Host": "localhost",
         "Port": 5002
       }],
-      "UpstreamPathTemplate": "/Auth/ChangePassword",
-      "UpstreamHttpMethod": ["Put"]
+      "UpstreamPathTemplate": "/AuthApi/Auth/ChangePassword",
+      "UpstreamHttpMethod": ["Post"],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
     },
     {
-      "DownstreamPathTemplate": "/api/Auth/Revoke",
+      "DownstreamPathTemplate": "/api/{everything}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [{
         "Host": "localhost",
         "Port": 5002
       }],
-      "UpstreamPathTemplate": "/Auth/Revoke",
-      "UpstreamHttpMethod": ["Post"]
-    },
-
-    {
-      "DownstreamPathTemplate": "/api/Photos/PatientPhoto/{patientId}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5003
-        }
-      ],
-      "UpstreamPathTemplate": "/Photos/PatientPhoto/{patientId}",
-      "UpstreamHttpMethod": [ "GET" ]
+      "UpstreamPathTemplate": "/AuthApi/{everything}",
+      "UpstreamHttpMethod": ["Post","Put"]
     },
     {
-      "DownstreamPathTemplate": "/api/Photos/DoctorPhoto/{doctorId}",
+      "DownstreamPathTemplate": "/api/{everything}",
       "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5003
-        }
-      ],
-      "UpstreamPathTemplate": "/Photos/DoctorPhoto/{doctorId}",
-      "UpstreamHttpMethod": [ "GET" ]
+      "DownstreamHostAndPorts": [{
+        "Host": "localhost",
+        "Port": 5004
+      }],
+      "UpstreamPathTemplate": "/OfficesApi/{everything}",
+      "UpstreamHttpMethod": ["Get","Post","Put","Delete"]
     },
-    {
-      "DownstreamPathTemplate": "/api/Photos/ReceptionistPhoto/{receptionistId}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5003
-        }
-      ],
-      "UpstreamPathTemplate": "/Photos/ReceptionistPhoto/{receptionistId}",
-      "UpstreamHttpMethod": [ "GET" ]
-    },
-
-    {
-      "DownstreamPathTemplate": "/api/Offices",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5004
-        }
-      ],
-      "UpstreamPathTemplate": "/Offices",
-      "UpstreamHttpMethod": [ "GET","POST","PUT" ]
-    },
-    {
-      "DownstreamPathTemplate": "/api/Offices/{id}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5004
-        }
-      ],
-      "UpstreamPathTemplate": "/Offices/{id}",
-      "UpstreamHttpMethod": [ "GET","DELETE" ]
-    },
-    {
-      "DownstreamPathTemplate": "/api/Offices/UpdateStatus",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5004
-        }
-      ],
-      "UpstreamPathTemplate": "/Offices/UpdateStatus",
-      "UpstreamHttpMethod": [ "PUT" ]
-    },
-
     {
       "DownstreamPathTemplate": "/api/DoctorProfiles",
       "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5005
-        }
-      ],
-      "UpstreamPathTemplate": "/DoctorProfiles",
-      "UpstreamHttpMethod": [ "POST","PUT" ]
-    },
-    {
-      "DownstreamPathTemplate": "/api/PatientProfiles",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5005
-        }
-      ],
-      "UpstreamPathTemplate": "/PatientProfiles",
-      "UpstreamHttpMethod": [ "POST","PUT" ]
+      "DownstreamHostAndPorts": [{
+        "Host": "localhost",
+        "Port": 5005
+      }],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "UpstreamPathTemplate": "/Orchestrator/DoctorProfiles",
+      "UpstreamHttpMethod": ["Put"]
     },
     {
       "DownstreamPathTemplate": "/api/ReceptionistProfiles",
       "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5005
-        }
-      ],
-      "UpstreamPathTemplate": "/ReceptionistProfiles",
-      "UpstreamHttpMethod": [ "POST","PUT" ]
-    },
-
-    {
-      "DownstreamPathTemplate": "/api/Accounts/CheckPatientAccountBeforeProfileCreation/{id}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5006
-        }
-      ],
-      "UpstreamPathTemplate": "/Accounts/CheckPatientAccountBeforeProfileCreation/{id}",
-      "UpstreamHttpMethod": [ "GET" ]
+      "DownstreamHostAndPorts": [{
+        "Host": "localhost",
+        "Port": 5005
+      }],
+      "UpstreamPathTemplate": "/Orchestrator/ReceptionistProfiles",
+      "UpstreamHttpMethod": ["Post"],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
     },
     {
-      "DownstreamPathTemplate": "/api/Accounts/CheckPatientAccountBeforeProfileLogin/{id}",
+      "DownstreamPathTemplate": "/api/{everything}",
       "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5006
-        }
-      ],
-      "UpstreamPathTemplate": "/Accounts/CheckPatientAccountBeforeProfileLogin/{id}",
-      "UpstreamHttpMethod": [ "GET" ]
+      "DownstreamHostAndPorts": [{
+        "Host": "localhost",
+        "Port": 5005
+      }],
+      "UpstreamPathTemplate": "/Orchestrator/{everything}",
+      "UpstreamHttpMethod": ["Get","Post","Put","Delete"]
+    },
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [{
+        "Host": "localhost",
+        "Port": 5006
+      }],
+      "UpstreamPathTemplate": "/ProfilesApi/{everything}",
+      "UpstreamHttpMethod": ["Get","Post","Put","Delete"]
+    },
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [{
+        "Host": "localhost",
+        "Port": 5007
+      }],
+      "UpstreamPathTemplate": "/ServicesApi/{everything}",
+      "UpstreamHttpMethod": ["Get"]
     }
-    
-    
-    
-    
-    
-    
   ],
   "GlobalConfiguration": {
     "BaseUrl": "https://localhost:5000"

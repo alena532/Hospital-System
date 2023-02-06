@@ -1,3 +1,4 @@
+using AutoMapper;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Orchestrator.Contracts.Requests.Photo.ReceptionistProfiles;
@@ -10,25 +11,18 @@ namespace Orchestrator.Services.Implementations;
 public class ReceptionistProfilesService:IReceptionistProfilesService
 {
     private readonly HttpClient _client;
+    private readonly IMapper _mapper;
 
-    public ReceptionistProfilesService()
+    public ReceptionistProfilesService(IMapper mapper)
     {
         _client = new HttpClient();
+        _mapper = mapper;
     }
     
     public async Task CreateAsync(CreateReceptionistProfileAndPhotoRequest request)
     {
-        var profileRequest = new CreateReceptionistProfileRequest()
-        {
-            FirstName = request.FirstName,
-            LastName = request.LastName,
-            MiddleName = request.MiddleName,
-            Email = request.Email,
-            OfficeId = request.OfficeId,
-            Address = request.Address,
-            PhoneNumber = request.PhoneNumber,
-        };
-       
+        var profileRequest = _mapper.Map<CreateReceptionistProfileRequest>(request);
+
         var createdReceptionist = await _client.PostAsJsonAsync(ApiRoutes.Profiles + "api/ReceptionistProfiles", profileRequest);
         if (createdReceptionist.IsSuccessStatusCode == false)
         {

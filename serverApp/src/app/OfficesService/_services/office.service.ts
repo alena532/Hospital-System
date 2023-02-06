@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import {Office} from '../_models/Office'
+import {GetOfficeResponse} from '../_models/responses/GetOfficeResponse'
 
 @Injectable()
 export class OfficesService {
 
-    private accessPointUrl: string = 'https://localhost:5004/api/Offices';
+    private accessPointUrl: string = 'https://localhost:5000/OfficesApi/Offices';
   
     constructor(private http: HttpClient) {
     }
 
     getOffices(){
-      return this.http.get<Office[]>(this.accessPointUrl)
+      return this.http.get<GetOfficeResponse[]>(this.accessPointUrl)
     }
   }

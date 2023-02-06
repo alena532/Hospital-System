@@ -1,3 +1,4 @@
+using AutoMapper;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Orchestrator.Contracts.Requests.PatientProfiles;
@@ -10,23 +11,18 @@ namespace Orchestrator.Services.Implementations;
 public class PatientProfilesService:IPatientProfilesService
 {
     private readonly HttpClient _client;
+    private readonly IMapper _mapper;
 
-    public PatientProfilesService()
+    public PatientProfilesService(IMapper mapper)
     {
         _client = new HttpClient();
+        _mapper = mapper;
     }
     
     public async Task CreateAsync(CreatePatientProfileAndPhotoRequest request)
     {
-        var profileRequest = new CreatePatientProfileRequest()
-        {
-            FirstName = request.FirstName,
-            LastName = request.LastName,
-            MiddleName = request.MiddleName,
-            AccountId = request.AccountId,
-            DateOfBirth = request.DateOfBirth,
-            PhoneNumber = request.PhoneNumber
-        };
+        var profileRequest = _mapper.Map<CreatePatientProfileRequest>(request);
+        
         var createdPatient = await _client.PostAsJsonAsync(ApiRoutes.Profiles + "api/PatientProfiles", profileRequest);
         if (createdPatient.IsSuccessStatusCode == false)
         {

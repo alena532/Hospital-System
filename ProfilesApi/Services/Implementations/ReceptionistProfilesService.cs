@@ -131,7 +131,7 @@ public class ReceptionistProfilesService:IReceptionistProfilesService
         return _mapper.Map<GetDetailedReceptionistProfilesResponse>(receptionist);
     }
 
-    public async Task<PageResult<GetReceptionistAndPhotoProfilesResponse>> GetAllAsync(int pageNumber, int pageSize)
+    public async Task<PageResult<GetReceptionistAndPhotoProfilesResponse>> GetPageAsync(int pageNumber, int pageSize)
     {
         var receptionists = await _receptionistRepository.GetAllAsync();
         var transformedReceptionists =_mapper.Map<List<GetReceptionistAndPhotoProfilesResponse>>(receptionists.Skip((pageNumber - 1) * pageSize).Take(pageSize));
@@ -152,6 +152,30 @@ public class ReceptionistProfilesService:IReceptionistProfilesService
             Items = transformedReceptionists
         };
         return result;
+    }
+
+    public async Task<PageResult<GetReceptionistAndPhotoProfilesResponse>> GetAllAsync()
+    {
+        var receptionists = await _receptionistRepository.GetAllAsync();
+        var transformedReceptionists =_mapper.Map<List<GetReceptionistAndPhotoProfilesResponse>>(receptionists);
+        foreach (var receptionist in transformedReceptionists)
+        {
+            var photoResponse = await _httpClient.GetAsync(ApiRoutes.Documents + $"api/Photos/ReceptionistPhoto/{receptionist.Id}");
+            if (photoResponse.IsSuccessStatusCode)
+            {
+                var photoStream = await photoResponse.Content.ReadAsStreamAsync();
+                var photo = JsonSerializer.Deserialize<byte []>(photoStream);
+                receptionist.Photo = photo;
+            }
+        }
+        
+        var result = new PageResult<GetReceptionistAndPhotoProfilesResponse>
+        {
+            Count = receptionists.Count(),
+            Items = transformedReceptionists
+        };
+        return result;
+        
     }
     
     

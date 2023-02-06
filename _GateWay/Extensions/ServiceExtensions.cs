@@ -1,19 +1,13 @@
+using System.Text;
+using _GateWay.ConfigurationOptions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using AuthApi.Common.Attributes;
-using AuthApi.ConfigurationOptions;
-using AuthApi.DataAccess;
-using AuthApi.DataAccess.Repositories.Implementations;
-using AuthApi.DataAccess.Repositories.Interfaces;
-using AuthApi.Services.Implementations;
-using AuthApi.Services.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
+using Ocelot.DependencyInjection;
 
-namespace AuthApi.Extensions;
+namespace _GateWay.Extensions;
 
 public static class ServiceExtensions
 {
@@ -50,26 +44,11 @@ public static class ServiceExtensions
         });
     }
     
-    public static void ConfigureSqlContext(this IServiceCollection services,
-        IConfiguration configuration)
-    {
-        services.AddDbContext<AppDbContext>(opts =>
-            opts.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-    }
-    
-    public static void ConfigureFilters(this IServiceCollection services)
-    {
-        services.AddScoped<ValidationModelAttribute>();
-    }
-    
     public static void ConfigureServices(this IServiceCollection services)
     {
-        services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IAuthService, AuthService>();
-        services.AddScoped<IJwtService, JwtService>();
-        services.AddScoped<IAuthValidatorService,AuthValidatorService>();
-       
+        services.AddOcelot();
     }
+    
     public static void ConfigureCors(this IServiceCollection services)
     {
         var  MyAllowedOrigins = "_myAllowSpecificOrigins";
@@ -86,22 +65,6 @@ public static class ServiceExtensions
         
     }
     
-    public static void ConfigureIdentity(this IServiceCollection services)
-    {
-        var builder = services
-            .AddIdentity<User, IdentityRole<Guid>>(o =>
-            {
-                o.SignIn.RequireConfirmedAccount = false;
-                o.Password.RequireDigit = true;
-                o.Password.RequireLowercase = false;
-                o.Password.RequireUppercase = false;
-                o.Password.RequireNonAlphanumeric = false;
-                o.Password.RequiredLength = 8;
-                o.User.RequireUniqueEmail = true;
-            })
-            .AddEntityFrameworkStores<AppDbContext>();
-        
-    }
     
     public static void ConfigureJWT(this IServiceCollection services, IConfiguration configuration)
     {

@@ -11,13 +11,13 @@ import { DoctorStatusEnum } from '../../_models/DoctorStatusEnum';
 import { MatDatepicker } from '@angular/material/datepicker';
 
 @Component({
-    selector: 'doctor-update',
+    selector: 'doctor-create',
     providers: [],
-    templateUrl: './update.doctor.component.html',
-    styleUrls: ['./update.doctor.component.css']
+    templateUrl: './create.doctor.component.html',
+    styleUrls: ['./create.doctor.component.css']
   })
-  export class UpdateDoctorComponent implements OnInit {
-    editForm!: FormGroup;
+  export class CreateDoctorComponent implements OnInit {
+    createForm!: FormGroup;
     public placeholder: String = 'Date of Birth';
     error = '';
     stop = false;
@@ -25,7 +25,6 @@ import { MatDatepicker } from '@angular/material/datepicker';
     submitted = false;
     loading = false;
     maxDate:Date;
-    doctor!:GetDoctorProfilesResponse;
     offices!:GetOfficeResponse[];
     specializations!:GetSpecializationResponse[];
     minDate = new Date('1920-04-26')
@@ -48,82 +47,76 @@ import { MatDatepicker } from '@angular/material/datepicker';
       this.maxDate = now;
       let s = this.doctorStatusEnum[0]
       this.doctorStatusTypes = Object.keys(DoctorStatusEnum).filter(x=>isNaN(parseInt(x)));
-  
+      this.doctorStatusTypes.forEach(element => {
+        let i = DoctorStatusEnum[element]
+        let b = DoctorStatusEnum[element.key]
+      });
     }
 
     ngOnInit(): void {
-      this.editForm = new FormGroup({
+      this.createForm = new FormGroup({
         "firstName": new FormControl("", [Validators.required]),
         "lastName": new FormControl("", [Validators.required]),
         "middleName": new FormControl(null),
         "dateOfBirth": new FormControl("", [Validators.required]),
+        "email": new FormControl("", [Validators.email,Validators.required]),
         "careerStartYear": new FormControl(null,[Validators.required,Validators.pattern('[1-2][0-9]{3}'),Validators.max( new Date().getFullYear()), Validators.min(1960)]),
         "status": new FormControl(null),
         "photo": new FormControl(null),
-        "id": new FormControl(this.route.snapshot.paramMap.get("id")),
-        "office": new FormControl(),
-        "specialization": new FormControl(),
+        "office": new FormControl("", [Validators.required]),
+        "specialization": new FormControl("", [Validators.required]),
+        "phoneNumber": new FormControl("", [Validators.required,Validators.pattern('^\\+[0-9][0-9]*')]),
       });
 
-      this.doctorProfileService.getById(this.editForm.get('id')?.value).subscribe(
-        data=>{
-            this.editForm.patchValue(data)
-            this.doctor = data
-            let office =new GetOfficeResponse(data['officeId'],data['address'])
-            this.editForm.get('office')?.setValue(office)
-            let specialization=new GetSpecializationResponse(data['specializationId'],data['specializationName'])
-            this.editForm.get('specialization')?.setValue(specialization)
-        },
-        error=>{
-            this.stop = true;
-            this.error ="Doctor not found"
-        }
-      )
       this.officeService.getOffices().subscribe((data)=>{
         this.offices = data;
      })
      this.specializationService.getSpecializations().subscribe((data)=>{
         this.specializations = data;
      })
-      //if (localStorage.getItem('updateDoctor')!=null)
-      //  this.editForm.patchValue(JSON.parse(localStorage.getItem('updateDoctor')!))
+
+     //this.authService.refresh(localStorage.getItem('token')!,localStorage.getItem('refresh_token')!)
+     
     }
 
-    get f() { return this.editForm.controls; }
+    get f() { return this.createForm.controls; }
 
     onSubmit() {
       this.submitted = true;
 
-      if (this.editForm.invalid) {
+      if (this.createForm.invalid) {
         return;
       }
-      const time =(new Date(this.editForm.get('dateOfBirth')?.value)).toUTCString();
+      const time =(new Date(this.createForm.get('dateOfBirth')?.value)).toUTCString();
 
       const formData = new FormData();
 
-      formData.append("id",this.editForm.get('id')?.value)
-      formData.append("firstName",this.editForm.get('firstName')?.value)
-      formData.append("lastName",this.editForm.get('lastName')?.value)
-      if(this.editForm.get('middleName')?.value != null)
-        formData.append("middleName",this.editForm.get('middleName')?.value)
-      formData.append("dateOfBirth",new Date(this.editForm.get('dateOfBirth')?.value).toUTCString())
-      formData.append("careerStartYear",this.editForm.get('careerStartYear')?.value)
-      formData.append("status",this.editForm.get('status')?.value)
-      if(this.editForm.get('photo')?.value != null)
-        formData.append("photo",this.editForm.get('photo')?.value)
-      formData.append("officeId",this.editForm.get('office')?.value.id)
-      formData.append("address",this.editForm.get('office')?.value.address)
-      formData.append("specializationId",this.editForm.get('specialization')?.value.id)
-      formData.append("specializationName",this.editForm.get('specialization')?.value.specializationName)
+      formData.append("firstName",this.createForm.get('firstName')?.value)
+      formData.append("lastName",this.createForm.get('lastName')?.value)
+      if(this.createForm.get('middleName')?.value != null)
+        formData.append("middleName",this.createForm.get('middleName')?.value)
+      formData.append("dateOfBirth",new Date(this.createForm.get('dateOfBirth')?.value).toUTCString())
+      formData.append("careerStartYear",this.createForm.get('careerStartYear')?.value)
+      formData.append("status",this.createForm.get('status')?.value)
+      if(this.createForm.get('photo')?.value != null)
+        formData.append("photo",this.createForm.get('photo')?.value)
+      formData.append("officeId",this.createForm.get('office')?.value.id)
+      formData.append("address",this.createForm.get('office')?.value.address)
+      formData.append("specializationId",this.createForm.get('specialization')?.value.id)
+      formData.append("specializationName",this.createForm.get('specialization')?.value.specializationName)
+      formData.append("phoneNumber",this.createForm.get('phoneNumber')?.value)
+      formData.append("email",this.createForm.get('email')?.value)
 
-      this.doctorProfileService.update(formData).subscribe(
+      this.doctorProfileService.create(formData).subscribe(
         data=>{
           let currentRole = JSON.parse(localStorage.getItem('currentUser')!).Role.toLowerCase();
           this.router.navigate([`${currentRole}/menu/doctors`]);
+          
         },
         error=>
         {
-            
+          this.stop = true;
+            this.error='Email already in use'
         }
       );
     }
@@ -133,7 +126,7 @@ import { MatDatepicker } from '@angular/material/datepicker';
         return;
 
       for (const file of files) {
-        this.editForm.get('photo')?.setValue(file);
+        this.createForm.get('photo')?.setValue(file);
       }
     }
 
@@ -142,8 +135,8 @@ import { MatDatepicker } from '@angular/material/datepicker';
         return;
 
       const file = files[0];
-      this.editForm.patchValue({photo:file});
-      this.editForm.get('photo')?.updateValueAndValidity();
+      this.createForm.patchValue({photo:file});
+      this.createForm.get('photo')?.updateValueAndValidity();
       const reader = new FileReader();
       reader.onload = () => {
         this.imagePreview = reader.result?.toString()!;
@@ -155,7 +148,6 @@ import { MatDatepicker } from '@angular/material/datepicker';
     goBack(){
         let currentRole = JSON.parse(localStorage.getItem('currentUser')!).Role.toLowerCase();
       this.router.navigate([`${currentRole}/menu/doctors`]);
-        
     }
 
 }

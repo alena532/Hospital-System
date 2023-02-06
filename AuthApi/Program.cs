@@ -1,5 +1,9 @@
+
 using AuthApi.DataAccess;
 using AuthApi.Extensions;
+using Microsoft.AspNet.Identity;
+using IdentityRole = Microsoft.AspNetCore.Identity.IdentityRole;
+
 var  MyAllowedOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -11,30 +12,17 @@ namespace Orchestrator.Services.Implementations;
 public class DoctorProfilesService:IDoctorProfilesService
 {
     private readonly HttpClient _client;
+    private readonly IMapper _mapper;
 
-    public DoctorProfilesService()
+    public DoctorProfilesService(IMapper mapper)
     {
         _client = new HttpClient();
+        _mapper = mapper;
     }
     
     public async Task CreateAsync(CreateDoctorProfileAndPhotoRequest request)
     {
-        var profileRequest = new CreateDoctorProfileRequest()
-        {
-            FirstName = request.FirstName,
-            LastName = request.LastName,
-            MiddleName = request.MiddleName,
-            DateOfBirth = request.DateOfBirth,
-            Email = request.Email,
-            OfficeId = request.OfficeId,
-            Address = request.Address,
-            CareerStartYear = request.CareerStartYear,
-            PhoneNumber = request.PhoneNumber,
-            Status = request.Status,
-            SpecializationId = request.SpecializationId,
-            SpecializationName = request.SpecializationName
-        };
-       
+        var profileRequest = _mapper.Map<CreateDoctorProfileRequest>(request);
         var createdDoctor = await _client.PostAsJsonAsync(ApiRoutes.Profiles + "api/DoctorProfiles", profileRequest);
         if (createdDoctor.IsSuccessStatusCode == false)
         {
@@ -61,7 +49,7 @@ public class DoctorProfilesService:IDoctorProfilesService
             DoctorId = doctorId
         };
 
-        var createdPhoto = await _client.PostAsJsonAsync(ApiRoutes.Documents +"api/Photos/CreateDoctorPhoto", photoRequest);
+        var createdPhoto = await _client.PostAsJsonAsync(ApiRoutes.Documents +"api/Photos/DoctorPhoto", photoRequest);
         if (createdPhoto.IsSuccessStatusCode == false)
         {
             throw new BadHttpRequestException($"{createdPhoto.Content} {createdPhoto.ReasonPhrase}");
@@ -70,21 +58,8 @@ public class DoctorProfilesService:IDoctorProfilesService
 
     public async Task UpdateAsync([FromForm] EditDoctorProfileAndPhotoRequest request)
     {
-        var profileRequest = new EditDoctorProfileRequest()
-        {
-            Id = request.Id,
-            FirstName = request.FirstName,
-            LastName = request.LastName,
-            MiddleName = request.MiddleName,
-            DateOfBirth = request.DateOfBirth,
-            OfficeId = request.OfficeId,
-            Address = request.Address,
-            CareerStartYear = request.CareerStartYear,
-            Status = request.Status,
-            SpecializationId = request.SpecializationId,
-            SpecializationName = request.SpecializationName
-        };
-       
+        var profileRequest = _mapper.Map<EditDoctorProfileRequest>(request);
+
         var updatedDoctor = await _client.PutAsJsonAsync(ApiRoutes.Profiles + "api/DoctorProfiles", profileRequest);
         if (updatedDoctor.IsSuccessStatusCode == false)
         {
@@ -107,7 +82,7 @@ public class DoctorProfilesService:IDoctorProfilesService
             DoctorId = request.Id
         };
 
-        var updatedPhoto = await _client.PutAsJsonAsync(ApiRoutes.Documents +"api/Photos/UpdateDoctorPhoto", photoRequest);
+        var updatedPhoto = await _client.PutAsJsonAsync(ApiRoutes.Documents +"api/Photos/DoctorPhoto", photoRequest);
         if (updatedPhoto.IsSuccessStatusCode == false)
         {
             throw new BadHttpRequestException($"{updatedPhoto.Content} {updatedPhoto.ReasonPhrase}");

@@ -1,6 +1,6 @@
 import { DoctorStatusEnum } from "../DoctorStatusEnum";
 
-export class GetDoctorProfile {
+export class GetDoctorProfilesResponse {
 
     constructor (
       public id: string,

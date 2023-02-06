@@ -20,6 +20,7 @@ public class ReceptionistProfilesController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles="Receptionist")]
     [ServiceFilter(typeof(ValidationModelAttribute))]
     public async Task<ActionResult> Create([FromForm]CreateReceptionistProfileAndPhotoRequest request)
     {

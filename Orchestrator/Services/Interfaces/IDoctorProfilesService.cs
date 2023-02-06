@@ -5,6 +5,6 @@ namespace Orchestrator.Services.Interfaces;
 
 public interface IDoctorProfilesService
 {
-    Task CreateAsync([FromForm] CreateDoctorProfileAndPhotoRequest request);
-    Task UpdateAsync([FromForm] EditDoctorProfileAndPhotoRequest request);
+    Task CreateAsync(CreateDoctorProfileAndPhotoRequest request);
+    Task UpdateAsync(EditDoctorProfileAndPhotoRequest request);
 }

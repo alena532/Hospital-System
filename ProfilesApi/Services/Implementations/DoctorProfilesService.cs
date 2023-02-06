@@ -32,6 +32,9 @@ public class DoctorProfilesService:IDoctorProfilesService
     
     public async Task<GetDoctorProfilesResponse> CreateAsync(CreateDoctorProfileRequest request)
     {
+       // var requestToService = new HttpRequestMessage(HttpMethod.Get,ApiRoutes.Auth + "api/AuthValidator" );
+        //requestToService.Content = new StringContent(request.Email);
+       // var checkEmail = _httpClient.SendAsync(requestToService).Result;
         var checkEmail = _httpClient.PostAsJsonAsync( ApiRoutes.Auth + "api/AuthValidator",request.Email).Result;
         if (checkEmail.IsSuccessStatusCode == false)
         { 

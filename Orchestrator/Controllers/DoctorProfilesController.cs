@@ -27,6 +27,7 @@ public class DoctorProfilesController : Controller
     }
     
     [HttpPut]
+    [Authorize]
     [ServiceFilter(typeof(ValidationModelAttribute))]
     public async Task<ActionResult> Update([FromForm]EditDoctorProfileAndPhotoRequest request)
     {

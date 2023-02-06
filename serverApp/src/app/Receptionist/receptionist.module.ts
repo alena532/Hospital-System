@@ -16,6 +16,12 @@ import { DoctorProfilesService } from '../ProfilesService/_services/doctorProfil
 import { OfficesService } from '../OfficesService/_services/office.service';
 import { ProfilesModule } from '../ProfilesService/profiles.module';
 import { SpecializationService } from '../ServicesService/_services/specialization.service';
+import {MatTabsModule} from '@angular/material/tabs';
+import { MatButtonModule } from '@angular/material/button';
+import { JwtInterceptor } from '@auth0/angular-jwt';
+import { JwtHelperService, JwtModule, JWT_OPTIONS } from '@auth0/angular-jwt';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { ErrorInterceptor } from '../_helpers/error.interceptor';
 @NgModule({
   declarations: [
     MenuComponent
@@ -34,11 +40,16 @@ import { SpecializationService } from '../ServicesService/_services/specializati
     MatButtonToggleModule,
     MatDatepickerModule,
     NgxPaginationModule,
+    MatTabsModule,
+    MatButtonModule
   ],
   providers: [
     DoctorProfilesService,
     OfficesService,
-    SpecializationService
+    SpecializationService,
+    
+   
+    
     
   ]
 })

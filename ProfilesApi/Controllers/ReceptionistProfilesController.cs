@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using ProfilesApi.Common.Attributes;
+using ProfilesApi.Contracts;
 using ProfilesApi.Contracts.ReceptionistProfiles;
 using ProfilesApi.Contracts.Requests.DoctorProfiles;
 using ProfilesApi.Contracts.Requests.PatientProfiles;
@@ -25,7 +27,7 @@ public class ReceptionistProfilesController:ControllerBase
     
     [HttpPost("")]
     [ServiceFilter(typeof(ValidationModelAttribute))]
-    public async Task<ActionResult<GetPatientProfilesResponse>> Create([FromBody]CreateReceptionistProfileRequest request)
+    public async Task<ActionResult<GetDetailedReceptionistProfilesResponse>> Create([FromBody]CreateReceptionistProfileRequest request)
     {
         return Ok(await _service.CreateAsync(request));
     }
@@ -36,9 +38,21 @@ public class ReceptionistProfilesController:ControllerBase
         await _service.DeleteAsync(id);
         return Ok();
     }
+    
+    [HttpGet("GetPage")]
+    public async Task<ActionResult<PageResult<GetReceptionistAndPhotoProfilesResponse>>> GetPage([FromQuery]int pageNumber,[FromQuery]int pageSize)
+    {
+        return Ok(await _service.GetPageAsync(pageNumber,pageSize));
+    }
+    
+    [HttpGet]
+    public async Task<ActionResult<PageResult<GetReceptionistAndPhotoProfilesResponse>>> GetAll()
+    {
+        return Ok(await _service.GetAllAsync());
+    }
 
     [HttpGet("UserId/{userId:Guid}")]
-    public async Task<ActionResult<GetPatientProfilesResponse>> GetByUserId(Guid userId)
+    public async Task<ActionResult<GetDetailedReceptionistProfilesResponse>> GetByUserId(Guid userId)
     {
         return Ok(await _service.GetByUserIdAsync(userId));
     }

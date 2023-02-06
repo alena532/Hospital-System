@@ -5,13 +5,13 @@ import {map, Observable, of, throwError} from "rxjs";
 import { catchError, finalize, tap } from 'rxjs/operators';
 import { FormGroupDirective } from '@angular/forms';
 import { switchMap } from 'rxjs/operators';
-import { Receptionist } from '../_models/Receptionist';
+import { GetDetailedReceptionistProfilesResponse } from '../_models/responses/GetDetailedReceptionistProfilesResponse';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private accessPointUrl: string = 'https://localhost:5000/api/Auth';
+  private accessPointUrl: string = 'https://localhost:5000/AuthApi/Auth';
   userId!: string;
   isAuthenticated: boolean = false;
   constructor(private http: HttpClient) {
@@ -22,15 +22,14 @@ export class AuthService {
     .pipe(
       switchMap((tokens) => {
         let userInfo = tokens['user'];
-        console.log(`in method login ${tokens}`);
         this.storeTokens(tokens['tokens']);
         this.userId = userInfo['id'];
         switch(userInfo['role']){
           case 'Receptionist':
-            return this.http.get<Receptionist>(`https://localhost:7097/api/ReceptionistProfiles/UserId/${userInfo['id']}`)
+            return this.http.get<GetDetailedReceptionistProfilesResponse>(`https://localhost:5000/ProfilesApi/ReceptionistProfiles/UserId/${userInfo['id']}`)
             .pipe(
-              map((data:Receptionist)=>{
-                let receptionist = data as Receptionist;
+              map((data:GetDetailedReceptionistProfilesResponse)=>{
+                let receptionist = data as GetDetailedReceptionistProfilesResponse;
                 receptionist.Role = 'Receptionist';
                 localStorage.setItem("currentUser",JSON.stringify(receptionist));
               }
@@ -38,7 +37,7 @@ export class AuthService {
             )
             break;
         default:
-          return this.http.get<Receptionist>(`https://localhost:7097/api/Accounts/CheckPatientAccountBeforeProfileLogin/${userInfo['id']}`)
+          return this.http.get<GetDetailedReceptionistProfilesResponse>(`https://localhost:5000/ProfrilesApi/Accounts/CheckPatientAccountBeforeProfileLogin/${userInfo['id']}`)
 
         }
       })
@@ -54,16 +53,18 @@ export class AuthService {
 
   register(email: string,password: string){
     let roleId = '3968115f-b6a0-40c1-1e44-08dadeca5a9a';
-    return this.http.post<any>('https://localhost:7097/api/PatientProfiles/CreateAccount', { email, password, roleId})
+    return this.http.post<any>('https://localhost:5000/ProfrilesApi/PatientProfiles/CreateAccount', { email, password, roleId})
     .pipe(
       switchMap((AccountId : any) => {
-        return this.http.post<any>('https://localhost:7097/api/Mail/SendToPatient',AccountId )
+        return this.http.post<any>('https://localhost:5000/ProfrilesApi/Mail/SendToPatient',AccountId )
       }
       )
     )
   }
 
   private storeTokens(tokens:any){
+    console.log(tokens['token'])
+    console.log(tokens['refreshToken'])
     localStorage.setItem('token',JSON.stringify(tokens['token']));
     localStorage.setItem('refresh_token',JSON.stringify(tokens['refreshToken']));
   }

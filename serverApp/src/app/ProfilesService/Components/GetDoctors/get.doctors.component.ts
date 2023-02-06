@@ -5,8 +5,9 @@ import { Doctor } from '../../_models/Doctor';
 import { Pagination } from '../../_models/Pagination';
 import {DomSanitizer} from '@angular/platform-browser';
 import { DoctorProfilesService } from '../../_services/doctorProfile.service';
-import { Office } from '../../../OfficesService/_models/Office';
+import { GetOfficeResponse } from '../../../OfficesService/_models/responses/GetOfficeResponse';
 import { OfficesService } from '../../../OfficesService/_services/office.service';
+
 
 @Component({
     selector: 'doctors-get',
@@ -17,7 +18,7 @@ import { OfficesService } from '../../../OfficesService/_services/office.service
   export class GetDoctorsComponent implements OnInit {
 
     doctors!:Doctor[];
-    offices!:Office[];
+    offices!:GetOfficeResponse[];
     error = '';
     stop = false;
     submitted = false;
@@ -100,8 +101,12 @@ import { OfficesService } from '../../../OfficesService/_services/office.service
     }
 
     editDoctor(id:string){
-      
-      this.router.navigate(['receptionist/doctor',id]);
+      let currentRole = JSON.parse(localStorage.getItem('currentUser')!).Role.toLowerCase();
+      this.router.navigate([`${currentRole}/menu/doctor`,id]);
+    }
 
+    createDoctor(){
+      let currentRole = JSON.parse(localStorage.getItem('currentUser')!).Role.toLowerCase();
+      this.router.navigate([`${currentRole}/menu/doctor/create`]);
     }
   }

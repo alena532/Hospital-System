@@ -1,5 +1,6 @@
 using AuthApi.DataAccess;
 using AuthApi.Services.Interfaces;
+using Microsoft.AspNet.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace AuthApi.Services.Implementations;

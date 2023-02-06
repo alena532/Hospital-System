@@ -2,6 +2,7 @@ using System.Security.Claims;
 using AuthApi.Common.Attributes;
 using AuthApi.Contracts.Requests;
 using AuthApi.Contracts.Responses;
+using AuthApi.DataAccess;
 using AuthApi.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -55,7 +56,7 @@ public class AuthController:ControllerBase
         await _authService.UpdatePasswordAsync(request,username);
         return StatusCode(201);
     }
-
+    
     [HttpPost]
     [Authorize]
     [Route("Revoke")]
@@ -63,6 +64,6 @@ public class AuthController:ControllerBase
     {
         var username = HttpContext.User.FindFirstValue(ClaimTypes.Name);
         await _authService.RevokeAsync(username);
-        return NoContent();
+        return Ok();
     }
 }

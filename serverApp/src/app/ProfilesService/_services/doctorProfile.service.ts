@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { HttpParams } from '@angular/common/http';
-import { GetDoctorProfile } from '../_models/responses/GetDoctorProfile';
+import { GetDoctorProfilesResponse } from '../_models/responses/GetDoctorProfilesResponse';
 import { EditDoctorProfileAndPhoto } from '../_models/requests/EditDoctorProfileAndPhoto';
+import { catchError } from 'rxjs';
 @Injectable()
 export class DoctorProfilesService {
 
-  private accessPointUrl: string = 'https://localhost:7097/api/DoctorProfiles';
+  private accessPointUrl: string = 'https://localhost:5000/ProfilesApi/DoctorProfiles';
 
   constructor(private http: HttpClient) {
   }
@@ -25,13 +26,15 @@ export class DoctorProfilesService {
   }
 
   getById(id:string){
-    return this.http.get<GetDoctorProfile>(this.accessPointUrl+`/${id}`);
+    return this.http.get<GetDoctorProfilesResponse>(this.accessPointUrl+`/${id}`);
   }
-  
+
   update(editForm:FormData){
-    return this.http.put('https://localhost:7281/api/DoctorProfiles',editForm);
-   //new EditDoctorProfileAndPhoto(editForm.get('id')!,editForm.get('firstName'),editForm.get('lastName'),editForm.get('middleName'), editForm.get('dateOfBirth'),editForm.get('careerStartYear'),
-//editForm.get('status'),editForm.get('specialization')?.id,editForm.get('specialization')?.specializationName,editForm.get('photo'),editForm.get('office')?.adress,editForm.get('office').id,editForm.get('photo')
-  //  )
+    return this.http.put("https://localhost:5000/Orchestrator/DoctorProfiles",editForm)
+    .pipe()
+  }
+
+  create(createForm:FormData){
+    return this.http.post("https://localhost:5000/Orchestrator/DoctorProfiles",createForm);
   }
 }

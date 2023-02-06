@@ -1,6 +1,6 @@
 import { Guid } from "guid-typescript";
 
-export class Receptionist {
+export class GetDetailedReceptionistProfilesResponse {
     constructor (
       public id: Guid,
       public email: string,
