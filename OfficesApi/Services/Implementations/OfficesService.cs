@@ -32,7 +32,7 @@ public class OfficesService:IOfficesService
        var office =  await _repository.GetByIdAsync(id);
        if (office == null)
        {
-           throw new BadHttpRequestException("Office doesnt found");
+           throw new BadHttpRequestException("Office not found");
        }
 
        return _mapper.Map<GetOfficeResponse>(office);
@@ -43,7 +43,7 @@ public class OfficesService:IOfficesService
         var office =  await _repository.GetByIdAsync(id);
         if (office == null)
         {
-            throw new BadHttpRequestException("Office doesnt found");
+            throw new BadHttpRequestException("Office not found");
         }
         await _repository.DeleteAsync(office);
     }
@@ -60,7 +60,7 @@ public class OfficesService:IOfficesService
         var office =  await _repository.GetByIdAsync(request.Id);
         if (office == null)
         {
-            throw new BadHttpRequestException("Office doesnt found");
+            throw new BadHttpRequestException("Office not found");
         }
         
         _mapper.Map(request, office);
@@ -73,7 +73,7 @@ public class OfficesService:IOfficesService
         var office =  await _repository.GetByIdAsync(request.Id,true);
         if (office == null)
         {
-            throw new BadHttpRequestException("Office doesnt found");
+            throw new BadHttpRequestException("Office not found");
         }
         
         office.Status = request.Status;

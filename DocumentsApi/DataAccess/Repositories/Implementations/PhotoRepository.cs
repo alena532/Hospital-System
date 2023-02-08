@@ -45,6 +45,17 @@ public class PhotoRepository:IPhotoRepository
 
         return bytes;
     }
+    
+    public async Task DeleteAsync(ObjectId id)
+    {
+        await _gridFS.DeleteAsync(id);
+    }
+    
+    
+    public async Task UpdateAsync(Photo photo,byte[] photoBytes)
+    {
+        await _gridFS.UploadFromBytesAsync(photo.Id, photo.FileName, photoBytes);
+    }
         
 
 }

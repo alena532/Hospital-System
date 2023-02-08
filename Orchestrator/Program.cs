@@ -11,6 +11,7 @@ services.AddControllers();
 services.ConfigureSwagger();
 services.ConfigureFilters();
 services.ConfigureServices();
+services.ConfigureAutoMapper();
 
 var app = builder.Build();
 

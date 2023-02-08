@@ -54,7 +54,8 @@ public class AuthService:IAuthService
             User = new UserCredentialsResponse()
             {
                 Id = user.Id,
-                Email = user.Email
+                Email = user.Email,
+                Role = user.Role.Name
             }
         };
 

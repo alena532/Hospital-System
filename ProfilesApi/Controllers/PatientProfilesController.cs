@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProfilesApi.Common.Attributes;
 using ProfilesApi.Contracts.Requests.PatientProfiles;
-using ProfilesApi.Contracts.Responses.DoctorProfiles;
 using ProfilesApi.Contracts.Responses.PatientProfiles;
 using ProfilesApi.Services.Interfaces;
 

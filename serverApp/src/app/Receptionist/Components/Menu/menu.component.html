@@ -1,0 +1,21 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Account-Owner Home</a>
+    <div class="collapse navbar-collapse" id="navbarText">
+        <nav mat-tab-nav-bar>
+          
+            <a mat-tab-link routerLink="doctors">Doctors</a>
+          
+        </nav>
+
+    </div>
+    <ul class="navbar-nav">
+      <nav mat-tab-nav-bar>
+          
+        <a mat-tab-link (click)="logout()">Logout</a>
+      
+    </nav>
+    </ul>
+</nav>
+<router-outlet></router-outlet>
+
+

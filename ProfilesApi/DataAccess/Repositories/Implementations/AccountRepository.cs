@@ -27,5 +27,7 @@ public class AccountRepository : RepositoryBase<Account>,IAccountRepository
     {
         return await FindByCondition(x => x.UserId == userId, trackChanges).SingleOrDefaultAsync();
     }
+
+    
     
 }

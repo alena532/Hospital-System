@@ -1,14 +1,11 @@
 using System.Security.Claims;
 using AuthApi.Common.Attributes;
-using AuthApi.ConfigurationOptions;
 using AuthApi.Contracts.Requests;
 using AuthApi.Contracts.Responses;
 using AuthApi.DataAccess;
 using AuthApi.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 namespace AuthApi.Controllers;
 
@@ -50,6 +47,7 @@ public class AuthController:ControllerBase
     }
     
     [HttpPut]
+    [Route("ChangePassword")]
     [Authorize]
     [ValidationModel]
     public async Task<ActionResult<AuthenticatedResponse>> ChangePassword([FromBody] ChangePasswordRequest request)
@@ -58,7 +56,7 @@ public class AuthController:ControllerBase
         await _authService.UpdatePasswordAsync(request,username);
         return StatusCode(201);
     }
-
+    
     [HttpPost]
     [Authorize]
     [Route("Revoke")]
@@ -66,6 +64,6 @@ public class AuthController:ControllerBase
     {
         var username = HttpContext.User.FindFirstValue(ClaimTypes.Name);
         await _authService.RevokeAsync(username);
-        return NoContent();
+        return Ok();
     }
 }

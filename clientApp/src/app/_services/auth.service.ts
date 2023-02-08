@@ -30,9 +30,11 @@ export class AuthService {
           .pipe(
             map((data:any)=>{
               console.log("in login")
+              console.log(data)
               console.log(this.isAuthenticated)
               let patient = data['patient'];
-              this.currentUser = new User(data['email'],patient['id'],patient['firstName'],patient['lastName'],patient['middleName'],data['phoneNumber'],patient['dateOfBirth'],patient['accountId']);
+              this.currentUser = new User(data['email'],patient['id'],patient['firstName'],patient['lastName'],patient['middleName'],data['phoneNumber'],patient['dateOfBirth'].split('T',2)[0],patient['accountId']);
+              console.log(this.currentUser.dateOfBirth)
               localStorage.setItem("currentUser",JSON.stringify(this.currentUser));
               this.isAuthenticated = true;
               localStorage.setItem("isAuthenticated",JSON.stringify(this.isAuthenticated));

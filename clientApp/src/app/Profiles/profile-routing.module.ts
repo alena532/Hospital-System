@@ -7,6 +7,7 @@ import { GetProfileComponent } from './Components/ViewProfile/get.profile.compon
 const routes: Routes = [
   {path: 'createProfile/:accountId',component:CreateProfileComponent},
   {path: 'doctors',component:GetDoctorsComponent },
+  {path: 'doctors',component:GetDoctorsComponent },
   {path:'profile',component:GetProfileComponent}
 ];
 

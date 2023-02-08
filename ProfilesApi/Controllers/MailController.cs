@@ -17,8 +17,8 @@ public class MailController : Controller
         this._service = mailService;
     }
     
-    [HttpPost("SendToDoctor")]
-    public async Task<IActionResult> SendToDoctorMail([FromBody]MailForDoctorConfirmationRequest request)
+    [HttpPost("SendToStuff")]
+    public async Task<IActionResult> SendToStuffMail([FromBody]MailForStuffConfirmationRequest request)
     {
         await _service.SendEmailAsync(request);
         return Ok();

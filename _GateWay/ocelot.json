@@ -1,0 +1,114 @@
+{
+  "Routes": [
+    
+    {
+      "DownstreamPathTemplate": "/api/Auth/Revoke",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [{
+        "Host": "localhost",
+        "Port": 5002
+      }],
+      "UpstreamPathTemplate": "/AuthApi/Auth/Revoke",
+      "UpstreamHttpMethod": ["Post"],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/Auth/ChangePassword",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [{
+        "Host": "localhost",
+        "Port": 5002
+      }],
+      "UpstreamPathTemplate": "/AuthApi/Auth/ChangePassword",
+      "UpstreamHttpMethod": ["Post"],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [{
+        "Host": "localhost",
+        "Port": 5002
+      }],
+      "UpstreamPathTemplate": "/AuthApi/{everything}",
+      "UpstreamHttpMethod": ["Post","Put"]
+    },
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [{
+        "Host": "localhost",
+        "Port": 5004
+      }],
+      "UpstreamPathTemplate": "/OfficesApi/{everything}",
+      "UpstreamHttpMethod": ["Get","Post","Put","Delete"]
+    },
+    {
+      "DownstreamPathTemplate": "/api/DoctorProfiles",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [{
+        "Host": "localhost",
+        "Port": 5005
+      }],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "UpstreamPathTemplate": "/Orchestrator/DoctorProfiles",
+      "UpstreamHttpMethod": ["Put"]
+    },
+    {
+      "DownstreamPathTemplate": "/api/ReceptionistProfiles",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [{
+        "Host": "localhost",
+        "Port": 5005
+      }],
+      "UpstreamPathTemplate": "/Orchestrator/ReceptionistProfiles",
+      "UpstreamHttpMethod": ["Post"],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [{
+        "Host": "localhost",
+        "Port": 5005
+      }],
+      "UpstreamPathTemplate": "/Orchestrator/{everything}",
+      "UpstreamHttpMethod": ["Get","Post","Put","Delete"]
+    },
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [{
+        "Host": "localhost",
+        "Port": 5006
+      }],
+      "UpstreamPathTemplate": "/ProfilesApi/{everything}",
+      "UpstreamHttpMethod": ["Get","Post","Put","Delete"]
+    },
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [{
+        "Host": "localhost",
+        "Port": 5007
+      }],
+      "UpstreamPathTemplate": "/ServicesApi/{everything}",
+      "UpstreamHttpMethod": ["Get"]
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:5000"
+  }
+}

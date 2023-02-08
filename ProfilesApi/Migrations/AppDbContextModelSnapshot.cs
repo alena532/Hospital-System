@@ -42,6 +42,7 @@ namespace ProfilesApi.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("PhoneNumber")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdateAt")
@@ -137,9 +138,45 @@ namespace ProfilesApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AccountId");
+                    b.HasIndex("AccountId")
+                        .IsUnique();
 
                     b.ToTable("Patients");
+                });
+
+            modelBuilder.Entity("ProfilesApi.DataAccess.Models.Receptionist", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MiddleName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("OfficeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId")
+                        .IsUnique();
+
+                    b.ToTable("Receptionists");
                 });
 
             modelBuilder.Entity("ProfilesApi.DataAccess.Models.Doctor", b =>
@@ -156,8 +193,19 @@ namespace ProfilesApi.Migrations
             modelBuilder.Entity("ProfilesApi.DataAccess.Models.Patient", b =>
                 {
                     b.HasOne("ProfilesApi.DataAccess.Models.Account", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountId")
+                        .WithOne("Patient")
+                        .HasForeignKey("ProfilesApi.DataAccess.Models.Patient", "AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+                });
+
+            modelBuilder.Entity("ProfilesApi.DataAccess.Models.Receptionist", b =>
+                {
+                    b.HasOne("ProfilesApi.DataAccess.Models.Account", "Account")
+                        .WithOne("Receptionist")
+                        .HasForeignKey("ProfilesApi.DataAccess.Models.Receptionist", "AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -167,6 +215,12 @@ namespace ProfilesApi.Migrations
             modelBuilder.Entity("ProfilesApi.DataAccess.Models.Account", b =>
                 {
                     b.Navigation("Doctor")
+                        .IsRequired();
+
+                    b.Navigation("Patient")
+                        .IsRequired();
+
+                    b.Navigation("Receptionist")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

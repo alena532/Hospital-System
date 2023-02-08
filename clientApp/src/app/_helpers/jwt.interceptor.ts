@@ -3,7 +3,7 @@ import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpErrorResponse
 import { catchError, Observable, throwError } from 'rxjs';
 import { AuthService } from '../_services/auth.service';
 import {Router} from "@angular/router";
-import jwt_decode from 'jwt-decode';
+
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
@@ -16,7 +16,7 @@ export class JwtInterceptor implements HttpInterceptor {
     let expired = true;
     if(localStorage.getItem('token')){
       const expiry = (JSON.parse(atob(localStorage.getItem('token')!.split('.')[1]))).exp;
-      
+
       if(Date.now() < expiry*1000){
         expired = false;
       }

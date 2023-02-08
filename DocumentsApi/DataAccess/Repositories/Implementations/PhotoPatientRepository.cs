@@ -16,9 +16,8 @@ public class PhotoPatientRepository:IPhotoPatientRepository
         var mongoClient = new MongoClient(photoStoreDatabaseSettings.Value.ConnectionString);
 
         var mongoDatabase = mongoClient.GetDatabase(photoStoreDatabaseSettings.Value.DatabaseName);
-        _photoPatientsCollection = mongoDatabase.GetCollection<PhotoPatient>(photoStoreDatabaseSettings.Value.PhotosCollectionName);
-
-        //_photoPatientsCollection = mongoDatabase.GetCollection<PhotoPatient>(photoStoreDatabaseSettings.Value.PhotoPatientsCollectionName);
+        _photoPatientsCollection = mongoDatabase.GetCollection<PhotoPatient>(photoStoreDatabaseSettings.Value.PhotoPatientsCollectionName);
+        
     }
     
     public async Task CreateAsync(PhotoPatient request)

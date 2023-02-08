@@ -26,8 +26,8 @@ public class OfficesController:ControllerBase
         _publishEndpoint = publishEndpoint;
     } 
     
-    [HttpGet("")]
-    public async Task<ActionResult<ICollection<GetOfficeResponse>>> GetAll()
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<GetOfficeResponse>>> GetAll()
         => Ok(await _service.GetAllAsync());
     
 
@@ -39,10 +39,10 @@ public class OfficesController:ControllerBase
     public async Task<IActionResult> Delete(Guid id)
     {
         await _service.DeleteAsync(id);
-        return NoContent();
+        return Ok();
     }
 
-    [HttpPost("")]
+    [HttpPost]
     [ServiceFilter(typeof(ValidationModelAttribute))]
     public async Task<ActionResult<GetOfficeResponse>> Create([FromBody] CreateOfficeRequest request)
     {
@@ -50,7 +50,7 @@ public class OfficesController:ControllerBase
         return CreatedAtRoute("GetById", new {id = officeReturn.Id}, officeReturn);
     }
     
-    [HttpPut("")]
+    [HttpPut]
     [ServiceFilter(typeof(ValidationModelAttribute))]
     public async Task<ActionResult<GetOfficeResponse>> Update([FromBody]EditOfficeRequest request)
     {

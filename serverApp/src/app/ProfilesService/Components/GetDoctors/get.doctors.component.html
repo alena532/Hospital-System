@@ -1,0 +1,55 @@
+
+<div class="form-group has-search " style="width: 100%;display: flex;justify-content:space-between;margin:0 0 0 10px">
+    <button mat-mini-fab (click)="createDoctor()">
+        <mat-icon>+</mat-icon>
+     </button>
+    <div style="width:200px;margin: 10px 20px;">
+        <form [formGroup]="searchAndFilter" (ngSubmit)="onSubmit()">
+            <div class="form-group">
+                <span class="fa fa-search form-control-feedback"></span>
+                <input #search type="search" id="form1" class="form-control" formControlName="search"  placeholder="Enter surname than name"/>
+            </div>
+            <div style="height:10px"></div>
+            <div class="form-group">
+                <select class="form-select form-select-lg mb-3" formControlName="office">
+                    <option [ngValue]="null" disabled>Select Office</option>
+                    <option *ngFor="let office of this.offices" [ngValue]="office">{{office.address}}</option>
+                  </select>
+            </div>
+            <button  class="btn btn-primary">
+                Find
+            </button>
+        </form>
+    </div>
+  </div>
+
+
+<div class="row">
+    <div class="col-10">
+    <div class="card-group">
+        <div *ngFor="let doctor of doctors | paginate: {
+            itemsPerPage: pagination.pageSize,
+            currentPage: pagination.page,
+            totalItems: pagination.collectionSize
+        }; let i = index">
+            <div class="card m-2 p-1 text-center" (click)="goToDoctor(doctor.id)">
+                <div class="card-body">
+                  <h5 class="card-title">{{doctor.fullName}}</h5>
+
+                  <p class="card-text" *ngIf="doctor.photo != null"><img [src]="doctor.photo"></p>
+                  <p class="card-text">Specialization:{{doctor.specializationName}}</p>
+                  <p class="card-text">Address:{{doctor.address}}</p>
+                  <small class="text-muted">Experience:{{doctor.experience}}</small>
+                </div>
+                <div class="card-footer">
+                  <button mat-raised-button (click)="editDoctor(doctor.id)">Update</button>
+                </div>
+              </div>
+        </div>
+    </div>
+    <pagination-controls [responsive]="true" previousLabel="Prev" nextLabel="Next" aria-label="Default pagination" (pageChange)="onPageChange($event)"></pagination-controls>
+    </div>
+</div> 
+
+
+

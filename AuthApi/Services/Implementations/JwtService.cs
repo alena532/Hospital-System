@@ -84,6 +84,7 @@ public class JwtService:IJwtService
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();
+        
         var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
         JwtSecurityToken jwtSecurityToken = securityToken as JwtSecurityToken;
         if (jwtSecurityToken == null)

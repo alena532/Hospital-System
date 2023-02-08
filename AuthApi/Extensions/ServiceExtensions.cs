@@ -1,9 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Reflection;
 using System.Text;
 using AuthApi.Common.Attributes;
 using AuthApi.ConfigurationOptions;
@@ -13,6 +10,7 @@ using AuthApi.DataAccess.Repositories.Interfaces;
 using AuthApi.Services.Implementations;
 using AuthApi.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 
 namespace AuthApi.Extensions;
@@ -91,7 +89,7 @@ public static class ServiceExtensions
     public static void ConfigureIdentity(this IServiceCollection services)
     {
         var builder = services
-            .AddIdentity<User, Role>(o =>
+            .AddIdentity<User, IdentityRole<Guid>>(o =>
             {
                 o.SignIn.RequireConfirmedAccount = false;
                 o.Password.RequireDigit = true;
@@ -102,6 +100,7 @@ public static class ServiceExtensions
                 o.User.RequireUniqueEmail = true;
             })
             .AddEntityFrameworkStores<AppDbContext>();
+        
     }
     
     public static void ConfigureJWT(this IServiceCollection services, IConfiguration configuration)

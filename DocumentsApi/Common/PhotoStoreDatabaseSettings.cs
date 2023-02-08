@@ -7,4 +7,5 @@ public class PhotoStoreDatabaseSettings
     public string PhotosCollectionName { get; set; } = null!;
     public string PhotoPatientsCollectionName { get; set; } = null!;
     public string PhotoDoctorsCollectionName { get; set; } = null!;
+    public string PhotoReceptionistsCollectionName { get; set; } = null!;
 }

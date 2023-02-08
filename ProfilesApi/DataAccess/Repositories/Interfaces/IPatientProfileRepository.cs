@@ -1,5 +1,4 @@
 using ProfilesApi.Contracts.Requests.PatientProfiles;
-using ProfilesApi.Contracts.Responses.PatientProfiles;
 using ProfilesApi.DataAccess.Models;
 using RepositoryBase.Interfaces;
 

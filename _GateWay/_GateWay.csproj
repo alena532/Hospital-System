@@ -33,6 +33,7 @@
       </PackageReference>
       <PackageReference Include="MimeKit" Version="3.4.3" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+      <PackageReference Include="Ocelot" Version="18.0.0" />
       <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
       <PackageReference Include="Serilog.Expressions" Version="3.4.1" />
       <PackageReference Include="Serilog.Settings.Configuration" Version="3.4.0" />
