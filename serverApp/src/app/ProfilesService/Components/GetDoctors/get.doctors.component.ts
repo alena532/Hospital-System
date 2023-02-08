@@ -27,7 +27,7 @@ import { OfficesService } from '../../../OfficesService/_services/office.service
     searchAndFilter!:FormGroup;
     //firstName!:string | number ;
     //lastName!:string | null;
-  
+
     constructor(
       private formBuilder: FormBuilder,
       private route: ActivatedRoute,
@@ -39,7 +39,7 @@ import { OfficesService } from '../../../OfficesService/_services/office.service
     )
     {
     }
-  
+
     ngOnInit(): void {
      this.searchAndFilter = new FormGroup({
         "search": new FormControl(null),
@@ -59,9 +59,9 @@ import { OfficesService } from '../../../OfficesService/_services/office.service
         let firstAndLastName = this.searchAndFilter.get("search")?.value;
         if(firstAndLastName != null){
             firstAndLastName = firstAndLastName.split(' ',2);
-            this.searchAndFilter.get('firstName')?.setValue(firstAndLastName[0]);
+            this.searchAndFilter.get('lastName')?.setValue(firstAndLastName[0]);
             if(firstAndLastName.length == 2){
-              this.searchAndFilter.get('lastName')?.setValue(firstAndLastName[1]);
+              this.searchAndFilter.get('firstName')?.setValue(firstAndLastName[1]);
             }
         }
 
@@ -88,7 +88,7 @@ import { OfficesService } from '../../../OfficesService/_services/office.service
 
     onSubmit() {
       this.submitted = true;
-  
+
       if (this.searchAndFilter.invalid) {
         return;
       }

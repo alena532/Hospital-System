@@ -41,9 +41,9 @@ public class DoctorProfileRepository: RepositoryBase<Doctor>,IDoctorProfileRepos
         if (officeId != null)
             doctors = doctors.Where(x => x.OfficeId == officeId);
 
-        if (firstName != null)
+        if (lastName != null)
         {
-            lastName = lastName != null ? lastName : "";
+            firstName = firstName != null ? firstName : "";
             doctors = doctors.Where(x =>
                 x.FirstName.ToLower().Contains(firstName.ToLower()) &&
                 x.LastName.ToLower().Contains(lastName.ToLower()));
