@@ -48,7 +48,7 @@ public class DoctorProfilesService:IDoctorProfilesService
         var authEntity = new RegisterRequest()
         {
             Email = request.Email,
-            RoleId = new Guid("56ee1399-df20-444e-1e43-08dadeca5a9a"),
+            RoleId = new Guid("600d67af-f94a-4f14-f321-08db125c549f"),
             Password = password
         };
 

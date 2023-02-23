@@ -1,4 +1,5 @@
 using System.Reflection;
+using AppointmentsApi.DataAccess;
 using AppointmentsApi.Extensions;
 using FluentValidation.AspNetCore;
 
@@ -32,6 +33,7 @@ services.ConfigureRepositories();
 services.ConfigureServices();
 
 var app = builder.Build();
+
 
 if (app.Environment.IsDevelopment())
 {

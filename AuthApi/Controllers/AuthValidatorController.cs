@@ -16,9 +16,9 @@ public class AuthValidatorController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> Validate([FromBody] string Email)
+    public  ActionResult Validate([FromBody] string Email)
     {
-        await _service.ValidateEmailAsync(Email);
+        _service.ValidateEmailAsync(Email);
         return Ok();
     }
         

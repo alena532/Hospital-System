@@ -9,7 +9,6 @@ using AuthApi.DataAccess.Repositories.Implementations;
 using AuthApi.DataAccess.Repositories.Interfaces;
 using AuthApi.Services.Implementations;
 using AuthApi.Services.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 
@@ -47,7 +46,7 @@ public static class ServiceExtensions
             };
             c.AddSecurityRequirement(securityRequirements);
 
-        });
+        }); 
     }
     
     public static void ConfigureSqlContext(this IServiceCollection services,
@@ -108,12 +107,7 @@ public static class ServiceExtensions
         var jwtOptions = new JwtOptions();
         configuration.GetSection(JwtOptions.Path).Bind(jwtOptions);
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.Path));
-
-        services.AddAuthorization(
-            options => options.FallbackPolicy = new AuthorizationPolicyBuilder()
-                .RequireAuthenticatedUser()
-                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme).Build()
-        );
+        
         services
             .AddAuthentication(options =>
             {

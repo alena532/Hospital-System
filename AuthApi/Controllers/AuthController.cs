@@ -2,14 +2,13 @@ using System.Security.Claims;
 using AuthApi.Common.Attributes;
 using AuthApi.Contracts.Requests;
 using AuthApi.Contracts.Responses;
-using AuthApi.DataAccess;
 using AuthApi.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AuthApi.Controllers;
 
-[AllowAnonymous]
+
 [ApiController]
 [Route("api/[controller]")]
 public class AuthController:ControllerBase
@@ -58,12 +57,13 @@ public class AuthController:ControllerBase
     }
     
     [HttpPost]
-    [Authorize]
     [Route("Revoke")]
+    [Authorize(Roles="Admin")]
     public async Task<ActionResult> Revoke()
     {
         var username = HttpContext.User.FindFirstValue(ClaimTypes.Name);
         await _authService.RevokeAsync(username);
         return Ok();
     }
+    
 }

@@ -1,4 +1,3 @@
-
 using AuthApi.DataAccess;
 using AuthApi.Extensions;
 using Microsoft.AspNet.Identity;
@@ -17,8 +16,10 @@ services.ConfigureSqlContext(builder.Configuration);
 
 services.ConfigureIdentity();
 services.ConfigureJWT(builder.Configuration);
+
 services.ConfigureFilters();
 services.ConfigureServices();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -42,3 +43,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+

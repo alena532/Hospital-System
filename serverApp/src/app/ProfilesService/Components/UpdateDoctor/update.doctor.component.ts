@@ -69,9 +69,9 @@ import { MatDatepicker } from '@angular/material/datepicker';
         data=>{
             this.editForm.patchValue(data)
             this.doctor = data
-            let office =new GetOfficeResponse(data['officeId'],data['address'])
+            let office = new GetOfficeResponse(data['officeId'],data['address'])
             this.editForm.get('office')?.setValue(office)
-            let specialization=new GetSpecializationResponse(data['specializationId'],data['specializationName'])
+            let specialization = new GetSpecializationResponse(data['specializationId'],data['specializationName'])
             this.editForm.get('specialization')?.setValue(specialization)
         },
         error=>{

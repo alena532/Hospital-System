@@ -70,7 +70,6 @@ public class AuthService:IAuthService
             throw new BadHttpRequestException("Role not found");
         }
         
-        await _validatorService.ValidateEmailAsync(request.Email);
 
         var newUser = new User
         {

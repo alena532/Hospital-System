@@ -2,5 +2,5 @@ namespace AuthApi.Services.Interfaces;
 
 public interface IAuthValidatorService
 {
-    Task ValidateEmailAsync(string email);
+    void ValidateEmailAsync(string email);
 }

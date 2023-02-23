@@ -1,3 +1,4 @@
+using System.Security.Authentication;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Options;
@@ -79,7 +80,8 @@ public class MailService : IMailService
         {
             try
             {
-                await client.ConnectAsync(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
+                await client.ConnectAsync(_mailSettings.Host, 26, true);
+                
                 await client.AuthenticateAsync(_mailSettings.Mail, _mailSettings.Password);
 
                 await client.SendAsync(mailMessage);

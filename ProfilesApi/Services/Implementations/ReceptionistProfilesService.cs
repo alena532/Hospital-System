@@ -48,7 +48,7 @@ public class ReceptionistProfilesService:IReceptionistProfilesService
         var authEntity = new RegisterRequest()
         {
             Email = request.Email,
-            RoleId = new Guid("5cf6b402-493f-498a-1e45-08dadeca5a9a"),
+            RoleId = new Guid("cbfe46ec-b39d-460e-f323-08db125c549f"),
             Password = password
         };
 
