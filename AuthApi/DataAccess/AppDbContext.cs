@@ -20,7 +20,7 @@ public class AppDbContext : IdentityDbContext<User,Role,Guid>
             entity.HasOne(e => e.Role)
                 .WithMany(e => e.Users)
                 .HasForeignKey(e => e.RoleId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
         });
 
         base.OnModelCreating(modelBuilder);

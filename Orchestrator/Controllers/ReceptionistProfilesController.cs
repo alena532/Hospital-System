@@ -22,10 +22,9 @@ public class ReceptionistProfilesController : Controller
     [HttpPost]
     [Authorize(Roles="Receptionist")]
     [ServiceFilter(typeof(ValidationModelAttribute))]
-    public async Task<ActionResult> Create([FromForm]CreateReceptionistProfileAndPhotoRequest request)
+    public async Task<ActionResult<string>> Create([FromForm]CreateReceptionistProfileAndPhotoRequest request)
     {
-        await _service.CreateAsync(request);
-        return Ok();
+        return Ok(await _service.CreateAsync(request));
     }
        
     

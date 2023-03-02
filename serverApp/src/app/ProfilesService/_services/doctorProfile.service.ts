@@ -12,7 +12,7 @@ export class DoctorProfilesService {
   constructor(private http: HttpClient) {
   }
 
-  getAll(pageNumber:number,pageSize:number,firstName:string | null,lastName:string | null,office:number) {
+  getAll(pageNumber:number,pageSize:number,firstName:string | null,lastName:string | null,officeId:string | null) {
     let queryParams = new HttpParams();
     queryParams = queryParams.append("pageNumber",pageNumber);
     queryParams = queryParams.append("pageSize",pageSize);
@@ -20,7 +20,8 @@ export class DoctorProfilesService {
       queryParams = queryParams.append("firstName",firstName);
     if(lastName != null)
       queryParams = queryParams.append("lastName",lastName);
-    queryParams = queryParams.append("office",office);
+    if(officeId != null)
+      queryParams = queryParams.append("officeId",officeId);
 
     return this.http.get<any>(this.accessPointUrl,{params:queryParams})
   }

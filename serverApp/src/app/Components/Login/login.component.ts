@@ -47,13 +47,19 @@ import {Router} from "@angular/router";
         .subscribe(
           data => {
             this.loading = false;
-            this.router.navigate(['receptionist']);
+            let currentRole = JSON.parse(localStorage.getItem('currentUser')!).Role.toLowerCase();
+            this.router.navigate([`${currentRole}`]);
           },
           error => {
+            if(error.message =='Email isn`t confirmed')
             this.authService.logout();
             this.loading = false;
             console.log(error.status)
-            this.error = 'Either an email or a password is incorrect';
+            if(error.message =='Email isn`t confirmed')
+              this.error = 'Email isn`t confirmed';
+            else  
+              this.error = 'Either an email or a password is incorrect';
+            
           }
         );
 

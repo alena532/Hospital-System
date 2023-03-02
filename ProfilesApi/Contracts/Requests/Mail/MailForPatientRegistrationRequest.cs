@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-using ProfilesApi.Common;
 
 namespace ProfilesApi.Contracts.Requests.Mail;
 

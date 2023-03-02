@@ -1,9 +1,72 @@
-version: "3.2"
+version: '3.4'
+
 services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: 'SQL_Server'
+    environment:
+      - SA_PASSWORD=Administrator0000%
+      - ACCEPT_EULA=Y
+    ports:
+      - "1433:1433"
+    volumes:
+      - ~/Documents/HospitalSystem/backups:/mac_shared_folder
+     # - sqlvolume:/var/opt/mssql
+
+
+
   rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: 'rabbitmq'
     ports:
         - 5672:5672
         - 15672:15672
-   
+
+
+
+  mongo:
+    image: mongo:latest
+    restart: always
+    ports: 
+      - "27017:27017"
+    
+    
+
+  _gateway:
+    image: ${DOCKER_REGISTRY-}gateway
+    ports:
+      - "6000:6000"
+    build:
+      context: .
+      dockerfile: _GateWay/Dockerfile
+  
+
+
+  
+
+  authapi:
+    image: ${DOCKER_REGISTRY-}authapi
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=authApi;User Id=sa;Password=Administrator0000%;TrustServerCertificate=True;
+    build:
+      context: .
+      dockerfile: AuthApi/Dockerfile
+    ports:
+      - "5002:5002"
+    depends_on:
+      - sqlserver    
+
+
+
+  profilesapi:
+    image: ${DOCKER_REGISTRY-}profilesapi
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=profilesApi;User Id=sa;Password=Administrator0000%;TrustServerCertificate=True;
+    build:
+      context: .
+      dockerfile: ProfilesApi/Dockerfile
+    ports:
+      - "5006:5006"
+    depends_on:
+      - sqlserver    
+    

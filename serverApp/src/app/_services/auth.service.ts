@@ -6,6 +6,7 @@ import { catchError, finalize, tap } from 'rxjs/operators';
 import { FormGroupDirective } from '@angular/forms';
 import { switchMap } from 'rxjs/operators';
 import { GetDetailedReceptionistProfilesResponse } from '../_models/responses/GetDetailedReceptionistProfilesResponse';
+import { GetDoctorProfilesResponse } from '../ProfilesService/_models/responses/GetDoctorProfilesResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -29,13 +30,32 @@ export class AuthService {
             return this.http.get<GetDetailedReceptionistProfilesResponse>(`https://localhost:5000/ProfilesApi/ReceptionistProfiles/UserId/${userInfo['id']}`)
             .pipe(
               map((data:GetDetailedReceptionistProfilesResponse)=>{
-                let receptionist = data as GetDetailedReceptionistProfilesResponse;
+                let receptionist = data;
                 receptionist.Role = 'Receptionist';
                 localStorage.setItem("currentUser",JSON.stringify(receptionist));
-              }
-              )
+              })
             )
             break;
+          case 'Doctor':
+            return this.http.get<boolean>(`https://localhost:5000/ProfilesApi/DoctorProfiles/CheckEmailConfirmation/${userInfo['id']}`)
+            .pipe(
+              map((data:boolean)=>{
+                if (data == false)
+                  throw new Error('Email isn`t confirmed')
+                switchMap(()=>
+                  this.http.get<GetDoctorProfilesResponse>(`https://localhost:5000/ProfilesApi/DoctorProfiles/UserId/${userInfo['id']}`)
+                  .pipe(
+                    map((data:GetDoctorProfilesResponse)=>{
+                      let doctor = data ;
+                      doctor.Role = 'Doctor';
+                      localStorage.setItem("currentUser",JSON.stringify(doctor));
+                    })
+                  )
+                )
+              })
+            )
+            break;
+
         default:
           return this.http.get<GetDetailedReceptionistProfilesResponse>(`https://localhost:5000/ProfrilesApi/Accounts/CheckPatientAccountBeforeProfileLogin/${userInfo['id']}`)
 

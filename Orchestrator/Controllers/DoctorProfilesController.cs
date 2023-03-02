@@ -20,10 +20,9 @@ public class DoctorProfilesController : Controller
 
     [HttpPost]
     [ServiceFilter(typeof(ValidationModelAttribute))]
-    public async Task<ActionResult> Create([FromForm]CreateDoctorProfileAndPhotoRequest request)
+    public async Task<ActionResult<string>> Create([FromForm]CreateDoctorProfileAndPhotoRequest request)
     {
-        await _service.CreateAsync(request);
-        return Ok();
+        return Ok(await _service.CreateAsync(request));
     }
     
     [HttpPut]

@@ -2,6 +2,7 @@ using FluentValidation.AspNetCore;
 using MassTransit;
 using OfficesApi.Extensions;
 using Serilog;
+using ServiceExtensions;
 using Serilog.Filters;
 
 var  MyAllowedOrigins = "_myAllowSpecificOrigins";
@@ -34,6 +35,7 @@ services.ConfigureRepositories();
 
 services.ConfigureSqlContext(builder.Configuration);
 
+services.ConfigureValidationModelAttribute();
 services.ConfigureFilters();
 
 var app = builder.Build();

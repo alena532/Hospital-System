@@ -2,6 +2,7 @@ using System.Text.Json;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ProfilesApi.Contracts;
+using ProfilesApi.Contracts.Mail;
 using ProfilesApi.Contracts.ReceptionistProfiles;
 using ProfilesApi.Contracts.Requests;
 using ProfilesApi.Contracts.Requests.Mail;
@@ -33,7 +34,7 @@ public class ReceptionistProfilesService:IReceptionistProfilesService
         _mailService = mailService;
     }
     
-    public async Task<GetDetailedReceptionistProfilesResponse> CreateAsync(CreateReceptionistProfileRequest request)
+    public async Task<GetMailAndIdStuffResponse> CreateAsync(CreateReceptionistProfileRequest request)
     {
         var checkEmail = _httpClient.PostAsJsonAsync( ApiRoutes.Auth + "api/AuthValidator",request.Email).Result;
         if (checkEmail.IsSuccessStatusCode == false)
@@ -48,7 +49,7 @@ public class ReceptionistProfilesService:IReceptionistProfilesService
         var authEntity = new RegisterRequest()
         {
             Email = request.Email,
-            RoleId = new Guid("5cf6b402-493f-498a-1e45-08dadeca5a9a"),
+            RoleId = new Guid("cbfe46ec-b39d-460e-f323-08db125c549f"),
             Password = password
         };
 
@@ -96,8 +97,13 @@ public class ReceptionistProfilesService:IReceptionistProfilesService
             Password = password
         };
 
-        await _mailService.SendEmailAsync(mail);
-        return _mapper.Map<GetDetailedReceptionistProfilesResponse>(receptionist);
+        var mailResponse = await _mailService.SendEmailAsync(mail);
+        var response = new GetMailAndIdStuffResponse()
+        {
+            Id = receptionist.Id,
+            mailResponse = mailResponse as GetMailForStuffResponse
+        };
+        return response;
     }
 
     public async Task DeleteAsync(Guid id)

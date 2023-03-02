@@ -25,6 +25,7 @@
             Login
           </button>
           <div *ngIf="error == 'Either an email or a password is incorrect' " class="alert alert-danger mt-3 mb-0">Either an email or a password is incorrect</div>
+          <div *ngIf="error == 'Email isn`t confirmed' " class="alert alert-danger mt-3 mb-0">Email isn`t confirmed</div>
         </form>
       </div>
     </div>

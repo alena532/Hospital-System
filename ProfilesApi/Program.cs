@@ -5,6 +5,7 @@ using ProfilesApi.Common.Settings;
 using ProfilesApi.Consumers;
 using ProfilesApi.Extensions;
 using Serilog;
+using ServiceExtensions;
 using Serilog.Filters;
 
 var  MyAllowedOrigins = "_myAllowSpecificOrigins";
@@ -37,6 +38,7 @@ services.ConfigureSwagger();
 
 services.ConfigureSqlContext(builder.Configuration);
 
+services.ConfigureValidationModelAttribute();
 services.ConfigureFilters();
 services.ConfigureRepositories();
 services.ConfigureServices();

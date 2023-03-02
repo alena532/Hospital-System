@@ -27,9 +27,14 @@ public class DoctorProfileRepository: RepositoryBase<Doctor>,IDoctorProfileRepos
         return await FindByCondition(x=>x.OfficeId==officeId,trackChanges).ToListAsync();
     }
 
-    public async Task<Doctor> GetByIdAsync(Guid id, bool trackChanges = false)
+    public async Task<Doctor> GetByIdAsync(Guid id, bool trackChanges)
     {
         return await FindByCondition(x=>x.Id==id,trackChanges).SingleOrDefaultAsync();
+    }
+
+    public async Task<Doctor> GetByAccountIdAsync(Guid accountId, bool trackChanges)
+    {
+        return await FindByCondition(x=>x.AccountId==accountId,trackChanges).SingleOrDefaultAsync();
     }
     
     public async Task<IEnumerable<Doctor>> SearchByCredentialsAsync(string? firstName, string? lastName,Guid? officeId)
@@ -41,9 +46,9 @@ public class DoctorProfileRepository: RepositoryBase<Doctor>,IDoctorProfileRepos
         if (officeId != null)
             doctors = doctors.Where(x => x.OfficeId == officeId);
 
-        if (firstName != null)
+        if (lastName != null)
         {
-            lastName = lastName != null ? lastName : "";
+            firstName = firstName != null ? firstName : "";
             doctors = doctors.Where(x =>
                 x.FirstName.ToLower().Contains(firstName.ToLower()) &&
                 x.LastName.ToLower().Contains(lastName.ToLower()));

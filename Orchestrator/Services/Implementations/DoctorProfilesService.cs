@@ -20,7 +20,7 @@ public class DoctorProfilesService:IDoctorProfilesService
         _mapper = mapper;
     }
     
-    public async Task CreateAsync(CreateDoctorProfileAndPhotoRequest request)
+    public async Task<string> CreateAsync(CreateDoctorProfileAndPhotoRequest request)
     {
         var profileRequest = _mapper.Map<CreateDoctorProfileRequest>(request);
         var createdDoctor = await _client.PostAsJsonAsync(ApiRoutes.Profiles + "api/DoctorProfiles", profileRequest);
@@ -33,7 +33,7 @@ public class DoctorProfilesService:IDoctorProfilesService
         var dataJson = (JObject)JsonConvert.DeserializeObject(doctor);
         var doctorId = new Guid(dataJson["id"].Value<string>());
        
-        if (request.Photo == null || request.Photo.Length <= 1) return;
+        if (request.Photo == null || request.Photo.Length <= 1) return null;
         
         byte[] bytes;
         using (var ms = new MemoryStream())
@@ -54,6 +54,8 @@ public class DoctorProfilesService:IDoctorProfilesService
         {
             throw new BadHttpRequestException($"{createdPhoto.Content} {createdPhoto.ReasonPhrase}");
         }
+
+        return doctor;
     }
 
     public async Task UpdateAsync([FromForm] EditDoctorProfileAndPhotoRequest request)

@@ -1,8 +1,7 @@
-
 using AuthApi.DataAccess;
 using AuthApi.Extensions;
-using Microsoft.AspNet.Identity;
-using IdentityRole = Microsoft.AspNetCore.Identity.IdentityRole;
+using ServiceExtensions;
+
 
 var  MyAllowedOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -17,8 +16,12 @@ services.ConfigureSqlContext(builder.Configuration);
 
 services.ConfigureIdentity();
 services.ConfigureJWT(builder.Configuration);
+services.ConfigureJWT(builder.Configuration);
+
 services.ConfigureFilters();
+services.ConfigureValidationModelAttribute();
 services.ConfigureServices();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -42,3 +45,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+

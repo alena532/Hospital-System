@@ -45,7 +45,7 @@ public class AccountsService : IAccountsService
         var patient = await _patientRepository.GetByAccountIdAsync(account.Id);
         if (patient == null)
         {
-            throw new BadHttpRequestException("Patient was found");
+            throw new BadHttpRequestException("Patient wasn`t found");
         }
 
         var response = new GetAccountAndPatientProfileResponse()
