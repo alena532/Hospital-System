@@ -1,6 +1,7 @@
 using System.Text.Json;
 using AutoMapper;
 using ProfilesApi.Contracts;
+using ProfilesApi.Contracts.Mail;
 using ProfilesApi.Contracts.Requests;
 using ProfilesApi.Contracts.Requests.DoctorProfiles;
 using ProfilesApi.Contracts.Requests.Mail;
@@ -30,11 +31,8 @@ public class DoctorProfilesService:IDoctorProfilesService
         _mailService = mailService;
     }
     
-    public async Task<GetDoctorProfilesResponse> CreateAsync(CreateDoctorProfileRequest request)
+    public async Task<GetMailAndIdStuffResponse> CreateAsync(CreateDoctorProfileRequest request)
     {
-       // var requestToService = new HttpRequestMessage(HttpMethod.Get,ApiRoutes.Auth + "api/AuthValidator" );
-        //requestToService.Content = new StringContent(request.Email);
-       // var checkEmail = _httpClient.SendAsync(requestToService).Result;
         var checkEmail = _httpClient.PostAsJsonAsync( ApiRoutes.Auth + "api/AuthValidator",request.Email).Result;
         if (checkEmail.IsSuccessStatusCode == false)
         { 
@@ -57,7 +55,8 @@ public class DoctorProfilesService:IDoctorProfilesService
         {
             throw new BadHttpRequestException($"{createdUser.Content} {createdUser.ReasonPhrase}");
         }
-        var userIdStream = await createdUser.Content.ReadAsStreamAsync();
+        
+        var userIdStream = await createdUser.Content.ReadAsStringAsync();
         var userId = JsonSerializer.Deserialize<Guid>(userIdStream);
         
         var account = _mapper.Map<Account>(request);
@@ -97,8 +96,13 @@ public class DoctorProfilesService:IDoctorProfilesService
             Password = password
         };
 
-        await _mailService.SendEmailAsync(mail);
-        return _mapper.Map<GetDoctorProfilesResponse>(doctor);
+        var mailResponse = await _mailService.SendEmailAsync(mail);
+        var mailReturn = new GetMailAndIdStuffResponse()
+        {
+            mailResponse = mailResponse as GetMailForStuffResponse,
+            Id = doctor.Id
+        };
+        return mailReturn;
     }
     
     public async Task ConfirmEmailAsync(Guid accountId)
@@ -130,6 +134,24 @@ public class DoctorProfilesService:IDoctorProfilesService
         }
         
         return _mapper.Map<GetDoctorProfilesResponse>(doctor);
+    }
+    
+    public async Task<GetDoctorProfilesResponse> GetByUserIdAsync(Guid userId)
+    {
+        var account = await _accountRepository.GetByUserIdAsync(userId);
+        var doctor = await _doctorRepository.GetByAccountIdAsync(account.Id);
+        if (doctor == null)
+        {
+            throw new BadHttpRequestException("Doctor not found");
+        }
+        
+        return _mapper.Map<GetDoctorProfilesResponse>(doctor);
+    }
+
+    public async Task<bool> CheckEmailConfirmation(Guid userId)
+    {
+        var account = await _accountRepository.GetByUserIdAsync(userId);
+        return account.IsEmailVerified;
     }
     
     public async Task<PageResult<GetDoctorAndPhotoProfilesResponse>> GetAllAsync(int pageNumber, int pageSize,SearchAndFilterParameters parameters)

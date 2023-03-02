@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ProfilesApi.Common.Attributes;
 using ProfilesApi.Contracts;
+using ProfilesApi.Contracts.Mail;
 using ProfilesApi.Contracts.ReceptionistProfiles;
 using ProfilesApi.Contracts.Requests.DoctorProfiles;
 using ProfilesApi.Contracts.Requests.PatientProfiles;
@@ -27,7 +28,7 @@ public class ReceptionistProfilesController:ControllerBase
     
     [HttpPost("")]
     [ServiceFilter(typeof(ValidationModelAttribute))]
-    public async Task<ActionResult<GetDetailedReceptionistProfilesResponse>> Create([FromBody]CreateReceptionistProfileRequest request)
+    public async Task<ActionResult<GetMailAndIdStuffResponse>> Create([FromBody]CreateReceptionistProfileRequest request)
     {
         return Ok(await _service.CreateAsync(request));
     }

@@ -19,7 +19,7 @@ public class ReceptionistProfilesService:IReceptionistProfilesService
         _mapper = mapper;
     }
     
-    public async Task CreateAsync(CreateReceptionistProfileAndPhotoRequest request)
+    public async Task<string> CreateAsync(CreateReceptionistProfileAndPhotoRequest request)
     {
         var profileRequest = _mapper.Map<CreateReceptionistProfileRequest>(request);
 
@@ -33,7 +33,7 @@ public class ReceptionistProfilesService:IReceptionistProfilesService
         var dataJson = (JObject)JsonConvert.DeserializeObject(receptionist);
         var receptionistId = new Guid(dataJson["id"].Value<string>());
        
-        if (request.Photo == null || request.Photo.Length <= 1) return;
+        if (request.Photo == null || request.Photo.Length <= 1) return null;
         
         byte[] bytes;
         using (var ms = new MemoryStream())
@@ -49,11 +49,12 @@ public class ReceptionistProfilesService:IReceptionistProfilesService
             ReceptionistId = receptionistId
         };
 
-        var createdPhoto = await _client.PostAsJsonAsync(ApiRoutes.Documents +"api/Photos/CreateReceptionistPhoto", photoRequest);
+        var createdPhoto = await _client.PostAsJsonAsync(ApiRoutes.Documents +"api/Photos/ReceptionistPhoto", photoRequest);
         if (createdPhoto.IsSuccessStatusCode == false)
         {
             throw new BadHttpRequestException($"{createdPhoto.Content} {createdPhoto.ReasonPhrase}");
         }
 
+        return receptionist;
     }
 }

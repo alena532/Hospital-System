@@ -70,7 +70,6 @@ public class AuthService:IAuthService
             throw new BadHttpRequestException("Role not found");
         }
         
-
         var newUser = new User
         {
             UserName = request.Email,

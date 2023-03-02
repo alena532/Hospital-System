@@ -153,7 +153,7 @@ import { MatDatepicker } from '@angular/material/datepicker';
     }
 
     goBack(){
-        let currentRole = JSON.parse(localStorage.getItem('currentUser')!).Role.toLowerCase();
+      let currentRole = JSON.parse(localStorage.getItem('currentUser')!).Role.toLowerCase();
       this.router.navigate([`${currentRole}/menu/doctors`]);
         
     }

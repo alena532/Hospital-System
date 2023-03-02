@@ -8,6 +8,9 @@ const routes: Routes = [
   {
     path: 'receptionist', loadChildren: () => import('./Receptionist/receptionist.module').then(m=>m.ReceptionistsModule)
   },
+  {
+    path: 'doctor', loadChildren: () => import('./Doctor/doctor.module').then(m=>m.DoctorsModule)
+  },
 ];
 
 @NgModule({

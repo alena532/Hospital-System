@@ -27,9 +27,14 @@ public class DoctorProfileRepository: RepositoryBase<Doctor>,IDoctorProfileRepos
         return await FindByCondition(x=>x.OfficeId==officeId,trackChanges).ToListAsync();
     }
 
-    public async Task<Doctor> GetByIdAsync(Guid id, bool trackChanges = false)
+    public async Task<Doctor> GetByIdAsync(Guid id, bool trackChanges)
     {
         return await FindByCondition(x=>x.Id==id,trackChanges).SingleOrDefaultAsync();
+    }
+
+    public async Task<Doctor> GetByAccountIdAsync(Guid accountId, bool trackChanges)
+    {
+        return await FindByCondition(x=>x.AccountId==accountId,trackChanges).SingleOrDefaultAsync();
     }
     
     public async Task<IEnumerable<Doctor>> SearchByCredentialsAsync(string? firstName, string? lastName,Guid? officeId)

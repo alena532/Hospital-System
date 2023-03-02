@@ -32,6 +32,7 @@ public class PatientProfilesService : IPatientProfilesService
         
         var account = await _accountRepository.GetByIdAsync(request.AccountId,trackChanges:true);
         account.PhoneNumber = request.PhoneNumber;
+        account.IsEmailVerified = true;
         await _accountRepository.SaveChangesAsync();
         
         //account.CreatedBy = request.OfficeId;

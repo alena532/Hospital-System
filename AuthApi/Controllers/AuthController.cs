@@ -53,7 +53,7 @@ public class AuthController:ControllerBase
     {
         var username = HttpContext.User.FindFirstValue(ClaimTypes.Name);
         await _authService.UpdatePasswordAsync(request,username);
-        return StatusCode(201);
+        return Ok();
     }
     
     [HttpPost]

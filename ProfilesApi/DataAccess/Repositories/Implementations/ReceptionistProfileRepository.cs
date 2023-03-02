@@ -25,6 +25,11 @@ public class ReceptionistProfileRepository: RepositoryBase<Receptionist>,IRecept
     {
         return await FindAll(trackChanges: false).ToListAsync();
     }
+
+    public async Task<IEnumerable<Receptionist>> GetAllByOfficeIdAsync(Guid officeId, bool trackChanges)
+    {
+        return await FindByCondition(x => x.OfficeId == officeId, trackChanges).ToListAsync();
+    }
         
 
    

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ProfilesApi.Contracts.Mail;
 using ProfilesApi.Contracts.Requests.Mail;
 using ProfilesApi.Services.Interfaces;
 
@@ -18,17 +19,16 @@ public class MailController : Controller
     }
     
     [HttpPost("SendToStuff")]
-    public async Task<IActionResult> SendToStuffMail([FromBody]MailForStuffConfirmationRequest request)
+    public async Task<ActionResult<MailResponse>> SendToStuffMail([FromBody]MailForStuffConfirmationRequest request)
     {
         await _service.SendEmailAsync(request);
         return Ok();
     }
     
     [HttpPost("SendToPatient")]
-    public async Task<IActionResult> SendToPatientMail([FromBody]MailForPatientRegistrationRequest request)
+    public async Task<ActionResult<MailResponse>> SendToPatientMail([FromBody]MailForPatientRegistrationRequest request)
     {
-        await _service.SendEmailAsync(request);
-        return Ok();
+        return Ok(await _service.SendEmailAsync(request));
     }
     
     [HttpPost("Verified")]

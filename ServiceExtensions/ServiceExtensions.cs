@@ -1,18 +1,15 @@
+﻿using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using AuthApi.Common.Attributes;
-using AuthApi.ConfigurationOptions;
-using AuthApi.DataAccess;
-using AuthApi.DataAccess.Repositories.Implementations;
-using AuthApi.DataAccess.Repositories.Interfaces;
-using AuthApi.Services.Implementations;
-using AuthApi.Services.Interfaces;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
+using ServiceExtensions.Attributes;
+using ServiceExtensions.ConfigurationOptions;
 
-namespace AuthApi.Extensions;
+namespace ServiceExtensions;
 
 public static class ServiceExtensions
 {
@@ -45,30 +42,15 @@ public static class ServiceExtensions
                 {securityScheme, new string[] { }},
             };
             c.AddSecurityRequirement(securityRequirements);
+            c.MapType<TimeSpan>(() => new OpenApiSchema
+            {
+                Type = "string",
+                Example = new OpenApiString("00:00:00")
+            });
 
-        }); 
+        });
     }
-    
-    public static void ConfigureSqlContext(this IServiceCollection services,
-        IConfiguration configuration)
-    {
-        services.AddDbContext<AppDbContext>(opts =>
-            opts.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-    }
-    
-    public static void ConfigureFilters(this IServiceCollection services)
-    {
-        services.AddScoped<ValidationModelAttribute>();
-    }
-    
-    public static void ConfigureServices(this IServiceCollection services)
-    {
-        services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IAuthService, AuthService>();
-        services.AddScoped<IJwtService, JwtService>();
-        services.AddScoped<IAuthValidatorService,AuthValidatorService>();
-       
-    }
+
     public static void ConfigureCors(this IServiceCollection services)
     {
         var  MyAllowedOrigins = "_myAllowSpecificOrigins";
@@ -85,29 +67,17 @@ public static class ServiceExtensions
         
     }
     
-    public static void ConfigureIdentity(this IServiceCollection services)
-    {
-        var builder = services
-            .AddIdentity<User, IdentityRole<Guid>>(o =>
-            {
-                o.SignIn.RequireConfirmedAccount = false;
-                o.Password.RequireDigit = true;
-                o.Password.RequireLowercase = false;
-                o.Password.RequireUppercase = false;
-                o.Password.RequireNonAlphanumeric = false;
-                o.Password.RequiredLength = 8;
-                o.User.RequireUniqueEmail = true;
-            })
-            .AddEntityFrameworkStores<AppDbContext>();
-        
-    }
-    
     public static void ConfigureJWT(this IServiceCollection services, IConfiguration configuration)
     {
         var jwtOptions = new JwtOptions();
         configuration.GetSection(JwtOptions.Path).Bind(jwtOptions);
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.Path));
-        
+
+        services.AddAuthorization(
+            options => options.FallbackPolicy = new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme).Build()
+        );
         services
             .AddAuthentication(options =>
             {
@@ -145,4 +115,8 @@ public static class ServiceExtensions
             });
     }
     
+    public static void ConfigureValidationModelAttribute(this IServiceCollection services)
+    {
+        services.AddScoped<ValidationModelAttribute>();
+    }
 }

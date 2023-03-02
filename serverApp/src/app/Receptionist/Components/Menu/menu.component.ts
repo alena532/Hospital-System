@@ -6,7 +6,7 @@ import {Router} from "@angular/router";
 
 
 @Component({
-  selector: 'app-menu',
+  selector: 'receptionist-menu',
   templateUrl: 'menu.component.html',
   styleUrls: ['./menu.component.css']
 })

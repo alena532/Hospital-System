@@ -11,6 +11,8 @@ public interface IDoctorProfileRepository:IRepositoryBase<Doctor>
    Task<IEnumerable<Doctor>> GetAllByOfficeIdAsync(Guid officeId, bool trackChanges=false);
    Task<IEnumerable<Doctor>> SearchByCredentialsAsync(string? firstName, string? lastName, Guid? officeId);
    Task<Doctor> GetByIdAsync(Guid id, bool trackChanges = false);
+
+   Task<Doctor> GetByAccountIdAsync(Guid accountId, bool trackChanges = false);
    /*Task<Office> GetDoctorProfileAsync(int id, bool trackChanges);
    Task UpdateDoctorProfileAsync(Office office);
    Task<Office> FilterDoctorProfileBySpecializationAsync(int id, bool trackChanges);

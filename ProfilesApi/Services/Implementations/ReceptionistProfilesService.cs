@@ -2,6 +2,7 @@ using System.Text.Json;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ProfilesApi.Contracts;
+using ProfilesApi.Contracts.Mail;
 using ProfilesApi.Contracts.ReceptionistProfiles;
 using ProfilesApi.Contracts.Requests;
 using ProfilesApi.Contracts.Requests.Mail;
@@ -33,7 +34,7 @@ public class ReceptionistProfilesService:IReceptionistProfilesService
         _mailService = mailService;
     }
     
-    public async Task<GetDetailedReceptionistProfilesResponse> CreateAsync(CreateReceptionistProfileRequest request)
+    public async Task<GetMailAndIdStuffResponse> CreateAsync(CreateReceptionistProfileRequest request)
     {
         var checkEmail = _httpClient.PostAsJsonAsync( ApiRoutes.Auth + "api/AuthValidator",request.Email).Result;
         if (checkEmail.IsSuccessStatusCode == false)
@@ -96,8 +97,13 @@ public class ReceptionistProfilesService:IReceptionistProfilesService
             Password = password
         };
 
-        await _mailService.SendEmailAsync(mail);
-        return _mapper.Map<GetDetailedReceptionistProfilesResponse>(receptionist);
+        var mailResponse = await _mailService.SendEmailAsync(mail);
+        var response = new GetMailAndIdStuffResponse()
+        {
+            Id = receptionist.Id,
+            mailResponse = mailResponse as GetMailForStuffResponse
+        };
+        return response;
     }
 
     public async Task DeleteAsync(Guid id)

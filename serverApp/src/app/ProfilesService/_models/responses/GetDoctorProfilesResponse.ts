@@ -15,5 +15,6 @@ export class GetDoctorProfilesResponse {
       public address: string,
       public officeId: string,
       public accountId: string,
+      public Role: string
     ) {}
   }

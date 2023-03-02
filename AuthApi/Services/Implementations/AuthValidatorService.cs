@@ -12,9 +12,9 @@ public class AuthValidatorService: IAuthValidatorService
     {
         _context = context;
     }
-    public void ValidateEmailAsync(string email)
+    public async Task ValidateEmailAsync(string email)
     {
-        var users = _context.Users.Where(x => x.Email == email).ToList();
+        var users = await _context.Users.Where(x => x.Email == email).ToListAsync();
         if (users.Count != 0)
         {
             throw new BadHttpRequestException("Email already exists");

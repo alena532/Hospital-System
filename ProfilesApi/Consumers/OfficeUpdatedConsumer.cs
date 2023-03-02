@@ -10,25 +10,33 @@ namespace ProfilesApi.Consumers;
 
 public class OfficeUpdatedConsumer : IConsumer<IOfficeUpdated>
 { 
-    private readonly IDoctorProfileRepository _repository;
+    private readonly IDoctorProfileRepository _doctorRepository;
+    private readonly IReceptionistProfileRepository _receptionistRepository;
     private readonly ILogger<OfficeUpdatedConsumer> _logger;
     
-    public OfficeUpdatedConsumer(IDoctorProfileRepository repository,ILogger<OfficeUpdatedConsumer> logger)
-    {
-      _repository = repository;
-      _logger = logger;
+    public OfficeUpdatedConsumer(IDoctorProfileRepository doctorRepository,IReceptionistProfileRepository receptionistRepository,ILogger<OfficeUpdatedConsumer> logger)
+    { 
+        _doctorRepository = doctorRepository;
+        _receptionistRepository = receptionistRepository;
+        _logger = logger;
     }
 
     public async Task Consume(ConsumeContext<IOfficeUpdated> context)
     {
-        var offices = await _repository.GetAllByOfficeIdAsync(context.Message.Id, trackChanges: true);
+        var doctors = await _doctorRepository.GetAllByOfficeIdAsync(context.Message.Id, trackChanges: true);
+        foreach (var doctor in doctors)
+        {
+            doctor.Address = context.Message.Address;
+        }
 
+        await _doctorRepository.SaveChangesAsync();
+
+        var offices = await _receptionistRepository.GetAllByOfficeIdAsync(context.Message.Id, trackChanges: true);
         foreach (var office in offices)
         {
             office.Address = context.Message.Address;
         }
-        
-        await _repository.SaveChangesAsync();
 
+        await _receptionistRepository.SaveChangesAsync();
     }
 }

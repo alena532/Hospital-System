@@ -1,4 +1,5 @@
 using Orchestrator.Extensions;
+using ServiceExtensions;
 
 var  MyAllowedOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,7 @@ services.ConfigureCors();
 services.AddControllers();
 
 services.ConfigureSwagger();
+services.ConfigureValidationModelAttribute();
 services.ConfigureFilters();
 services.ConfigureServices();
 services.ConfigureAutoMapper();

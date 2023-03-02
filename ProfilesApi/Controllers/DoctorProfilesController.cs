@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProfilesApi.Common.Attributes;
 using ProfilesApi.Contracts;
+using ProfilesApi.Contracts.Mail;
 using ProfilesApi.Contracts.Requests.DoctorProfiles;
 using ProfilesApi.Contracts.Responses.DoctorProfiles;
 using ProfilesApi.Services.Interfaces;
@@ -22,7 +23,7 @@ public class DoctorProfilesController:ControllerBase
     
     [HttpPost]
     [ServiceFilter(typeof(ValidationModelAttribute))]
-    public async Task<ActionResult<GetDoctorProfilesResponse>> Create([FromBody]CreateDoctorProfileRequest request)
+    public async Task<ActionResult<GetMailAndIdStuffResponse>> Create([FromBody]CreateDoctorProfileRequest request)
     {
         return Ok(await _service.CreateAsync(request));
     }
@@ -45,6 +46,19 @@ public class DoctorProfilesController:ControllerBase
     public async Task<ActionResult<PageResult<GetDoctorAndPhotoProfilesResponse>>> GetAll([FromQuery]int pageNumber,[FromQuery]int pageSize,[FromQuery]SearchAndFilterParameters parameters)
     {
         return Ok(await _service.GetAllAsync(pageNumber,pageSize,parameters));
+    }
+    
+    [HttpGet("CheckEmailConfirmation/{userId:Guid}")]
+    public async Task<ActionResult> CheckEmailConfirmation(Guid userId)
+    {
+        await _service.CheckEmailConfirmation(userId);
+        return Ok();
+    }
+    
+    [HttpGet("UserId/{userId:Guid}")]
+    public async Task<ActionResult<GetDoctorProfilesResponse>> GetByUserId(Guid userId)
+    {
+        return Ok(await _service.GetByUserIdAsync(userId));
     }
 
     [HttpGet("{id:Guid}")]

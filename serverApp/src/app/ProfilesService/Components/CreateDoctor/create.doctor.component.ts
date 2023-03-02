@@ -74,8 +74,6 @@ import { MatDatepicker } from '@angular/material/datepicker';
      this.specializationService.getSpecializations().subscribe((data)=>{
         this.specializations = data;
      })
-
-     //this.authService.refresh(localStorage.getItem('token')!,localStorage.getItem('refresh_token')!)
      
     }
 
@@ -109,6 +107,7 @@ import { MatDatepicker } from '@angular/material/datepicker';
 
       this.doctorProfileService.create(formData).subscribe(
         data=>{
+          console.log(data)
           let currentRole = JSON.parse(localStorage.getItem('currentUser')!).Role.toLowerCase();
           this.router.navigate([`${currentRole}/menu/doctors`]);
           
@@ -146,7 +145,7 @@ import { MatDatepicker } from '@angular/material/datepicker';
     }
 
     goBack(){
-        let currentRole = JSON.parse(localStorage.getItem('currentUser')!).Role.toLowerCase();
+      let currentRole = JSON.parse(localStorage.getItem('currentUser')!).Role.toLowerCase();
       this.router.navigate([`${currentRole}/menu/doctors`]);
     }
 
