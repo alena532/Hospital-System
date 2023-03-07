@@ -31,7 +31,7 @@ public class DoctorProfilesService:IDoctorProfilesService
         _mailService = mailService;
     }
     
-    public async Task<GetMailAndIdStuffResponse> CreateAsync(CreateDoctorProfileRequest request)
+    public async Task<GetMailAndIdStuffResponse> CreateAsync(CreateDoctorProfileRequest request,Guid userId)
     {
         var checkEmail = _httpClient.PostAsJsonAsync( ApiRoutes.Auth + "api/AuthValidator",request.Email).Result;
         if (checkEmail.IsSuccessStatusCode == false)
@@ -57,12 +57,17 @@ public class DoctorProfilesService:IDoctorProfilesService
         }
         
         var userIdStream = await createdUser.Content.ReadAsStringAsync();
-        var userId = JsonSerializer.Deserialize<Guid>(userIdStream);
+        var responseUserId = JsonSerializer.Deserialize<Guid>(userIdStream);
         
         var account = _mapper.Map<Account>(request);
-        account.UserId = userId;
+        account.UserId = responseUserId;
         account.PhoneNumber = request.PhoneNumber;
-        //add createdBy UpdatedBy
+        
+        account.CreatedBy = userId;
+        account.CreatedAt = DateTime.Now;
+        account.UpdatedBy = userId;
+        account.UpdateAt = DateTime.Now;
+        
         try
         {
             await _accountRepository.CreateAsync(account);
@@ -112,7 +117,7 @@ public class DoctorProfilesService:IDoctorProfilesService
         await _accountRepository.SaveChangesAsync();
     }
 
-    public async Task<GetDoctorProfilesResponse> UpdateAsync(EditDoctorProfileRequest request)
+    public async Task<GetDoctorProfilesResponse> UpdateAsync(EditDoctorProfileRequest request,Guid userId)
     {
         var doctor =  await _doctorRepository.GetByIdAsync(request.Id);
         if (doctor == null)
@@ -121,6 +126,15 @@ public class DoctorProfilesService:IDoctorProfilesService
         }
         
         _mapper.Map(request, doctor);
+        
+        var account = await _accountRepository.GetByIdAsync(doctor.AccountId);
+        if (account == null)
+        {
+            throw new BadHttpRequestException("Account not found");
+        }
+        account.UpdatedBy = userId;
+        account.UpdateAt = DateTime.Now;
+        
         await _doctorRepository.UpdateAsync(doctor);
         return _mapper.Map<GetDoctorProfilesResponse>(doctor);
     }

@@ -1,20 +1,15 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using ProfilesApi.Common.Attributes;
 using ProfilesApi.Contracts;
 using ProfilesApi.Contracts.Mail;
 using ProfilesApi.Contracts.ReceptionistProfiles;
-using ProfilesApi.Contracts.Requests.DoctorProfiles;
-using ProfilesApi.Contracts.Requests.PatientProfiles;
 using ProfilesApi.Contracts.Requests.ReceptionistProfiles;
-using ProfilesApi.Contracts.Responses.PatientProfiles;
 using ProfilesApi.Services.Interfaces;
+using ServiceExtensions.Attributes;
 
 namespace ProfilesApi.Controllers;
 
 [ApiController]
-[AllowAnonymous]
 [Route("api/[controller]")]
 public class ReceptionistProfilesController:ControllerBase
 {
@@ -34,6 +29,7 @@ public class ReceptionistProfilesController:ControllerBase
     }
 
     [HttpDelete("{id:Guid}")]
+    [Authorize(Roles="Receptionist")]
     public async Task<ActionResult> Delete(Guid id)
     {
         await _service.DeleteAsync(id);

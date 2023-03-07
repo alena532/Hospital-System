@@ -1,12 +1,13 @@
+using AuthApi.BackgroundTasks;
 using AuthApi.DataAccess;
 using AuthApi.Extensions;
 using ServiceExtensions;
-
 
 var  MyAllowedOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 
 var services = builder.Services;
+services.AddHostedService<RolesBackgroundTask>();
 services.ConfigureCors();
 services.AddControllers();
 
@@ -15,7 +16,6 @@ services.ConfigureSwagger();
 services.ConfigureSqlContext(builder.Configuration);
 
 services.ConfigureIdentity();
-services.ConfigureJWT(builder.Configuration);
 services.ConfigureJWT(builder.Configuration);
 
 services.ConfigureFilters();

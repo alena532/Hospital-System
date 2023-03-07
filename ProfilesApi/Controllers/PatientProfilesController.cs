@@ -1,14 +1,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ProfilesApi.Common.Attributes;
 using ProfilesApi.Contracts.Requests.PatientProfiles;
 using ProfilesApi.Contracts.Responses.PatientProfiles;
 using ProfilesApi.Services.Interfaces;
+using ServiceExtensions.Attributes;
 
 namespace ProfilesApi.Controllers;
 
 [ApiController]
-[AllowAnonymous]
 [Route("api/[controller]")]
 public class PatientProfilesController:ControllerBase
 {
@@ -27,6 +26,7 @@ public class PatientProfilesController:ControllerBase
     
     [HttpPost("")]
     [ServiceFilter(typeof(ValidationModelAttribute))]
+    [Authorize]
     public async Task<ActionResult<GetPatientProfilesResponse>> Create([FromBody]CreatePatientProfileRequest request)
     {
         return Ok(await _service.CreateAsync(request));

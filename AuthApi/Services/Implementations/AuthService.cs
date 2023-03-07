@@ -120,6 +120,7 @@ public class AuthService:IAuthService
             throw new BadHttpRequestException("Invalid user");
         }
         user.RefreshToken = null;
+        
         _context.SaveChangesAsync();
     }
 

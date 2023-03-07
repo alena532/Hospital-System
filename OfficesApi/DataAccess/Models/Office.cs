@@ -14,7 +14,6 @@ public class Office
     
     public Office()
     {
-        OfficeReceptionists = new HashSet<OfficeReceptionist>();
+       
     }
-    public virtual ICollection<OfficeReceptionist> OfficeReceptionists { get; set; }
 }

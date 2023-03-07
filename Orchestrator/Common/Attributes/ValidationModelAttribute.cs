@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Orchestrator.Common.Attributes;
 
-public class ValidationModelAttribute:IAsyncActionFilter
+/*public class ValidationModelAttribute:IAsyncActionFilter
 {
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
@@ -14,4 +14,5 @@ public class ValidationModelAttribute:IAsyncActionFilter
 
         await next();
     }
-}
+    */
+//}

@@ -37,7 +37,7 @@ services.ConfigureAutoMapper();
 services.ConfigureSwagger();
 
 services.ConfigureSqlContext(builder.Configuration);
-
+services.ConfigureJWT(builder.Configuration);
 services.ConfigureValidationModelAttribute();
 services.ConfigureFilters();
 services.ConfigureRepositories();

@@ -63,19 +63,14 @@ public static class ServiceExtensions
         });
         
     }
-    
-    
+
     public static void ConfigureJWT(this IServiceCollection services, IConfiguration configuration)
     {
         var jwtOptions = new JwtOptions();
         configuration.GetSection(JwtOptions.Path).Bind(jwtOptions);
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.Path));
-
-        services.AddAuthorization(
-            options => options.FallbackPolicy = new AuthorizationPolicyBuilder()
-                .RequireAuthenticatedUser()
-                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme).Build()
-        );
+        
+        
         services
             .AddAuthentication(options =>
             {

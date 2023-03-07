@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Orchestrator.Common.Attributes;
 using Orchestrator.Contracts.Requests.PatientProfiles;
 using Orchestrator.Services.Interfaces;
+using ServiceExtensions.Attributes;
 
 namespace Orchestrator.Controllers;
 

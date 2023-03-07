@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProfilesApi.Contracts.Responses.Accounts;
-using ProfilesApi.Contracts.Responses.PatientProfiles;
 using ProfilesApi.Services.Interfaces;
 
 namespace ProfilesApi.Controllers;

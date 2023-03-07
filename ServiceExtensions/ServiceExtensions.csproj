@@ -4,16 +4,17 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-		<PackageId>AuthApi.ServiceExtensions.ServiceExtensionsyhujhnkjk</PackageId>
-		<Version>1.0.0</Version>
+		<PackageId>AuthApi.ServiceExtensions.ServiceExtensions</PackageId>
+		<Version>2.0.0</Version>
 		<Authors>Alena Vorobey</Authors>
 		<Company>Hospital</Company>
 		<PackageTags>Extensions</PackageTags>
 		<Description>This package will help in setting extensions</Description>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="AuthApi.ServiceExtensions.ServiceExtensions" Version="1.0.0" />
+     
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.6" />
       <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
       <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.4.0" />

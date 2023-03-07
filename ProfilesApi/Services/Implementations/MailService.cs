@@ -26,7 +26,6 @@ public class MailService : IMailService
 
     public async Task<MailResponse> SendEmailAsync(MailRequest mailRequest)
     {
-        MimeMessage emailMessage;
         if (mailRequest is MailForPatientRegistrationRequest patientMessage)
             return  await CreateMailForPatientRegistrationMessage(patientMessage);
         
@@ -74,7 +73,6 @@ public class MailService : IMailService
         emailMessage.Subject = "Confirmation email";
         emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = string.Format("<p>Hello,{0} {1} {2}.Your password is {3}</p> <a href='http://localhost:4200?accountId={4}' style='color:black;'>Confirm profile</a>", message.FirstName,message.LastName,message.MiddleName,message.Password,message.AccountId) };
         
-        //return emailMessage;
         var returnMessage = new GetMailForStuffResponse()
         {
             Url = $"http://localhost:4200?accountId={message.AccountId}",

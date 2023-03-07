@@ -1,7 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Models;
-using ProfilesApi.Common.Attributes;
 using ProfilesApi.DataAccess;
 using ProfilesApi.DataAccess.Repositories.Implementations;
 using ProfilesApi.DataAccess.Repositories.Interfaces.Base;

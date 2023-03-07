@@ -5,6 +5,7 @@ using AuthApi.Contracts.Responses;
 using AuthApi.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ServiceExtensions.Attributes;
 
 namespace AuthApi.Controllers;
 
@@ -20,7 +21,7 @@ public class AuthController:ControllerBase
     }
 
     [HttpPost("Login")]
-    [ValidationModel]
+    [ServiceFilter(typeof(ValidationModelAttribute))]
     public async Task<ActionResult<AuthenticatedResponse>> Login([FromBody] LoginRequest request)
     {
         var authResponse = await _authService.LoginAsync(request);
@@ -29,7 +30,7 @@ public class AuthController:ControllerBase
     
     
     [HttpPost("Register")]
-    [ValidationModel]
+    [ServiceFilter(typeof(ValidationModelAttribute))]
     public async Task<ActionResult<Guid>> Register([FromBody] RegisterRequest request)
     {
         var user = await _authService.RegisterAsync(request);
@@ -38,7 +39,8 @@ public class AuthController:ControllerBase
     
     [HttpPost]
     [Route("Refresh")]
-    [ValidationModel]
+    [Authorize]
+    [ServiceFilter(typeof(ValidationModelAttribute))]
     public async Task<ActionResult<TokensResponse>> Refresh([FromBody] TokensRequest tokens)
     {
         var tokenResponse = await _authService.RefreshAsync(tokens);
@@ -48,7 +50,7 @@ public class AuthController:ControllerBase
     [HttpPut]
     [Route("ChangePassword")]
     [Authorize]
-    [ValidationModel]
+    [ServiceFilter(typeof(ValidationModelAttribute))]
     public async Task<ActionResult<AuthenticatedResponse>> ChangePassword([FromBody] ChangePasswordRequest request)
     {
         var username = HttpContext.User.FindFirstValue(ClaimTypes.Name);
@@ -57,8 +59,8 @@ public class AuthController:ControllerBase
     }
     
     [HttpPost]
+    [Authorize]
     [Route("Revoke")]
-    [Authorize(Roles="Admin")]
     public async Task<ActionResult> Revoke()
     {
         var username = HttpContext.User.FindFirstValue(ClaimTypes.Name);
