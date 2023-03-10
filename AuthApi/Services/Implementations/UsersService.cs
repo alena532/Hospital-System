@@ -7,12 +7,10 @@ namespace AuthApi.Services.Implementations;
 
 public class UsersService : IUsersService
 {
-    private readonly AppDbContext _context;
     private readonly IUserRepository _repository;
     
-    public UsersService(AppDbContext context,IUserRepository repository)
+    public UsersService(IUserRepository repository)
     {
-        _context = context;
         _repository = repository;
     }
 
@@ -24,7 +22,7 @@ public class UsersService : IUsersService
             throw new BadHttpRequestException("User doesnt found");
         }
 
-        _repository.DeleteAsync(user);
+        await _repository.DeleteAsync(user);
     }
        
 

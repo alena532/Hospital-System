@@ -2,5 +2,5 @@ namespace AuthApi.Services.Interfaces;
 
 public interface IUsersService
 {
-    Task DeleteAsync(Guid Id);
+    Task DeleteAsync(Guid id);
 }

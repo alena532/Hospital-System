@@ -30,11 +30,13 @@ public static class Extensions
 
     public static void ConfigureServices(this IServiceCollection services)
     {
-        
+        //services.AddScoped<IUsersService,IUsersService>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IUsersService,UsersService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IAuthValidatorService,AuthValidatorService>();
+        //services.AddScoped<IUsersService,IUsersService>();
        
     }
 

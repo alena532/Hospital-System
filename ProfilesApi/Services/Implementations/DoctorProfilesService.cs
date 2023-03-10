@@ -22,7 +22,7 @@ public class DoctorProfilesService:IDoctorProfilesService
     private readonly HttpClient _httpClient;
     private readonly IMailService _mailService;
 
-    public DoctorProfilesService(IMapper mapper,IAccountRepository accountRepository,IDoctorProfileRepository doctorRepository,HttpClient httpClient,IMailService mailService)
+    public DoctorProfilesService(IMapper mapper,IAccountRepository accountRepository,IDoctorProfileRepository doctorRepository,IMailService mailService)
     {
         _mapper = mapper;
         _accountRepository = accountRepository;
@@ -119,7 +119,7 @@ public class DoctorProfilesService:IDoctorProfilesService
 
     public async Task<GetDoctorProfilesResponse> UpdateAsync(EditDoctorProfileRequest request,Guid userId)
     {
-        var doctor =  await _doctorRepository.GetByIdAsync(request.Id);
+        Doctor doctor =  await _doctorRepository.GetByIdAsync(request.Id);
         if (doctor == null)
         {
             throw new BadHttpRequestException("Doctor not found");
@@ -134,7 +134,8 @@ public class DoctorProfilesService:IDoctorProfilesService
         }
         account.UpdatedBy = userId;
         account.UpdateAt = DateTime.Now;
-        
+
+        await _accountRepository.UpdateAsync(account);
         await _doctorRepository.UpdateAsync(doctor);
         return _mapper.Map<GetDoctorProfilesResponse>(doctor);
     }
