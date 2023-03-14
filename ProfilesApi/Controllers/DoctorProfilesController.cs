@@ -42,7 +42,7 @@ public class DoctorProfilesController:ControllerBase
     
     [HttpPut]
     [ServiceFilter(typeof(ValidationModelAttribute))]
-    [Authorize(Roles="Receptionist")]
+    [Authorize(Roles="Receptionist,Doctor")]
     public async Task<ActionResult<GetDoctorProfilesResponse>> Update([FromBody]EditDoctorProfileRequest request)
     {
         var identity = HttpContext.User.Identity as ClaimsIdentity;
@@ -52,9 +52,9 @@ public class DoctorProfilesController:ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<PageResult<GetDoctorAndPhotoProfilesResponse>>> GetAll([FromQuery]int pageNumber,[FromQuery]int pageSize,[FromQuery]SearchAndFilterParameters parameters)
+    public async Task<ActionResult<PageResult<GetDoctorAndPhotoProfilesResponse>>> GetPage([FromQuery]int pageNumber,[FromQuery]int pageSize,[FromQuery]SearchAndFilterParameters parameters)
     {
-        return Ok(await _service.GetAllAsync(pageNumber,pageSize,parameters));
+        return Ok(await _service.GetPageAsync(pageNumber,pageSize,parameters));
     }
     
     [HttpGet("CheckEmailConfirmation/{userId:Guid}")]

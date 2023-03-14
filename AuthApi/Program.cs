@@ -12,7 +12,7 @@ services.ConfigureCors();
 services.AddControllers();
 
 services.ConfigureSwagger();
-
+services.AddResponseCaching();
 services.ConfigureSqlContext(builder.Configuration);
 
 services.ConfigureIdentity();
@@ -38,7 +38,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors(MyAllowedOrigins);
-
+app.UseResponseCaching();
 app.UseAuthentication();
 app.UseAuthorization();
 

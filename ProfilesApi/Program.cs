@@ -35,7 +35,7 @@ builder.Logging.AddSerilog(logger);
 services.ConfigureAutoMapper();
 
 services.ConfigureSwagger();
-
+services.AddMemoryCache();
 services.ConfigureSqlContext(builder.Configuration);
 services.ConfigureJWT(builder.Configuration);
 services.ConfigureValidationModelAttribute();

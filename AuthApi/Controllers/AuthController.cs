@@ -67,5 +67,5 @@ public class AuthController:ControllerBase
         await _authService.RevokeAsync(username);
         return Ok();
     }
-    
+
 }

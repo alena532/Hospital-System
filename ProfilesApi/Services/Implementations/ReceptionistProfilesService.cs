@@ -1,6 +1,9 @@
-using System.Text.Json;
+using System.Text;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using ProfilesApi.Contracts;
 using ProfilesApi.Contracts.Mail;
 using ProfilesApi.Contracts.ReceptionistProfiles;
@@ -12,6 +15,7 @@ using ProfilesApi.DataAccess.Models;
 using ProfilesApi.DataAccess.Repositories.Interfaces.Base;
 using ProfilesApi.Services.Interfaces;
 using SharedModels.Routes;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace ProfilesApi.Services.Implementations;
 
@@ -23,8 +27,10 @@ public class ReceptionistProfilesService:IReceptionistProfilesService
     private readonly IReceptionistProfileRepository _receptionistRepository;
     private readonly IDoctorProfilesService _doctorService;
     private readonly IMailService _mailService;
+    private IWebHostEnvironment _hostEnvironment;
+    private readonly IMemoryCache _memoryCache;
 
-    public ReceptionistProfilesService(IMapper mapper,IAccountRepository accountRepository,IReceptionistProfileRepository receptionistRepository,HttpClient httpClient,IDoctorProfilesService doctorService,IMailService mailService)
+    public ReceptionistProfilesService(IMapper mapper,IAccountRepository accountRepository,IReceptionistProfileRepository receptionistRepository,HttpClient httpClient,IDoctorProfilesService doctorService,IMailService mailService,IWebHostEnvironment hostEnvironment,IMemoryCache memoryCache)
     {
         _mapper = mapper;
         _accountRepository = accountRepository;
@@ -32,6 +38,8 @@ public class ReceptionistProfilesService:IReceptionistProfilesService
         _httpClient = httpClient;
         _doctorService = doctorService;
         _mailService = mailService;
+        _hostEnvironment = hostEnvironment;
+        _memoryCache = memoryCache;
     }
     
     public async Task<GetMailAndIdStuffResponse> CreateAsync(CreateReceptionistProfileRequest request)
@@ -144,12 +152,21 @@ public class ReceptionistProfilesService:IReceptionistProfilesService
         foreach (var receptionist in transformedReceptionists)
         {
             var photoResponse = await _httpClient.GetAsync(ApiRoutes.Documents + $"api/Photos/ReceptionistPhoto/{receptionist.Id}");
+
             if (photoResponse.IsSuccessStatusCode)
             {
-                var photoStream = await photoResponse.Content.ReadAsStreamAsync();
-                var photo = JsonSerializer.Deserialize<byte []>(photoStream);
-                receptionist.Photo = photo;
+                var getPhotoResponse = JsonConvert.DeserializeObject<GetPhotoResponse>(await photoResponse.Content.ReadAsStringAsync());
+                string uploads = Path.Combine(_hostEnvironment.ContentRootPath, "uploads/receptionists");
+                
+                string filePath = Path.Combine(uploads,getPhotoResponse.FileName);
+                using (FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate))
+                {
+                    fs.Write(getPhotoResponse.Bytes);
+                }
+                
+                receptionist.Photo = getPhotoResponse.Bytes;
             }
+        
         }
         
         var result = new PageResult<GetReceptionistAndPhotoProfilesResponse>
@@ -162,16 +179,38 @@ public class ReceptionistProfilesService:IReceptionistProfilesService
 
     public async Task<PageResult<GetReceptionistAndPhotoProfilesResponse>> GetAllAsync()
     {
-        var receptionists = await _receptionistRepository.GetAllAsync();
+        var cacheKey = "receptionists";
+        if(!_memoryCache.TryGetValue(cacheKey, out IEnumerable<Receptionist> receptionists))
+        {
+            receptionists = await _receptionistRepository.GetAllAsync();
+            var cacheExpiryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(5),
+                Priority = CacheItemPriority.High,
+                SlidingExpiration = TimeSpan.FromMinutes(2)
+            };
+            _memoryCache.Set(cacheKey, receptionists, cacheExpiryOptions);
+        }
         var transformedReceptionists =_mapper.Map<List<GetReceptionistAndPhotoProfilesResponse>>(receptionists);
         foreach (var receptionist in transformedReceptionists)
         {
             var photoResponse = await _httpClient.GetAsync(ApiRoutes.Documents + $"api/Photos/ReceptionistPhoto/{receptionist.Id}");
+            
             if (photoResponse.IsSuccessStatusCode)
             {
-                var photoStream = await photoResponse.Content.ReadAsStreamAsync();
-                var photo = JsonSerializer.Deserialize<byte []>(photoStream);
-                receptionist.Photo = photo;
+                var getPhotoResponse = JsonConvert.DeserializeObject<GetPhotoResponse>(await photoResponse.Content.ReadAsStringAsync());
+                if (getPhotoResponse.FileName != null && getPhotoResponse.Bytes != null)
+                {
+                    string uploads = Path.Combine(_hostEnvironment.ContentRootPath, "uploads/receptionists");
+                
+                    string filePath = Path.Combine(uploads,getPhotoResponse.FileName);
+                    using (FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate))
+                    {
+                        fs.Write(getPhotoResponse.Bytes);
+                    }
+                
+                    receptionist.Photo = getPhotoResponse.Bytes;
+                }
             }
         }
         

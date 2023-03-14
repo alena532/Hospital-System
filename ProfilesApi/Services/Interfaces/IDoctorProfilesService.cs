@@ -14,7 +14,7 @@ public interface IDoctorProfilesService
     public Task<GetDoctorProfilesResponse> GetByIdAsync(Guid id);
     public Task<GetDoctorProfilesResponse> GetByUserIdAsync(Guid userId);
     public Task<bool> CheckEmailConfirmation(Guid userId);
-    public Task<PageResult<GetDoctorAndPhotoProfilesResponse>> GetAllAsync(int pageNumber,int pageSize,SearchAndFilterParameters parameters);
+    public Task<PageResult<GetDoctorAndPhotoProfilesResponse>> GetPageAsync(int pageNumber,int pageSize,SearchAndFilterParameters parameters);
     //public  Task<GetOfficeResponse> GetByIdAsync(Office office);
     //public Task<GetOfficeResponse> UpdateAsync(Office office,EditOfficeRequest request);
 }

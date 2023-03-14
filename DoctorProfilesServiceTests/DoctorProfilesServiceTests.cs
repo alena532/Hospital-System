@@ -18,8 +18,8 @@ public class DoctorProfilesServiceTests
 {
     private readonly IDoctorProfilesService _service;
     private readonly IMapper _mapper;
-    private readonly Mock<IDoctorProfileRepository> _doctorMock = new ();
-    private readonly Mock<IAccountRepository> _accountMock = new ();
+    private readonly Mock<IDoctorProfileRepository> _doctorMock = new Mock<IDoctorProfileRepository>();
+    private readonly Mock<IAccountRepository> _accountMock = new Mock<IAccountRepository>();
 
     public DoctorProfilesServiceTests()
     {
@@ -29,8 +29,7 @@ public class DoctorProfilesServiceTests
         });
         IMapper mapper = mappingConfig.CreateMapper();
         _mapper = mapper;
-        _service = new DoctorProfilesService(_mapper,_accountMock.Object,_doctorMock.Object,null);
-        
+        _service = new DoctorProfilesService(_mapper,_accountMock.Object,_doctorMock.Object,null,null,null);
     }
 
     public EditDoctorProfileRequest GetDoctorProfileEntity()
@@ -66,7 +65,7 @@ public class DoctorProfilesServiceTests
         //Arrange
         _doctorMock.Setup(d => d.GetByIdAsync(It.IsAny<Guid>(), false))
             .ReturnsAsync(new Doctor());
-        _accountMock.Setup(d => d.GetByIdAsync(It.IsAny<Guid>(), false))
+        _accountMock.Setup(d => d.GetByIdAsync(It.IsAny<Guid>(), true))
            .ReturnsAsync(() => null);
         //Act
         _service.UpdateAsync(GetDoctorProfileEntity(), It.IsAny<Guid>());
@@ -76,18 +75,19 @@ public class DoctorProfilesServiceTests
     }
     
     [Fact]
-    public async Task UpdateAsync_ShouldReturnDoctorProfileResponse_WhenDcotorExists()
+    public async Task UpdateAsync_ShouldReturnDoctorProfileResponse_WhenDoctorExists()
     {
         //Arrange
         _doctorMock.Setup(d => d.GetByIdAsync(It.IsAny<Guid>(), false))
             .ReturnsAsync(new Doctor());
-        _accountMock.Setup(d => d.GetByIdAsync(It.IsAny<Guid>(), false))
-            .ReturnsAsync(() => new Account());
+        _accountMock.Setup(d => d.GetByIdAsync(It.IsAny<Guid>(), true))
+            .ReturnsAsync(new Account());
         //Act
-        var response = await _service.UpdateAsync(GetDoctorProfileEntity(), It.IsAny<Guid>());
+        var response =  await _service.UpdateAsync(GetDoctorProfileEntity(), It.IsAny<Guid>());
         //Assert
         Assert.Equal(response.Address,GetDoctorProfileEntity().Address);
         Assert.Equal(response.CareerStartYear,GetDoctorProfileEntity().CareerStartYear);
+        _doctorMock.Verify(d => d.GetByIdAsync(It.IsAny<Guid>(), false), Times.Once);
     }
     
 }

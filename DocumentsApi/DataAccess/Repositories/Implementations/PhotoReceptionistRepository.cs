@@ -16,8 +16,8 @@ public class PhotoReceptionistRepository:IPhotoReceptionistRepository
         var mongoClient = new MongoClient(photoStoreDatabaseSettings.Value.ConnectionString);
 
         var mongoDatabase = mongoClient.GetDatabase(photoStoreDatabaseSettings.Value.DatabaseName);
-        _photoReceptionistsCollection = mongoDatabase.GetCollection<PhotoReceptionist>(photoStoreDatabaseSettings.Value.PhotoReceptionistsCollectionName);
         
+        _photoReceptionistsCollection = mongoDatabase.GetCollection<PhotoReceptionist>(photoStoreDatabaseSettings.Value.PhotoReceptionistsCollectionName);
     }
     
     public async Task CreateAsync(PhotoReceptionist request)

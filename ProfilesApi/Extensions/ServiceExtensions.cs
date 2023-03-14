@@ -28,10 +28,11 @@ public static class ServiceExtensions
         services.AddScoped<IPatientProfileRepository, PatientProfileRepository>();
         services.AddScoped<IReceptionistProfileRepository, ReceptionistProfileRepository>();
         services.AddScoped<IAccountRepository,AccountRepository>();
+        services.AddScoped<IDoctorProfilesService,DoctorProfilesService>();
     }
     public static void ConfigureServices(this IServiceCollection services)
     {
-        services.AddTransient<IDoctorProfilesService,DoctorProfilesService>();
+       // services.AddScoped<IDoctorProfilesService,DoctorProfilesService>();
         services.AddTransient<IMailService, MailService>();
         services.AddTransient<IPatientProfilesService, PatientProfilesService>();
         services.AddTransient<IReceptionistProfilesService, ReceptionistProfilesService>();
