@@ -1,7 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Models;
-using ProfilesApi.Common.Attributes;
 using ProfilesApi.DataAccess;
 using ProfilesApi.DataAccess.Repositories.Implementations;
 using ProfilesApi.DataAccess.Repositories.Interfaces.Base;
@@ -31,10 +28,11 @@ public static class ServiceExtensions
         services.AddScoped<IPatientProfileRepository, PatientProfileRepository>();
         services.AddScoped<IReceptionistProfileRepository, ReceptionistProfileRepository>();
         services.AddScoped<IAccountRepository,AccountRepository>();
+        services.AddScoped<IDoctorProfilesService,DoctorProfilesService>();
     }
     public static void ConfigureServices(this IServiceCollection services)
     {
-        services.AddTransient<IDoctorProfilesService,DoctorProfilesService>();
+       // services.AddScoped<IDoctorProfilesService,DoctorProfilesService>();
         services.AddTransient<IMailService, MailService>();
         services.AddTransient<IPatientProfilesService, PatientProfilesService>();
         services.AddTransient<IReceptionistProfilesService, ReceptionistProfilesService>();

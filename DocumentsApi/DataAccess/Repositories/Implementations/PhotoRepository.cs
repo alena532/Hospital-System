@@ -34,6 +34,16 @@ public class PhotoRepository:IPhotoRepository
         return id;
     }
 
+    public async Task<string> GetFileNameByIdAsync(ObjectId id)
+    {
+        
+         var f =    new BsonDocument { { "_id", id }};
+        var filter = Builders<GridFSFileInfo>.Filter.Eq(info => info.Id, id);
+        var fileInfos = await _gridFS.FindAsync(f);
+        var fileInfo = await fileInfos.FirstOrDefaultAsync();
+        return fileInfo.Filename;
+    }
+
     public async Task<byte[]> GetByIdAsync(ObjectId id)
     {
         byte[] bytes;
@@ -50,7 +60,6 @@ public class PhotoRepository:IPhotoRepository
     {
         await _gridFS.DeleteAsync(id);
     }
-    
     
     public async Task UpdateAsync(Photo photo,byte[] photoBytes)
     {

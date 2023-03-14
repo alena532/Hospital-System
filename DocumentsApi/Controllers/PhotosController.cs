@@ -1,4 +1,5 @@
 using DocumentsApi.Contracts.Requests.Photos;
+using DocumentsApi.Contracts.Responses;
 using DocumentsApi.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +27,7 @@ public class PhotosController : ControllerBase
     }
     
     [HttpGet("PatientPhoto/{patientId:Guid}")]
-    public async Task<ActionResult<byte []>> GetPatientPhotoByPatientId(Guid patientId)
+    public async Task<ActionResult<GetPhotoResponse>> GetPatientPhotoByPatientId(Guid patientId)
     {
         return Ok(await _service.GetByPatientIdAsync(patientId));
     }
@@ -39,7 +40,7 @@ public class PhotosController : ControllerBase
     }
     
     [HttpGet("DoctorPhoto/{doctorId:Guid}")]
-    public async Task<ActionResult<byte []>> GetDoctorPhotoByDoctorId(Guid doctorId)
+    public async Task<ActionResult<GetPhotoResponse>> GetDoctorPhotoByDoctorId(Guid doctorId)
     {
         return Ok(await _service.GetByDoctorIdAsync(doctorId));
     }
@@ -59,7 +60,7 @@ public class PhotosController : ControllerBase
     }
 
     [HttpGet("ReceptionistPhoto/{receptionistId:Guid}")]
-    public async Task<ActionResult<byte []>> GetDoctorPhotoByReceptionistId(Guid receptionistId)
+    public async Task<ActionResult<GetPhotoResponse>> GetReceptionistPhotoByReceptionistId(Guid receptionistId)
     {
         return Ok(await _service.GetByReceptionistIdAsync(receptionistId));
     }

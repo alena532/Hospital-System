@@ -4,6 +4,8 @@ using Orchestrator.Common.Attributes;
 using Orchestrator.Contracts.Requests.PatientProfiles;
 using Orchestrator.Contracts.Requests.ReceptionistProfiles;
 using Orchestrator.Services.Interfaces;
+using ServiceExtensions;
+using ServiceExtensions.Attributes;
 
 namespace Orchestrator.Controllers;
 

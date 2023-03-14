@@ -1,4 +1,5 @@
 using DocumentsApi.Contracts.Requests.Photos;
+using DocumentsApi.Contracts.Responses;
 using DocumentsApi.DataAccess.Models;
 using DocumentsApi.DataAccess.Repositories.Interfaces;
 using DocumentsApi.Services.Interfaces;
@@ -60,7 +61,7 @@ public class PhotosService:IPhotosService
         return photoId;
     }
 
-    public async Task<byte[]> GetByPatientIdAsync(Guid patientId)
+    public async Task<GetPhotoResponse> GetByPatientIdAsync(Guid patientId)
     {
         var photoId = await _photoPatientRepository.GetPhotoIdByPatientIdAsync(patientId);
         if (photoId == null)
@@ -68,10 +69,16 @@ public class PhotosService:IPhotosService
             throw new BadHttpRequestException($"Photo for appropriate patient {patientId} wasn`t found");
         }
 
-        return await _photoRepository.GetByIdAsync(photoId);
+        var photoResponse = new GetPhotoResponse()
+        {
+            Bytes = await _photoRepository.GetByIdAsync(photoId),
+            FileName = await _photoRepository.GetFileNameByIdAsync(photoId)
+        };
+
+        return photoResponse;
     }
     
-    public async Task<byte[]> GetByDoctorIdAsync(Guid doctorId)
+    public async Task<GetPhotoResponse> GetByDoctorIdAsync(Guid doctorId)
     {
         var photoId = await _photoDoctorRepository.GetPhotoIdByDoctorIdAsync(doctorId);
         if (photoId == null)
@@ -79,10 +86,16 @@ public class PhotosService:IPhotosService
             throw new BadHttpRequestException($"Photo for appropriate patient {doctorId} wasn`t found");
         }
 
-        return await _photoRepository.GetByIdAsync(photoId);
+        var photoResponse = new GetPhotoResponse()
+        {
+            Bytes = await _photoRepository.GetByIdAsync(photoId),
+            FileName = await _photoRepository.GetFileNameByIdAsync(photoId)
+        };
+
+        return photoResponse;
     }
     
-    public async Task<byte[]> GetByReceptionistIdAsync(Guid receptionistId)
+    public async Task<GetPhotoResponse> GetByReceptionistIdAsync(Guid receptionistId)
     {
         var photoId = await _photoReceptionistRepository.GetPhotoIdByReceptionistIdAsync(receptionistId);
         if (photoId == null)
@@ -90,7 +103,15 @@ public class PhotosService:IPhotosService
             throw new BadHttpRequestException($"Photo for appropriate patient {receptionistId} wasn`t found");
         }
 
-        return await _photoRepository.GetByIdAsync(photoId);
+        var Bytes = await _photoRepository.GetByIdAsync(photoId);
+        var FileName = await _photoRepository.GetFileNameByIdAsync(photoId);
+        var photoResponse = new GetPhotoResponse()
+        {
+            Bytes = await _photoRepository.GetByIdAsync(photoId),
+            FileName = await _photoRepository.GetFileNameByIdAsync(photoId)
+        };
+
+        return photoResponse;
     }
 
     public async Task UpdateByDoctorIdAsync(EditPhotoForDoctorRequest request)

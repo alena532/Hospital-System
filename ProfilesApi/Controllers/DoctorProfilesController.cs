@@ -1,16 +1,17 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ProfilesApi.Common.Attributes;
 using ProfilesApi.Contracts;
 using ProfilesApi.Contracts.Mail;
 using ProfilesApi.Contracts.Requests.DoctorProfiles;
 using ProfilesApi.Contracts.Responses.DoctorProfiles;
 using ProfilesApi.Services.Interfaces;
+using ServiceExtensions.Attributes;
 
 namespace ProfilesApi.Controllers;
 
+
 [ApiController]
-[AllowAnonymous]
 [Route("api/[controller]")]
 public class DoctorProfilesController:ControllerBase
 {
@@ -23,9 +24,13 @@ public class DoctorProfilesController:ControllerBase
     
     [HttpPost]
     [ServiceFilter(typeof(ValidationModelAttribute))]
+    [Authorize(Roles="Receptionist")]
     public async Task<ActionResult<GetMailAndIdStuffResponse>> Create([FromBody]CreateDoctorProfileRequest request)
     {
-        return Ok(await _service.CreateAsync(request));
+        var identity = HttpContext.User.Identity as ClaimsIdentity;
+        var userId = new Guid(identity.FindFirst(ClaimTypes.NameIdentifier).Value);
+        
+        return Ok(await _service.CreateAsync(request,userId));
     }
     
     [HttpPost("ConfirmEmail")]
@@ -37,22 +42,25 @@ public class DoctorProfilesController:ControllerBase
     
     [HttpPut]
     [ServiceFilter(typeof(ValidationModelAttribute))]
+    [Authorize(Roles="Receptionist,Doctor")]
     public async Task<ActionResult<GetDoctorProfilesResponse>> Update([FromBody]EditDoctorProfileRequest request)
     {
-        return Ok(await _service.UpdateAsync(request));
+        var identity = HttpContext.User.Identity as ClaimsIdentity;
+        var userId = new Guid(identity.FindFirst(ClaimTypes.NameIdentifier).Value);
+        
+        return Ok(await _service.UpdateAsync(request,userId));
     }
 
     [HttpGet]
-    public async Task<ActionResult<PageResult<GetDoctorAndPhotoProfilesResponse>>> GetAll([FromQuery]int pageNumber,[FromQuery]int pageSize,[FromQuery]SearchAndFilterParameters parameters)
+    public async Task<ActionResult<PageResult<GetDoctorAndPhotoProfilesResponse>>> GetPage([FromQuery]int pageNumber,[FromQuery]int pageSize,[FromQuery]SearchAndFilterParameters parameters)
     {
-        return Ok(await _service.GetAllAsync(pageNumber,pageSize,parameters));
+        return Ok(await _service.GetPageAsync(pageNumber,pageSize,parameters));
     }
     
     [HttpGet("CheckEmailConfirmation/{userId:Guid}")]
-    public async Task<ActionResult> CheckEmailConfirmation(Guid userId)
+    public async Task<ActionResult<bool>> CheckEmailConfirmation(Guid userId)
     {
-        await _service.CheckEmailConfirmation(userId);
-        return Ok();
+        return Ok(await _service.CheckEmailConfirmation(userId));
     }
     
     [HttpGet("UserId/{userId:Guid}")]

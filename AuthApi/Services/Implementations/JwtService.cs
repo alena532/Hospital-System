@@ -2,13 +2,13 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using AuthApi.ConfigurationOptions;
 using AuthApi.Contracts.Requests;
 using AuthApi.Contracts.Responses;
 using AuthApi.DataAccess;
 using AuthApi.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using ServiceExtensions.ConfigurationOptions;
 
 namespace AuthApi.Services.Implementations;
 
@@ -58,7 +58,7 @@ public class JwtService:IJwtService
             _jwtOptions.Audience,
             GetClaims(user),
             null,
-            expires: DateTime.Now.AddMinutes(15),
+            expires: DateTime.Now.AddMinutes(120),
             signingCredentials: GetSigningCredentials());
 
         var response = new TokensResponse()

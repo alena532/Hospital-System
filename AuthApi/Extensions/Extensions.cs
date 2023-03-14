@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AuthApi.Common.Attributes;
-using AuthApi.ConfigurationOptions;
+using ServiceExtensions.ConfigurationOptions;
 using AuthApi.DataAccess;
 using AuthApi.DataAccess.Repositories.Implementations;
 using AuthApi.DataAccess.Repositories.Interfaces;
@@ -27,13 +27,16 @@ public static class Extensions
     {
         
     }
-    
+
     public static void ConfigureServices(this IServiceCollection services)
     {
+        //services.AddScoped<IUsersService,IUsersService>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IUsersService,UsersService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IAuthValidatorService,AuthValidatorService>();
+        //services.AddScoped<IUsersService,IUsersService>();
        
     }
 
@@ -50,8 +53,9 @@ public static class Extensions
                 o.Password.RequiredLength = 8;
                 o.User.RequireUniqueEmail = true;
             })
-            .AddEntityFrameworkStores<AppDbContext>();
-        
+            .AddEntityFrameworkStores<AppDbContext>()
+            .AddDefaultTokenProviders();
+
     }
     
 }

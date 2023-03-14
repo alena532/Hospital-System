@@ -16,7 +16,7 @@ import {Router} from "@angular/router";
     submitted = false;
     loading = false;
     userId! :string;
-  
+
     constructor(
       private formBuilder: FormBuilder,
       private router: Router,
@@ -28,19 +28,19 @@ import {Router} from "@angular/router";
         "email": new FormControl("", [ Validators.required, Validators.email]),
       });
     }
-  
+
     ngOnInit(): void {
     }
-  
+
     get f() { return this.loginForm.controls; }
-  
+
     onSubmit() {
       this.submitted = true;
 
       if (this.loginForm.invalid) {
         return;
       }
-      
+
       this.loading = true;
 
       this.authService.login(this.f['email'].value, this.f['password'].value)
@@ -51,18 +51,14 @@ import {Router} from "@angular/router";
             this.router.navigate([`${currentRole}`]);
           },
           error => {
-            if(error.message =='Email isn`t confirmed')
-            this.authService.logout();
             this.loading = false;
-            console.log(error.status)
+            this.authService.logout();
             if(error.message =='Email isn`t confirmed')
               this.error = 'Email isn`t confirmed';
-            else  
+            else
               this.error = 'Either an email or a password is incorrect';
-            
           }
         );
 
     }
   }
-  

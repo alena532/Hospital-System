@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace AuthApi.Common.Attributes;
 
-public class ValidationModelAttribute:ActionFilterAttribute
+/*public class ValidationModelAttribute:ActionFilterAttribute
 {
     public override void OnActionExecuting(ActionExecutingContext context)
     {
@@ -13,3 +13,4 @@ public class ValidationModelAttribute:ActionFilterAttribute
         }
     }
 }
+*/

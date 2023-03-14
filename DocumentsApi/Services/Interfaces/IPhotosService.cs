@@ -1,4 +1,5 @@
 using DocumentsApi.Contracts.Requests.Photos;
+using DocumentsApi.Contracts.Responses;
 using DocumentsApi.DataAccess.Models;
 using MongoDB.Bson;
 
@@ -10,7 +11,7 @@ public interface IPhotosService
     Task<ObjectId> CreateDoctorPhotoAsync(CreatePhotoForDoctorRequest request);
     Task<ObjectId> CreateReceptionistPhotoAsync(CreatePhotoForReceptionistRequest request);
     public Task UpdateByDoctorIdAsync(EditPhotoForDoctorRequest request);
-    Task<byte[]> GetByPatientIdAsync(Guid patientId);
-    Task<byte[]> GetByDoctorIdAsync(Guid doctorId);
-    Task<byte[]> GetByReceptionistIdAsync(Guid receptionistId);
+    Task<GetPhotoResponse> GetByPatientIdAsync(Guid patientId);
+    Task<GetPhotoResponse> GetByDoctorIdAsync(Guid doctorId);
+    Task<GetPhotoResponse> GetByReceptionistIdAsync(Guid receptionistId);
 }

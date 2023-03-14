@@ -1,7 +1,6 @@
 using AppointmentsApi.Contracts.Requests;
 using AppointmentsApi.Contracts.Responses;
 using AppointmentsApi.Services.Interfaces;
-using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,8 +12,6 @@ namespace AppointmentsApi.Controllers;
 public class AppointmentsController:ControllerBase
 {
     private readonly IAppointmentsService _service;
-    
-    
     public AppointmentsController(IAppointmentsService service)
     {
         _service = service;

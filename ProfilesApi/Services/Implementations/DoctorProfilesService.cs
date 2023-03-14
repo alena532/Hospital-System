@@ -1,5 +1,6 @@
-using System.Text.Json;
 using AutoMapper;
+using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
 using ProfilesApi.Contracts;
 using ProfilesApi.Contracts.Mail;
 using ProfilesApi.Contracts.Requests;
@@ -10,28 +11,31 @@ using ProfilesApi.DataAccess.Models;
 using ProfilesApi.DataAccess.Repositories.Interfaces.Base;
 using ProfilesApi.Services.Interfaces;
 using SharedModels.Routes;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 
 namespace ProfilesApi.Services.Implementations;
 
 public class DoctorProfilesService:IDoctorProfilesService
 {
+    private IWebHostEnvironment _hostEnvironment;
     private readonly IMapper _mapper;
     private readonly IAccountRepository _accountRepository;
     private readonly IDoctorProfileRepository _doctorRepository;
     private readonly HttpClient _httpClient;
     private readonly IMailService _mailService;
 
-    public DoctorProfilesService(IMapper mapper,IAccountRepository accountRepository,IDoctorProfileRepository doctorRepository,HttpClient httpClient,IMailService mailService)
+    public DoctorProfilesService(IMapper mapper,IAccountRepository accountRepository,IDoctorProfileRepository doctorRepository,IMailService mailService,HttpClient http,IWebHostEnvironment env)
     {
         _mapper = mapper;
         _accountRepository = accountRepository;
         _doctorRepository = doctorRepository;
         _httpClient = new HttpClient();
         _mailService = mailService;
+        _hostEnvironment = env;
     }
     
-    public async Task<GetMailAndIdStuffResponse> CreateAsync(CreateDoctorProfileRequest request)
+    public async Task<GetMailAndIdStuffResponse> CreateAsync(CreateDoctorProfileRequest request,Guid userId)
     {
         var checkEmail = _httpClient.PostAsJsonAsync( ApiRoutes.Auth + "api/AuthValidator",request.Email).Result;
         if (checkEmail.IsSuccessStatusCode == false)
@@ -57,12 +61,15 @@ public class DoctorProfilesService:IDoctorProfilesService
         }
         
         var userIdStream = await createdUser.Content.ReadAsStringAsync();
-        var userId = JsonSerializer.Deserialize<Guid>(userIdStream);
+        var responseUserId = JsonSerializer.Deserialize<Guid>(userIdStream);
         
         var account = _mapper.Map<Account>(request);
-        account.UserId = userId;
+        account.UserId = responseUserId;
         account.PhoneNumber = request.PhoneNumber;
-        //add createdBy UpdatedBy
+        
+        account.CreatedBy = userId;
+        account.CreatedAt = DateTime.Now;
+
         try
         {
             await _accountRepository.CreateAsync(account);
@@ -112,15 +119,26 @@ public class DoctorProfilesService:IDoctorProfilesService
         await _accountRepository.SaveChangesAsync();
     }
 
-    public async Task<GetDoctorProfilesResponse> UpdateAsync(EditDoctorProfileRequest request)
+    public async Task<GetDoctorProfilesResponse> UpdateAsync(EditDoctorProfileRequest request,Guid userId)
     {
-        var doctor =  await _doctorRepository.GetByIdAsync(request.Id);
+        Doctor doctor =  await _doctorRepository.GetByIdAsync(request.Id);
         if (doctor == null)
         {
             throw new BadHttpRequestException("Doctor not found");
         }
         
         _mapper.Map(request, doctor);
+        
+        var account = await _accountRepository.GetByIdAsync(doctor.AccountId,true);
+        if (account == null)
+        {
+            throw new BadHttpRequestException("Account not found");
+        }
+        account.UpdatedBy = userId;
+        account.UpdateAt = DateTime.Now;
+
+        await _accountRepository.SaveChangesAsync();
+        
         await _doctorRepository.UpdateAsync(doctor);
         return _mapper.Map<GetDoctorProfilesResponse>(doctor);
     }
@@ -154,7 +172,7 @@ public class DoctorProfilesService:IDoctorProfilesService
         return account.IsEmailVerified;
     }
     
-    public async Task<PageResult<GetDoctorAndPhotoProfilesResponse>> GetAllAsync(int pageNumber, int pageSize,SearchAndFilterParameters parameters)
+    public async Task<PageResult<GetDoctorAndPhotoProfilesResponse>> GetPageAsync(int pageNumber, int pageSize,SearchAndFilterParameters parameters)
     {
         var doctors = await _doctorRepository.SearchByCredentialsAsync(parameters.FirstName, parameters.LastName, parameters.OfficeId);
         var doctorsPerPage =
@@ -162,11 +180,19 @@ public class DoctorProfilesService:IDoctorProfilesService
         foreach (var doctor in doctorsPerPage)
         {
             var photoResponse = await _httpClient.GetAsync(ApiRoutes.Documents + $"api/Photos/DoctorPhoto/{doctor.Id}");
+            
             if (photoResponse.IsSuccessStatusCode)
             {
-                var photoStream = await photoResponse.Content.ReadAsStreamAsync();
-                var photo = JsonSerializer.Deserialize<byte []>(photoStream);
-                doctor.Photo = photo;
+                var getPhotoResponse = JsonConvert.DeserializeObject<GetPhotoResponse>(await photoResponse.Content.ReadAsStringAsync());
+                string uploads = Path.Combine(_hostEnvironment.ContentRootPath, "uploads/doctors");
+                
+                string filePath = Path.Combine(uploads,getPhotoResponse.FileName);
+                using (FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate))
+                {
+                    fs.Write(getPhotoResponse.Bytes);
+                }
+                
+                doctor.Photo = getPhotoResponse.Bytes;
             }
         }
         

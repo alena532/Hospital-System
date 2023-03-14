@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using Orchestrator.Common.Attributes;
 using Orchestrator.Contracts.Requests.PatientProfiles;
 using Orchestrator.Services.Interfaces;
+using ServiceExtensions.Attributes;
 
 namespace Orchestrator.Controllers;
 
 [ApiController]
-[AllowAnonymous]
 [Route("api/[controller]")]
 public class DoctorProfilesController : Controller
 {
@@ -20,17 +20,20 @@ public class DoctorProfilesController : Controller
 
     [HttpPost]
     [ServiceFilter(typeof(ValidationModelAttribute))]
+    [Authorize(Roles="Receptionist")]
     public async Task<ActionResult<string>> Create([FromForm]CreateDoctorProfileAndPhotoRequest request)
     {
-        return Ok(await _service.CreateAsync(request));
+        var token = HttpContext.Request.Headers["Authorization"];
+        return Ok(await _service.CreateAsync(request,token));
     }
     
     [HttpPut]
-    [Authorize]
     [ServiceFilter(typeof(ValidationModelAttribute))]
+    [Authorize(Roles="Receptionist")]
     public async Task<ActionResult> Update([FromForm]EditDoctorProfileAndPhotoRequest request)
     {
-        await _service.UpdateAsync(request);
+        var token = HttpContext.Request.Headers["Authorization"];
+        await _service.UpdateAsync(request,token);
         return Ok();
     }
        

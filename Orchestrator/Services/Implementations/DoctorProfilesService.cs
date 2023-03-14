@@ -20,9 +20,11 @@ public class DoctorProfilesService:IDoctorProfilesService
         _mapper = mapper;
     }
     
-    public async Task<string> CreateAsync(CreateDoctorProfileAndPhotoRequest request)
+    public async Task<string> CreateAsync(CreateDoctorProfileAndPhotoRequest request,string token)
     {
         var profileRequest = _mapper.Map<CreateDoctorProfileRequest>(request);
+        _client.DefaultRequestHeaders.Add("Authorization",token);
+            
         var createdDoctor = await _client.PostAsJsonAsync(ApiRoutes.Profiles + "api/DoctorProfiles", profileRequest);
         if (createdDoctor.IsSuccessStatusCode == false)
         {
@@ -33,7 +35,7 @@ public class DoctorProfilesService:IDoctorProfilesService
         var dataJson = (JObject)JsonConvert.DeserializeObject(doctor);
         var doctorId = new Guid(dataJson["id"].Value<string>());
        
-        if (request.Photo == null || request.Photo.Length <= 1) return null;
+        if (request.Photo == null || request.Photo.Length <= 1) return doctor;
         
         byte[] bytes;
         using (var ms = new MemoryStream())
@@ -58,9 +60,10 @@ public class DoctorProfilesService:IDoctorProfilesService
         return doctor;
     }
 
-    public async Task UpdateAsync([FromForm] EditDoctorProfileAndPhotoRequest request)
+    public async Task UpdateAsync([FromForm] EditDoctorProfileAndPhotoRequest request,string token)
     {
         var profileRequest = _mapper.Map<EditDoctorProfileRequest>(request);
+        _client.DefaultRequestHeaders.Add("Authorization",token);
 
         var updatedDoctor = await _client.PutAsJsonAsync(ApiRoutes.Profiles + "api/DoctorProfiles", profileRequest);
         if (updatedDoctor.IsSuccessStatusCode == false)

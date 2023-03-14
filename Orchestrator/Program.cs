@@ -10,6 +10,7 @@ services.ConfigureCors();
 services.AddControllers();
 
 services.ConfigureSwagger();
+services.ConfigureJWT(builder.Configuration);
 services.ConfigureValidationModelAttribute();
 services.ConfigureFilters();
 services.ConfigureServices();

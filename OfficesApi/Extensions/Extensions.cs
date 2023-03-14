@@ -34,7 +34,7 @@ public static class ServiceExtensions
 
     public static void ConfigureAutoMapper(this IServiceCollection services)
     {
-        services.AddAutoMapper( typeof(OfficesMapper),typeof(OfficeReceptionistsMapper));
+        services.AddAutoMapper( typeof(OfficesMapper));
     }
     
 }
